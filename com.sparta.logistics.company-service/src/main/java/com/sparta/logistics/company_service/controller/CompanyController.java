@@ -104,7 +104,7 @@ public class CompanyController {
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
 
-        // 삭제된 데이터 제회
+        // 삭제된 데이터 제외
         List<CompanyResponseDto> companyList = companyDatabase.values().stream()
                 .filter(company -> company.getDeletedAt() == null) // ✅ 삭제된 데이터 제외
                 .collect(Collectors.toList());
