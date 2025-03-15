@@ -116,7 +116,7 @@ public class CompanyController {
             companyList.sort(Comparator.comparing(CompanyResponseDto::getName));
         }
 
-        // 페이징 처리
+        // 페이징 처리중
         int start = Math.min(page * size, companyList.size());
         int end = Math.min(start + size, companyList.size());
         List<CompanyResponseDto> paginatedList = companyList.subList(start, end);
