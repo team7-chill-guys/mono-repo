@@ -1,17 +1,14 @@
 package com.sparta.logistics.company_service.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.sql.Timestamp;
 import java.util.UUID;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-@ToString
-public class CompanyResponseDto {
+public class CompanyDetailResponseDto {
     private UUID id;
     private UUID hubId;
     private String name;

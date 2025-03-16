@@ -12,20 +12,20 @@ import java.util.stream.Collectors;
 public class CompanyController {
 
     // 임시 메모리 저장소
-    private final Map<UUID, CompanyResponseDto> companyDatabase = new HashMap<>();
+    private final Map<UUID, CompanyDetailResponseDto> companyDatabase = new HashMap<>();
 
     // [등록]
     @PostMapping
-    public CompanyResponseDto createCompany(@RequestBody CompanyRequestDto requestDto) {
+    public CompanyDetailResponseDto createCompany(@RequestBody CompanyCreateRequestDto requestDto) {
         UUID companyId = UUID.randomUUID();
-        CompanyResponseDto companyResponse = CompanyResponseDto.builder()
+        CompanyDetailResponseDto companyResponse = CompanyDetailResponseDto.builder()
                 .id(companyId)
                 .hubId(requestDto.getHubId())
                 .name(requestDto.getName())
                 .type(requestDto.getType())
                 .address(requestDto.getAddress())
                 .phone(requestDto.getPhone())
-                .updatedAt(new Timestamp(System.currentTimeMillis()))
+                .createdAt(new Timestamp(System.currentTimeMillis()))
                 .createdBy(requestDto.getCreatedBy())
                 .updatedAt(new Timestamp(System.currentTimeMillis()))
                 .updatedBy(requestDto.getUpdatedBy())
@@ -39,8 +39,8 @@ public class CompanyController {
 
     // [수정]
     @PutMapping("/{id}")
-    public CompanyResponseDto updateCompany(@PathVariable UUID id, @RequestBody CompanyUpdateDto updateDto) {
-        CompanyResponseDto existingCompany = companyDatabase.get(id);
+    public CompanyDetailResponseDto updateCompany(@PathVariable UUID id, @RequestBody CompanyUpdateRequestDto updateDto) {
+        CompanyDetailResponseDto existingCompany = companyDatabase.get(id);
 
         if (existingCompany == null) {
             throw new RuntimeException("Company not found");
@@ -50,21 +50,29 @@ public class CompanyController {
             throw new RuntimeException("This company has been deleted and cannot be modified.");
         }
 
-        existingCompany.setHubId(updateDto.getHubId());
-        existingCompany.setName(updateDto.getName());
-        existingCompany.setType(updateDto.getType());
-        existingCompany.setAddress(updateDto.getAddress());
-        existingCompany.setPhone(updateDto.getPhone());
-        existingCompany.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        existingCompany.setUpdatedBy(updateDto.getUpdatedBy());
+        CompanyDetailResponseDto updatedCompany = CompanyDetailResponseDto.builder()
+                .id(existingCompany.getId())
+                .hubId(updateDto.getHubId())
+                .name(updateDto.getName())
+                .type(updateDto.getType())
+                .address(updateDto.getAddress())
+                .phone(updateDto.getPhone())
+                .createdAt(existingCompany.getCreatedAt())
+                .createdBy(existingCompany.getCreatedBy())
+                .updatedAt(new Timestamp(System.currentTimeMillis()))
+                .updatedBy(updateDto.getUpdatedBy())
+                .deletedAt(existingCompany.getDeletedAt())
+                .deletedBy(existingCompany.getDeletedBy())
+                .build();
 
-        return existingCompany;
+        companyDatabase.put(id, updatedCompany);
+        return updatedCompany;
     }
 
     // [삭제]
     @DeleteMapping("/{id}")
-    public CompanyDeleteDto deleteCompany(@PathVariable UUID id) {
-        CompanyResponseDto company = companyDatabase.get(id);
+    public CompanyDeleteResponseDto deleteCompany(@PathVariable UUID id) {
+        CompanyDetailResponseDto company = companyDatabase.get(id);
 
         if (company == null) {
             throw new RuntimeException("Company not found");
@@ -74,16 +82,29 @@ public class CompanyController {
             throw new RuntimeException("This company has already been deleted.");
         }
 
-        company.setDeletedAt(new Timestamp(System.currentTimeMillis()));
-        company.setDeletedBy(company.getUpdatedBy()); // updatedBy를 기준으로 설정
+        company = CompanyDetailResponseDto.builder()
+                .id(company.getId())
+                .hubId(company.getHubId())
+                .name(company.getName())
+                .type(company.getType())
+                .address(company.getAddress())
+                .phone(company.getPhone())
+                .createdAt(company.getCreatedAt())
+                .createdBy(company.getCreatedBy())
+                .updatedAt(company.getUpdatedAt())
+                .updatedBy(company.getUpdatedBy())
+                .deletedAt(new Timestamp(System.currentTimeMillis()))
+                .deletedBy(company.getUpdatedBy())
+                .build();
 
-        return new CompanyDeleteDto(company.getId(), company.getDeletedAt(), company.getDeletedBy());
+        companyDatabase.put(id, company);
+        return new CompanyDeleteResponseDto(company.getId(), company.getDeletedAt(), company.getDeletedBy());
     }
 
     // [개별 조회]
     @GetMapping("/{id}")
-    public CompanyResponseDto getCompanyById(@PathVariable UUID id) {
-        CompanyResponseDto company = companyDatabase.get(id);
+    public CompanyDetailResponseDto getCompanyById(@PathVariable UUID id) {
+        CompanyDetailResponseDto company = companyDatabase.get(id);
 
         if (company == null) {
             throw new RuntimeException("Company not found");
@@ -98,35 +119,14 @@ public class CompanyController {
 
     // [전체 조회]
     @GetMapping
-    public CompanySearchDto getAllCompanies(
-            @RequestParam(required = false, defaultValue = "name") String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String sortOrder,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size) {
+    public CompanyListResponseDto getAllCompanies() {
+        List<CompanyDetailResponseDto> companyList = companyDatabase.values().stream()
+                .filter(company -> company.getDeletedAt() == null)
+                .toList();
 
-        // 삭제된 데이터 제외
-        List<CompanyResponseDto> companyList = companyDatabase.values().stream()
-                .filter(company -> company.getDeletedAt() == null) // ✅ 삭제된 데이터 제외
-                .collect(Collectors.toList());
-
-        // 정렬 처리
-        if ("desc".equalsIgnoreCase(sortOrder)) {
-            companyList.sort(Comparator.comparing(CompanyResponseDto::getName).reversed());
-        } else {
-            companyList.sort(Comparator.comparing(CompanyResponseDto::getName));
-        }
-
-        // 페이징 처리중
-        int start = Math.min(page * size, companyList.size());
-        int end = Math.min(start + size, companyList.size());
-        List<CompanyResponseDto> paginatedList = companyList.subList(start, end);
-
-        // 응답 DTO 생성
-        return CompanySearchDto.builder()
-                .companies(paginatedList)
+        return CompanyListResponseDto.builder()
+                .companies(companyList)
                 .totalCount(companyList.size())
-                .page(page)
-                .size(size)
                 .build();
     }
 }
