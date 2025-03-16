@@ -1,12 +1,12 @@
-package com.sparta.logistics.hub_service.controller;
+package com.sparta.logistics.hub_service.presentation.controller;
 
 import com.sparta.logistics.hub_service.data.HubRouteData;
-import com.sparta.logistics.hub_service.dto.CreateHubRouteRequestDto;
-import com.sparta.logistics.hub_service.dto.CreateHubRouteResponseDto;
-import com.sparta.logistics.hub_service.dto.HubRouteDetailResponseDto;
-import com.sparta.logistics.hub_service.dto.HubRouteListResponseDto;
-import com.sparta.logistics.hub_service.dto.UpdateHubRouteRequestDto;
-import com.sparta.logistics.hub_service.dto.UpdateHubRouteResponseDto;
+import com.sparta.logistics.hub_service.application.dto.CreateHubRouteRequestDto;
+import com.sparta.logistics.hub_service.application.dto.CreateHubRouteResponseDto;
+import com.sparta.logistics.hub_service.application.dto.HubRouteDetailResponseDto;
+import com.sparta.logistics.hub_service.application.dto.HubRouteListResponseDto;
+import com.sparta.logistics.hub_service.application.dto.UpdateHubRouteRequestDto;
+import com.sparta.logistics.hub_service.application.dto.UpdateHubRouteResponseDto;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

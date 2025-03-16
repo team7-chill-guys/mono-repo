@@ -1,7 +1,7 @@
 package com.sparta.logistics.hub_service.data;
 
-import com.sparta.logistics.hub_service.dto.HubRouteDetailResponseDto;
-import com.sparta.logistics.hub_service.dto.HubRouteListResponseDto;
+import com.sparta.logistics.hub_service.application.dto.HubRouteDetailResponseDto;
+import com.sparta.logistics.hub_service.application.dto.HubRouteListResponseDto;
 import java.util.List;
 import java.util.UUID;
 
