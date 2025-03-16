@@ -1,12 +1,12 @@
 package com.sparta.logistics.hub_service.presentation.controller;
 
 import com.sparta.logistics.hub_service.data.HubRouteData;
-import com.sparta.logistics.hub_service.application.dto.CreateHubRouteRequestDto;
-import com.sparta.logistics.hub_service.application.dto.CreateHubRouteResponseDto;
+import com.sparta.logistics.hub_service.application.dto.HubRouteCreateRequestDto;
+import com.sparta.logistics.hub_service.application.dto.HubRouteCreateResponseDto;
 import com.sparta.logistics.hub_service.application.dto.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.application.dto.HubRouteListResponseDto;
-import com.sparta.logistics.hub_service.application.dto.UpdateHubRouteRequestDto;
-import com.sparta.logistics.hub_service.application.dto.UpdateHubRouteResponseDto;
+import com.sparta.logistics.hub_service.application.dto.HubRouteUpdateRequestDto;
+import com.sparta.logistics.hub_service.application.dto.HubRouteUpdateResponseDto;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,12 +28,12 @@ public class HubRouteController {
 
   // 허브 루트 생성
   @PostMapping
-  public CreateHubRouteResponseDto createHubRoute(
-      @RequestBody CreateHubRouteRequestDto requestDto) {
+  public HubRouteCreateResponseDto createHubRoute(
+      @RequestBody HubRouteCreateRequestDto requestDto) {
     UUID startHubId = UUID.randomUUID(); // 자동 생성
     UUID endHubId = UUID.randomUUID(); // 자동 생성
 
-    CreateHubRouteResponseDto responseDto = CreateHubRouteResponseDto.builder()
+    HubRouteCreateResponseDto responseDto = HubRouteCreateResponseDto.builder()
         .startHubId(startHubId)
         .endHubId(endHubId)
         .startHubName(requestDto.getStartHubName())
@@ -71,8 +71,8 @@ public class HubRouteController {
   //hubRouteUpdateDatabase
   // 허브 루트 수정
   @PutMapping("/{hubRoutesId}")
-  public UpdateHubRouteResponseDto updateHubRoute(@PathVariable Long hubRoutesId,
-      @RequestBody UpdateHubRouteRequestDto requestDto) {
+  public HubRouteUpdateResponseDto updateHubRoute(@PathVariable Long hubRoutesId,
+      @RequestBody HubRouteUpdateRequestDto requestDto) {
     HubRouteDetailResponseDto existingHub = hubRouteData.hubRouteUpdateDatabase.stream()
         .filter(hub -> hub.getId() == hubRoutesId)
         .findFirst()
@@ -85,7 +85,7 @@ public class HubRouteController {
     existingHub.setDeliveryTime(requestDto.getDeliveryTime());
 
     // 반환
-    return UpdateHubRouteResponseDto.builder()
+    return HubRouteUpdateResponseDto.builder()
         .startHubName("서울특별시 센터")
         .endHubName("부산광역시 센터")
         .deliveryTime(350L)

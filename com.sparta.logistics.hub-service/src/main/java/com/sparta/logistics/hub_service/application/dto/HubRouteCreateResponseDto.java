@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UpdateHubRouteRequestDto {
+public class HubRouteCreateResponseDto {
 
   private UUID startHubId;
   private UUID endHubId;
