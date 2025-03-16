@@ -1,14 +1,14 @@
-package com.sparta.logistics.hub_service.dto;
+package com.sparta.logistics.hub_service.application.dto;
 
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
 @Getter
 @Builder
-@Setter
-public class HubRouteDetailResponseDto {
+public class CreateHubRouteRequestDto {
 
   private UUID startHubId;
   private UUID endHubId;
@@ -16,7 +16,4 @@ public class HubRouteDetailResponseDto {
   private String endHubName;
   private Long deliveryTime;
   private Long deliveryDistance;
-
-  private Long id; // 임시
-
 }
