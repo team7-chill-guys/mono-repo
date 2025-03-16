@@ -2,6 +2,7 @@ package com.sparta.logistics.order_service.dto;
 
 import lombok.*;
 
+
 @Getter
 @Builder
 public class OrderUpdateRequestDto {
