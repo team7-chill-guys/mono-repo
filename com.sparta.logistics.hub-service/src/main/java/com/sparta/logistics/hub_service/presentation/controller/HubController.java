@@ -1,12 +1,12 @@
-package com.sparta.logistics.hub_service.controller;
+package com.sparta.logistics.hub_service.presentation.controller;
 
 import com.sparta.logistics.hub_service.data.HubData;
-import com.sparta.logistics.hub_service.dto.CreateHubRequestDto;
-import com.sparta.logistics.hub_service.dto.CreateHubResponseDto;
-import com.sparta.logistics.hub_service.dto.HubDetailResponseDto;
-import com.sparta.logistics.hub_service.dto.HubListResponseDto;
-import com.sparta.logistics.hub_service.dto.UpdateHubRequestDto;
-import com.sparta.logistics.hub_service.dto.UpdateHubResponseDto;
+import com.sparta.logistics.hub_service.application.dto.CreateHubRequestDto;
+import com.sparta.logistics.hub_service.application.dto.CreateHubResponseDto;
+import com.sparta.logistics.hub_service.application.dto.HubDetailResponseDto;
+import com.sparta.logistics.hub_service.application.dto.HubListResponseDto;
+import com.sparta.logistics.hub_service.application.dto.UpdateHubRequestDto;
+import com.sparta.logistics.hub_service.application.dto.UpdateHubResponseDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.DeleteMapping;
