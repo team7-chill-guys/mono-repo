@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CreateHubRequestDto {
+public class HubCreateRequestDto {
 
   private long userId;
   private String hubName;

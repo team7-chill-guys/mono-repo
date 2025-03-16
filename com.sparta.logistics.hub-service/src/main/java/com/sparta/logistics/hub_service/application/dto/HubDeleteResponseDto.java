@@ -2,7 +2,7 @@ package com.sparta.logistics.hub_service.application.dto;
 
 import java.math.BigDecimal;
 
-public class DeleteHubResponseDto {
+public class HubDeleteResponseDto {
 
   private long userId;
   private String hubName;
