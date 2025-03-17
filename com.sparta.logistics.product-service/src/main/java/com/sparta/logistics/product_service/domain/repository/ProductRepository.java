@@ -1,6 +1,6 @@
-package com.sparta.logistics.product_service.repository;
+package com.sparta.logistics.product_service.domain.repository;
 
-import com.sparta.logistics.product_service.entity.Product;
+import com.sparta.logistics.product_service.domain.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

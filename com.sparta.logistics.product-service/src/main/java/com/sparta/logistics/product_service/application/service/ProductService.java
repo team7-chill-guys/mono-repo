@@ -1,10 +1,14 @@
-package com.sparta.logistics.product_service.service;
+package com.sparta.logistics.product_service.application.service;
 
-import com.sparta.logistics.product_service.dto.request.ProductCreateRequestDto;
-import com.sparta.logistics.product_service.dto.request.ProductUpdateRequestDto;
-import com.sparta.logistics.product_service.dto.response.*;
-import com.sparta.logistics.product_service.entity.Product;
-import com.sparta.logistics.product_service.repository.ProductRepository;
+import com.sparta.logistics.product_service.application.dto.request.ProductCreateRequestDto;
+import com.sparta.logistics.product_service.application.dto.request.ProductUpdateRequestDto;
+import com.sparta.logistics.product_service.application.dto.response.*;
+import com.sparta.logistics.product_service.client.CompanyClient;
+import com.sparta.logistics.product_service.client.HubClient;
+import com.sparta.logistics.product_service.client.dto.CompanyResponseDto;
+import com.sparta.logistics.product_service.client.dto.HubResponseDto;
+import com.sparta.logistics.product_service.domain.entity.Product;
+import com.sparta.logistics.product_service.domain.repository.ProductRepository;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,21 +20,32 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CompanyClient companyClient;
+    private final HubClient hubClient;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, CompanyClient companyClient, HubClient hubClient) {
         this.productRepository = productRepository;
+        this.companyClient = companyClient;
+        this.hubClient = hubClient;
     }
 
     public ProductCreateResponseDto createProduct(ProductCreateRequestDto requestProductCreateDto) {
         UUID findCompanyId = requestProductCreateDto.getCompanyId();
         UUID findHubId = requestProductCreateDto.getHubId();
 
-        // 회사 존재 여부 로직
-        // 담당 허브 존재 여부 로직
+        CompanyResponseDto companyResponse = companyClient.getCompany(findCompanyId);
+        if (companyResponse == null) {
+            throw new IllegalArgumentException("회사를 찾을 수 없습니다: " + findCompanyId);
+        }
+
+        HubResponseDto hubResponse = hubClient.getHub(findHubId);
+        if (hubResponse == null) {
+            throw new IllegalArgumentException("허브를 찾을 수 없습니다: " + findHubId);
+        }
 
         Product product = Product.builder()
-                .companyId(requestProductCreateDto.getCompanyId())
-                .hubId(requestProductCreateDto.getHubId())
+                .companyId(findCompanyId)
+                .hubId(findHubId)
                 .name(requestProductCreateDto.getName())
                 .stock(requestProductCreateDto.getStock())
                 .build();

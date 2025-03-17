@@ -1,9 +1,9 @@
-package com.sparta.logistics.product_service.controller;
+package com.sparta.logistics.product_service.presentation.controller;
 
-import com.sparta.logistics.product_service.dto.request.ProductCreateRequestDto;
-import com.sparta.logistics.product_service.dto.request.ProductUpdateRequestDto;
-import com.sparta.logistics.product_service.dto.response.*;
-import com.sparta.logistics.product_service.service.ProductService;
+import com.sparta.logistics.product_service.application.dto.request.ProductCreateRequestDto;
+import com.sparta.logistics.product_service.application.dto.request.ProductUpdateRequestDto;
+import com.sparta.logistics.product_service.application.dto.response.*;
+import com.sparta.logistics.product_service.application.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -33,12 +33,12 @@ public class ProductController {
 
     @GetMapping("/search")
     public Page<ProductSearchResponseDto> searchProducts(@RequestParam(required = false) String name,
-                                                   @RequestParam(required = false) UUID companyId,
-                                                   @RequestParam(required = false) UUID hubId,
-                                                   @RequestParam(required = false, defaultValue = "1") int page,
-                                                   @RequestParam(required = false, defaultValue = "10") int size,
-                                                   @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
-                                                   @RequestParam(required = false, defaultValue = "asc") String order) {
+                                                         @RequestParam(required = false) UUID companyId,
+                                                         @RequestParam(required = false) UUID hubId,
+                                                         @RequestParam(required = false, defaultValue = "1") int page,
+                                                         @RequestParam(required = false, defaultValue = "10") int size,
+                                                         @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+                                                         @RequestParam(required = false, defaultValue = "asc") String order) {
         return productService.searchProducts(name, companyId, hubId, page-1, size, sortBy, order);
     }
 

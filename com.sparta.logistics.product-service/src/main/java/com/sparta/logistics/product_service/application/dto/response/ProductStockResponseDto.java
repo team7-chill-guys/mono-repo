@@ -1,4 +1,4 @@
-package com.sparta.logistics.product_service.dto.response;
+package com.sparta.logistics.product_service.application.dto.response;
 
 import lombok.*;
 
@@ -9,6 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductIdResponseDto {
+public class ProductStockResponseDto {
     private UUID productId;
+    private Long stock;
 }
