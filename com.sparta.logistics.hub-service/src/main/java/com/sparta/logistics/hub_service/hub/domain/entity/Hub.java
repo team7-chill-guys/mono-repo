@@ -1,6 +1,7 @@
 package com.sparta.logistics.hub_service.hub.domain.entity;
 
 
+import com.sparta.logistics.hub_service.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,17 +11,17 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
+@SuperBuilder
 @Table(name = "p_hub")
-public class Hub {
+public class Hub extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,6 +1,5 @@
 package com.sparta.logistics.hub_service.hub.application.service;
 
-import com.sparta.logistics.hub_service.global.exception.GlobalExceptionHandler;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
@@ -36,14 +35,20 @@ public class HubServiceImpl implements HubService {
       throw new IllegalArgumentException("이미 존재하는 주소입니다.");
     }
 
+    // TODO : 추후 createBy, updateBy 값 -> 로그인한 userId 값 들어가게 변경
+    // TODO : JPAAuditing 사용
+    String currentId = "1";
+
     // 허브 엔티티 생성 및 저장
     Hub hub = hubRepository.save(
         Hub.builder()
-            .userId(requestDto.getUserId()) // User ID
-            .hubName(requestDto.getHubName()) // 허브 이름
-            .address(requestDto.getAddress()) // 주소
-            .latitude(requestDto.getLatitude()) // 위도
-            .longitude(requestDto.getLongitude()) // 경도
+            .userId(requestDto.getUserId())
+            .hubName(requestDto.getHubName())
+            .address(requestDto.getAddress())
+            .latitude(requestDto.getLatitude())
+            .longitude(requestDto.getLongitude())
+            .createdBy(currentId)
+            .updatedBy(currentId)
             .build()
     );
 
