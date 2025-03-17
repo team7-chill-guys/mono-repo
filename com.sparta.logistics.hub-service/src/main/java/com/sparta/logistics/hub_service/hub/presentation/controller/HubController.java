@@ -1,5 +1,6 @@
 package com.sparta.logistics.hub_service.hub.presentation.controller;
 
+import com.sparta.logistics.hub_service.hub.application.service.HubService;
 import com.sparta.logistics.hub_service.hub.data.HubData;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
@@ -9,6 +10,9 @@ import com.sparta.logistics.hub_service.hub.application.dto.request.HubUpdateReq
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,25 +23,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/hubs")
+@RequiredArgsConstructor
 public class HubController {
 
   private final HubData hubData = new HubData();
 
+  private final HubService hubService;
+
   // 허브 생성
   @PostMapping
-  public HubCreateResponseDto createHub(@RequestBody HubCreateRequestDto requestDto) {
-
-    HubCreateResponseDto responseDto = HubCreateResponseDto.builder()
-        .userId(1)
-        .hubName(requestDto.getHubName())
-        .address(requestDto.getAddress())
-        .latitude(requestDto.getLatitude())
-        .longitude(requestDto.getLongitude())
-        .build();
-
-    return responseDto;
+  public ResponseEntity<HubCreateResponseDto> createHub(
+      @RequestBody HubCreateRequestDto requestDto) {
+    HubCreateResponseDto responseDto = hubService.createHub(requestDto);
+    return ResponseEntity.ok(responseDto);
   }
 
   // 허브 단일 조회
