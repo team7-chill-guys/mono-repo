@@ -2,10 +2,7 @@ package com.sparta.logistics.product_service.service;
 
 import com.sparta.logistics.product_service.dto.request.ProductCreateRequestDto;
 import com.sparta.logistics.product_service.dto.request.ProductUpdateRequestDto;
-import com.sparta.logistics.product_service.dto.response.ProductCreateResponseDto;
-import com.sparta.logistics.product_service.dto.response.ProductGetResponseDto;
-import com.sparta.logistics.product_service.dto.response.ProductSearchResponseDto;
-import com.sparta.logistics.product_service.dto.response.ProductUpdateResponseDto;
+import com.sparta.logistics.product_service.dto.response.*;
 import com.sparta.logistics.product_service.entity.Product;
 import com.sparta.logistics.product_service.repository.ProductRepository;
 import org.springframework.data.domain.*;
@@ -136,5 +133,22 @@ public class ProductService {
         productRepository.deleteById(productId);
 
         return ResponseEntity.ok().build();
+    }
+
+    public ProductIdResponseDto getProductIdByName(String name) {
+        Product product = productRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+        return ProductIdResponseDto.builder()
+                .productId(product.getId())
+                .build();
+    }
+
+    public ProductStockResponseDto getStockByProductId(UUID productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+        return ProductStockResponseDto.builder()
+                .productId(product.getId())
+                .stock(product.getStock())
+                .build();
     }
 }
