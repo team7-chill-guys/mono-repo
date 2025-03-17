@@ -54,6 +54,19 @@ public class JwtUtil {
             .compact();
     }
 
+    public String createRefreshToken(Long userId, String role) {
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + jwtRefreshExpTime);
+
+        return Jwts.builder()
+            .setSubject(String.valueOf(userId))
+            .claim("role", role)
+            .setIssuedAt(now)
+            .setExpiration(expirationDate)
+            .signWith(key, signatureAlgorithm)
+            .compact();
+    }
+
     // 헤더에서 토큰 추출
     public String getTokenFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
