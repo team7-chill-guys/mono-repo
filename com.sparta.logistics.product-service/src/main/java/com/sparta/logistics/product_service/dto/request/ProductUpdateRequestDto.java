@@ -1,4 +1,4 @@
-package com.sparta.logistics.product_service.dto;
+package com.sparta.logistics.product_service.dto.request;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RequestProductUpdateDto {
+public class ProductUpdateRequestDto {
     private String name;
     private Long stock;
 }
