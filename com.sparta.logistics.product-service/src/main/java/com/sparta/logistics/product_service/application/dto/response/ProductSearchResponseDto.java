@@ -1,6 +1,5 @@
-package com.sparta.logistics.product_service.dto.response;
+package com.sparta.logistics.product_service.application.dto.response;
 
-import com.sparta.logistics.product_service.dto.response.ProductGetResponseDto;
 import lombok.*;
 
 import java.util.List;
