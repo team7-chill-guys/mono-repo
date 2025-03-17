@@ -48,8 +48,8 @@ public class AuthService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = jwtUtil.createAccessToken(user.getId(), user.getRole().name());
-        String refreshToken = jwtUtil.createRefreshToken(user.getId(), user.getRole().name());
+        String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUsername(), user.getRole().name());
+        String refreshToken = jwtUtil.createRefreshToken(user.getId(), user.getUsername(), user.getRole().name());
 
         AuthTokenResponseDto authTokenResponseDto = AuthTokenResponseDto.builder()
             .accessToken(accessToken)

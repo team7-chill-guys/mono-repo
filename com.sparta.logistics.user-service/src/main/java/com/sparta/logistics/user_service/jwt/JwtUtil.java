@@ -41,12 +41,13 @@ public class JwtUtil {
     }
 
     // Access 토큰 생성
-    public String createAccessToken(Long userId, String role) {
+    public String createAccessToken(Long userId,String username, String role) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + jwtAccessExpTime);
 
         return Jwts.builder()
             .setSubject(String.valueOf(userId))
+            .claim("username", username)
             .claim("role", role)
             .setIssuedAt(now)
             .setExpiration(expirationDate)
@@ -54,12 +55,13 @@ public class JwtUtil {
             .compact();
     }
 
-    public String createRefreshToken(Long userId, String role) {
+    public String createRefreshToken(Long userId, String username, String role) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + jwtRefreshExpTime);
 
         return Jwts.builder()
             .setSubject(String.valueOf(userId))
+            .claim("username", username)
             .claim("role", role)
             .setIssuedAt(now)
             .setExpiration(expirationDate)
