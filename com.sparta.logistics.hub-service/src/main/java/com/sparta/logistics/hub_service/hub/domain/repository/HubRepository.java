@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface HubRepository extends JpaRepository<Hub, UUID> {
 
   boolean existsByHubName(String hubName);
+
+  boolean existsByAddress(String address);
 }

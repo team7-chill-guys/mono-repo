@@ -17,16 +17,22 @@ public class HubServiceImpl implements HubService {
 
   private final HubRepository hubRepository;
 
+  // TODO : 마스터 관리자 경우에만 허브 생성 가능
   // 허브 생성
   @Transactional
   public HubCreateResponseDto createHub(HubCreateRequestDto requestDto) {
 
-    // TODO : 마스터 관리자 경우에만 허브 생성 가능
-// 동일한 허브 이름 존재
+
+    // 동일한 허브 이름 존재
     if (hubRepository.existsByHubName(requestDto.getHubName())) {
       throw new IllegalArgumentException("이미 존재하는 허브 이름입니다.");
-
     }
+
+    // 동일한 주소 존재
+    if (hubRepository.existsByAddress(requestDto.getAddress())) {
+      throw new IllegalArgumentException("이미 존재하는 주소입니다.");
+    }
+
     // 허브 엔티티 생성 및 저장
     Hub hub = hubRepository.save(
         Hub.builder()
