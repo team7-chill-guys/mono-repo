@@ -9,6 +9,7 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailRe
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubUpdateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -37,10 +38,9 @@ public class HubController {
   // 허브 생성
   @PostMapping
   public ResponseEntity<ResponseDto<HubCreateResponseDto>> createHub(
-      @RequestBody HubCreateRequestDto requestDto) {
+      @Valid @RequestBody HubCreateRequestDto requestDto) {
     HubCreateResponseDto responseDto = hubService.createHub(requestDto);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
-//    return ResponseEntity.ok(responseDto);
   }
 
   // 허브 단일 조회
