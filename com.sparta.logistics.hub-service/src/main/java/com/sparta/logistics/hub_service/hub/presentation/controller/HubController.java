@@ -1,5 +1,6 @@
 package com.sparta.logistics.hub_service.hub.presentation.controller;
 
+import com.sparta.logistics.hub_service.global.dto.ResponseDto;
 import com.sparta.logistics.hub_service.hub.application.service.HubService;
 import com.sparta.logistics.hub_service.hub.data.HubData;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
@@ -35,10 +36,11 @@ public class HubController {
 
   // 허브 생성
   @PostMapping
-  public ResponseEntity<HubCreateResponseDto> createHub(
+  public ResponseEntity<ResponseDto<HubCreateResponseDto>> createHub(
       @RequestBody HubCreateRequestDto requestDto) {
     HubCreateResponseDto responseDto = hubService.createHub(requestDto);
-    return ResponseEntity.ok(responseDto);
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
+//    return ResponseEntity.ok(responseDto);
   }
 
   // 허브 단일 조회
