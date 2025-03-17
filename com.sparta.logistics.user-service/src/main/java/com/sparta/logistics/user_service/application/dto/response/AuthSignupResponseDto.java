@@ -1,4 +1,4 @@
-package com.sparta.logistics.auth_service.application.dto.response;
+package com.sparta.logistics.user_service.application.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,5 +8,6 @@ import lombok.Getter;
 public class AuthSignupResponseDto {
 
     private String username;
+    private String slackId;
 
 }

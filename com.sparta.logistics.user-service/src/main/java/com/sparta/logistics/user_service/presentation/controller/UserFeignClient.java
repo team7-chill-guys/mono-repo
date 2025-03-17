@@ -1,6 +1,6 @@
-package com.sparta.logistics.auth_service.presentation;
+package com.sparta.logistics.user_service.presentation.controller;
 
-import com.sparta.logistics.auth_service.infrastructure.dto.request.UserSignupRequestDto;
+import com.sparta.logistics.user_service.application.dto.request.AuthSignupRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface UserFeignClient {
 
     @PostMapping("/api/users/signup")
-    void createUser(UserSignupRequestDto userSignupRequestDto);
+    void createUser(AuthSignupRequestDto userSignupRequestDto);
 
 }

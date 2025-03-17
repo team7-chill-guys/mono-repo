@@ -1,8 +1,8 @@
-package com.sparta.logistics.auth_service.presentation;
+package com.sparta.logistics.user_service.presentation.controller;
 
-import com.sparta.logistics.auth_service.application.service.AuthService;
-import com.sparta.logistics.auth_service.application.dto.request.AuthSignupRequestDto;
-import com.sparta.logistics.auth_service.application.dto.response.AuthSignupResponseDto;
+import com.sparta.logistics.user_service.application.dto.request.AuthSignupRequestDto;
+import com.sparta.logistics.user_service.application.dto.response.AuthSignupResponseDto;
+import com.sparta.logistics.user_service.application.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +18,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/signup")
-    public ResponseEntity<AuthSignupResponseDto> userSignup(@RequestBody AuthSignupRequestDto requestDto) {
-        AuthSignupResponseDto responseDto = authService.signup(requestDto);
+    public ResponseEntity<AuthSignupResponseDto> createUser(@RequestBody AuthSignupRequestDto requestDto) {
+        AuthSignupResponseDto responseDto = authService.createUser(requestDto);
         return ResponseEntity.ok(responseDto);
     }
+
 }

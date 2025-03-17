@@ -1,17 +1,18 @@
 package com.sparta.logistics.user_service.domain.entity;
 
-import com.sparta.logistics.user_service.application.dto.request.UserSignupRequestDto;
+import com.sparta.logistics.user_service.application.dto.request.AuthSignupRequestDto;
 import com.sparta.logistics.user_service.global.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Getter
@@ -22,11 +23,8 @@ import org.hibernate.annotations.UuidGenerator;
 public class User extends BaseEntity {
 
     @Id
-    @UuidGenerator
-    private UUID id;
-
-    @Column(name = "auth_id")
-    private UUID authId;
+    @GeneratedValue
+    private Long id;
 
     @Column(name = "username")
     private String username;
@@ -34,11 +32,19 @@ public class User extends BaseEntity {
     @Column(name = "slack_id")
     private String slackId;
 
-    public static User fromRequest(UserSignupRequestDto requestDto) {
+    @Column
+    private String password;
+
+    @Column(name = "role", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    private UserRole role;
+
+    public static User fromRequest(AuthSignupRequestDto requestDto, String password) {
         return User.builder()
             .username(requestDto.getUsername())
-            .authId(requestDto.getAuthId())
+            .password(password)
             .slackId(requestDto.getSlackId())
+            .role(UserRole.ROLE_USER)
             .build();
     }
 
