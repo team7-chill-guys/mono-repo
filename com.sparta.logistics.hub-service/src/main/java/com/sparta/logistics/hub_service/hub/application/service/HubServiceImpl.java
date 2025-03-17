@@ -22,7 +22,10 @@ public class HubServiceImpl implements HubService {
   @Transactional
   public HubCreateResponseDto createHub(HubCreateRequestDto requestDto) {
 
-
+    // 동일한 유저 아이디 존재
+    if (hubRepository.existsByUserId(requestDto.getUserId())) {
+      throw new IllegalArgumentException("이미 다른 허브에 관리자로 지정되어 있습니다");
+    }
     // 동일한 허브 이름 존재
     if (hubRepository.existsByHubName(requestDto.getHubName())) {
       throw new IllegalArgumentException("이미 존재하는 허브 이름입니다.");
