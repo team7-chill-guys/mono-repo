@@ -1,7 +1,7 @@
-package com.sparta.logistics.hub_service.data;
+package com.sparta.logistics.hub_service.hub.data;
 
-import com.sparta.logistics.hub_service.application.dto.HubDetailResponseDto;
-import com.sparta.logistics.hub_service.application.dto.HubListResponseDto;
+import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailResponseDto;
+import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
 import java.math.BigDecimal;
 import java.util.List;
 
