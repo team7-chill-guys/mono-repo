@@ -1,6 +1,6 @@
-package com.sparta.logistics.auth_service.domain.entity;
+package com.sparta.logistics.user_service.domain.entity;
 
-public enum AuthRole {
+public enum UserRole {
     ROLE_MASTER,
     ROLE_DELIVERY_MANAGER,
     ROLE_HUB_MANAGER,

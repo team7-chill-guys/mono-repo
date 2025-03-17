@@ -1,4 +1,4 @@
-package com.sparta.logistics.user_service.presentation.dto.request;
+package com.sparta.logistics.user_service.application.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

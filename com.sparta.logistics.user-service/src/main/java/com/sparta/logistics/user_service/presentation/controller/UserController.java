@@ -1,17 +1,11 @@
 package com.sparta.logistics.user_service.presentation.controller;
 
-import com.sparta.logistics.user_service.application.UserService;
-import com.sparta.logistics.user_service.application.dto.request.UserSignupRequestDto;
-import com.sparta.logistics.user_service.application.dto.response.UserSignupResponseDto;
-import com.sparta.logistics.user_service.presentation.dto.response.UserSearchResponseDto;
+import com.sparta.logistics.user_service.application.service.UserService;
+import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,12 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-
-    @PostMapping("/users/signup")
-    public ResponseEntity<UserSignupResponseDto> createUser(@RequestBody UserSignupRequestDto requestDto) {
-        UserSignupResponseDto responseDto = userService.createUser(requestDto);
-        return ResponseEntity.ok(responseDto);
-    }
 
     @GetMapping("/users/me")
     public ResponseEntity<UserSearchResponseDto> getUserMe() {

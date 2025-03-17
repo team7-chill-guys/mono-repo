@@ -1,15 +1,14 @@
 package com.sparta.logistics.user_service.application.dto.request;
 
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class UserSignupRequestDto {
+public class AuthSignupRequestDto {
 
-    private UUID authId;
     private String username;
+    private String password;
     private String slackId;
 
 }
