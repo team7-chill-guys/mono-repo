@@ -18,4 +18,6 @@ public interface HubRepository extends JpaRepository<Hub, UUID> {
 
   List<Hub> findAll();
 
+  List<Hub> findByHubNameContainingOrAddressContaining(String hubName, String address);
+
 }

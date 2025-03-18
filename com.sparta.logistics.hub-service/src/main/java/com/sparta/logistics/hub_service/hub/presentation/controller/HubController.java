@@ -56,18 +56,19 @@ public class HubController {
 
   // 허브 조회 및 검색
   @GetMapping
-  public ResponseEntity<ResponseDto<List<HubListResponseDto>>> getHubList() {
+  public ResponseEntity<ResponseDto<List<HubListResponseDto>>> getHubList(
+      @RequestParam(required = false) String hubName,
+      @RequestParam(required = false) String address) {
+
     List<HubListResponseDto> responseDto = hubService.getHubList();
-    return ResponseEntity.ok(ResponseDto.success(responseDto));
+    List<HubListResponseDto> searchResponseDto = hubService.getSearchHubs(hubName, address);
+
+    if (hubName == null && address == null) {
+      return ResponseEntity.ok(ResponseDto.success(responseDto));
+    } else {
+      return ResponseEntity.ok(ResponseDto.success(searchResponseDto));
+    }
   }
-//  @GetMapping
-//  public List<HubListResponseDto> getHubList(@RequestParam(required = false) String hubName,
-//      @RequestParam(required = false) String address) {
-//    return hubData.hubDatabase.stream()
-//        .filter(hub -> (hubName == null || hub.getHubName().contains(hubName)) &&
-//            (address == null || hub.getAddress().contains(address)))
-//        .collect(Collectors.toList());
-//  }
 
   // 허브 수정
   @PutMapping("/{hubId}")
