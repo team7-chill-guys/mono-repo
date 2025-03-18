@@ -1,9 +1,10 @@
 package com.sparta.logistics.user_service.presentation.controller;
 
 import com.sparta.logistics.user_service.application.dto.request.UserPasswordUpdateRequestDto;
-import com.sparta.logistics.user_service.application.dto.response.UserPasswordResponseDto;
+import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchMeResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
+import com.sparta.logistics.user_service.application.dto.response.UserUpdateResponseDto;
 import com.sparta.logistics.user_service.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,16 @@ public class UserController {
     ) {
         userService.updatePassword(userIdHeader, requestDto);
         return ResponseEntity.ok("비밀번호가 변경되었습니다.");
+    }
+
+    // TODO : api-gateway 에서 admin 경로 라우팅 설정 필요.
+    // MASTER : 유저 프로필 수정
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<UserUpdateResponseDto> updateUser(@PathVariable("userId") Long userId,
+                                                            @RequestBody UserUpdateRequestDto requestDto
+    ) {
+        UserUpdateResponseDto responseDto = userService.updateUser(userId, requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
 }

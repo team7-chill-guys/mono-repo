@@ -1,8 +1,10 @@
 package com.sparta.logistics.user_service.application.service;
 
 import com.sparta.logistics.user_service.application.dto.request.UserPasswordUpdateRequestDto;
+import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchMeResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
+import com.sparta.logistics.user_service.application.dto.response.UserUpdateResponseDto;
 import com.sparta.logistics.user_service.domain.entity.User;
 import com.sparta.logistics.user_service.domain.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -69,5 +71,21 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+    }
+
+    // MASTER : 유저 프로필 수정
+    public UserUpdateResponseDto updateUser(Long userId, UserUpdateRequestDto requestDto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException("해당하는 유저를 찾을 수 없습니다. 받은 userId : " + userId));
+
+        user.updateUser(requestDto);
+        userRepository.save(user);
+
+        return UserUpdateResponseDto.builder()
+            .userId(user.getId())
+            .username(user.getUsername())
+            .slackId(user.getSlackId())
+            .role(user.getRole().toString())
+            .build();
     }
 }
