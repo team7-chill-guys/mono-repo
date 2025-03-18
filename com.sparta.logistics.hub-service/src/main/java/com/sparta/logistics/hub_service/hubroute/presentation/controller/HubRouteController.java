@@ -1,5 +1,9 @@
 package com.sparta.logistics.hub_service.hubroute.presentation.controller;
 
+import com.sparta.logistics.hub_service.global.dto.ResponseDto;
+import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
+import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
+import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteService;
 import com.sparta.logistics.hub_service.hubroute.data.HubRouteData;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
@@ -10,6 +14,8 @@ import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRou
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,28 +28,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/hub-routes")
+@RequiredArgsConstructor
 public class HubRouteController {
 
   private final HubRouteData hubRouteData = new HubRouteData();
 
+  private final HubRouteService hubRouteService;
+
   // 허브 루트 생성
   @PostMapping
-  public HubRouteCreateResponseDto createHubRoute(
+  public ResponseEntity<ResponseDto<HubRouteCreateResponseDto>> createHubRoute(
       @RequestBody HubRouteCreateRequestDto requestDto) {
-    UUID startHubId = UUID.randomUUID(); // 자동 생성
-    UUID endHubId = UUID.randomUUID(); // 자동 생성
-
-    HubRouteCreateResponseDto responseDto = HubRouteCreateResponseDto.builder()
-        .startHubId(startHubId)
-        .endHubId(endHubId)
-        .startHubName(requestDto.getStartHubName())
-        .endHubName(requestDto.getEndHubName())
-        .deliveryTime(requestDto.getDeliveryTime())
-        .deliveryDistance(requestDto.getDeliveryDistance())
-        .build();
-
-    return responseDto;
+    HubRouteCreateResponseDto responseDto = hubRouteService.createHubRoute(requestDto);
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
+
+
 
   // 허브 루트 단일 조회
   @GetMapping("/{hubRoutesId}")
