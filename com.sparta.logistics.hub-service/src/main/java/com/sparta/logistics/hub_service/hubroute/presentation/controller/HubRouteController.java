@@ -4,6 +4,7 @@ import com.sparta.logistics.hub_service.global.dto.ResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailResponseDto;
+import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteService;
 import com.sparta.logistics.hub_service.hubroute.data.HubRouteData;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
@@ -46,22 +47,20 @@ public class HubRouteController {
 
   // 허브 루트 단일 조회
   @GetMapping("/{hubRoutesId}")
-  public ResponseEntity<ResponseDto<HubRouteDetailResponseDto>> getHubRouteDetail(@PathVariable UUID hubRoutesId) {
+  public ResponseEntity<ResponseDto<HubRouteDetailResponseDto>> getHubRouteDetail(
+      @PathVariable UUID hubRoutesId) {
     HubRouteDetailResponseDto responseDto = hubRouteService.getHubRouteDetail(hubRoutesId);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
   // 허브 루트 조회 및 검색
   @GetMapping
-  public List<HubRouteListResponseDto> getHubRouteList(
+  public ResponseEntity<ResponseDto<List<HubRouteListResponseDto>>> getHubRouteList(
       @RequestParam(required = false) String startHubName,
       @RequestParam(required = false) String endHubName) {
-
-    return hubRouteData.hubRouteDatabase.stream()
-        .filter(hub -> (startHubName == null || hub.getStartHubName().contains(startHubName)) &&
-            (endHubName == null || hub.getEndHubName().contains(endHubName)))
-        .collect(Collectors.toList());
-
+    List<HubRouteListResponseDto> responseDto = hubRouteService.getHubRouteList(startHubName,
+        endHubName);
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
   //hubRouteUpdateDatabase

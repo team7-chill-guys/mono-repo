@@ -1,11 +1,16 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
+import static org.apache.logging.log4j.util.Strings.isNotEmpty;
+
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
+import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
 import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
 import com.sparta.logistics.hub_service.hubroute.domain.repository.HubRouteRepository;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,4 +64,24 @@ public class HubRouteServiceImpl implements HubRouteService {
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로가 없습니다."));
     return HubRouteDetailResponseDto.toResponse(hubRoute);
   }
+
+  // 허브 루트 전체 조회(목록) 및 검색
+  @Override
+  public List<HubRouteListResponseDto> getHubRouteList(String startHubName, String endHubName) {
+    List<HubRoute> hubRoutes;
+
+    if (isNotEmpty(startHubName) && isNotEmpty(endHubName)) {
+      hubRoutes = hubRouteRepository.findByStartHubNameContainingAndEndHubNameContaining(startHubName,
+          endHubName);
+    } else if (isNotEmpty(startHubName) || isNotEmpty(endHubName)) {
+      hubRoutes = hubRouteRepository.findByStartHubNameContainingOrEndHubNameContaining(startHubName,
+          endHubName);
+    } else {
+      hubRoutes = hubRouteRepository.findAll();
+    }
+    return hubRoutes.stream()
+        .map(HubRouteListResponseDto::toResponse)
+        .collect(Collectors.toList());
+  }
+
 }
