@@ -7,9 +7,7 @@ import java.util.UUID;
 
 @Getter
 public class DeliveryManagerCreateRequestDto {
-    private Long id;
     private UUID hubId;
     private String slackId;
     private DeliveryManagerType type;
-    private Integer sequence;
 }

@@ -41,7 +41,7 @@ public class DeliveryManagerController {
      * 배송 담당자 단건 조회
      */
     @GetMapping("/{delivery_manager_id}")
-    public ResponseEntity<DeliveryManagerResponseDto> getDeliveryManager(@PathVariable("delivery_manager_id") UUID deliveryManagerId) {
+    public ResponseEntity<DeliveryManagerResponseDto> getDeliveryManager(@PathVariable("delivery_manager_id") Long deliveryManagerId) {
         return ResponseEntity.ok().body(deliveryManagerService.getDeliveryManager(deliveryManagerId));
     }
 
@@ -49,7 +49,7 @@ public class DeliveryManagerController {
      * 배송 담당자 수정
      */
     @PutMapping("/{delivery_manager_id}")
-    public ResponseEntity<Void> updateDeliveryManager(@PathVariable("delivery_manager_id") UUID deliveryManagerId,
+    public ResponseEntity<Void> updateDeliveryManager(@PathVariable("delivery_manager_id") Long deliveryManagerId,
                                                       @RequestBody DeliveryManagerUpdateRequestDto deliveryManagerUpdateRequestDto) {
         deliveryManagerService.updateDeliveryManager(deliveryManagerId, deliveryManagerUpdateRequestDto);
         return ResponseEntity.ok().build();
@@ -59,7 +59,7 @@ public class DeliveryManagerController {
      * 배송 담당자 삭제
      */
     @DeleteMapping("/{delivery_manager_id}")
-    public ResponseEntity<Void> deleteDeliveryManager(@PathVariable("delivery_manager_id") UUID deliveryManagerId) {
+    public ResponseEntity<Void> deleteDeliveryManager(@PathVariable("delivery_manager_id") Long deliveryManagerId) {
         deliveryManagerService.deleteDeliveryManager(deliveryManagerId);
         return ResponseEntity.ok().build();
     }

@@ -1,5 +1,6 @@
 package com.sparta.logistics.delivery_service.domain.model;
 
+import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,4 +39,10 @@ public class DeliveryManager extends BaseTimeEntity{
         this.sequence = sequence;
     }
 
+    public void updateOf(DeliveryManagerUpdateRequestDto deliveryManagerUpdateRequestDto) {
+        this.hubId = deliveryManagerUpdateRequestDto.getHubId();
+        this.slackId = deliveryManagerUpdateRequestDto.getSlackId();
+        this.type = deliveryManagerUpdateRequestDto.getType();
+        this.sequence = deliveryManagerUpdateRequestDto.getSequence();
+    }
 }

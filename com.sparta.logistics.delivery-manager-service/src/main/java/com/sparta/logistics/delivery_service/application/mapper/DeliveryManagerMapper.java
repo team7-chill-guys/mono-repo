@@ -6,13 +6,13 @@ import com.sparta.logistics.delivery_service.domain.model.DeliveryManager;
 
 public class DeliveryManagerMapper {
 
-    public static DeliveryManager toEntity(DeliveryManagerCreateRequestDto dto) {
+    public static DeliveryManager toEntity(DeliveryManagerCreateRequestDto dto, Long id, Integer sequence) {
         return DeliveryManager.builder()
-                .id(dto.getId())
+                .id(id)
                 .hubId(dto.getHubId())
                 .slackId(dto.getSlackId())
                 .type(dto.getType())
-                .sequence(dto.getSequence())
+                .sequence(sequence)
                 .build();
     }
 
