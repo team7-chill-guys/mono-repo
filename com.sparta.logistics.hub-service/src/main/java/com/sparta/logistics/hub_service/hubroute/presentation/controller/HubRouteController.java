@@ -69,13 +69,8 @@ public class HubRouteController {
 
   // 허브 루트 삭제
   @DeleteMapping("/{hubRoutesId}")
-  public String deleteHubRoute(@PathVariable Long hubRoutesId) {
-    HubRouteDetailResponseDto existingHub = hubRouteData.hubRouteDeleteDatabase.stream()
-//        .filter(hub -> hub.getId() == hubRoutesId)
-        .findFirst()
-        .orElseThrow(() -> new RuntimeException("Hub not found"));
-    String startHubName = existingHub.getStartHubName();
-    String endHubName = existingHub.getEndHubName();
-    return "from " + startHubName + " to " + endHubName + " delete success";
+  public ResponseEntity<?> deleteHubRoute(String userId, @PathVariable UUID hubRoutesId) {
+    hubRouteService.deleteHubRoute(userId, hubRoutesId);
+    return ResponseEntity.ok(ResponseDto.success("delete success"));
   }
 }

@@ -18,5 +18,6 @@ public interface HubRouteService {
   List<HubRouteListResponseDto> getHubRouteList(String startHubName, String endHubName);
 
   HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto);
-}
 
+  void deleteHubRoute(String userId, UUID hubRoutesId);
+}

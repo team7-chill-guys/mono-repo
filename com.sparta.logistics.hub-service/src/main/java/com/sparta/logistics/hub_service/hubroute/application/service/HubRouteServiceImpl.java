@@ -10,6 +10,7 @@ import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRou
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteUpdateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
 import com.sparta.logistics.hub_service.hubroute.domain.repository.HubRouteRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -101,4 +102,15 @@ public class HubRouteServiceImpl implements HubRouteService {
     return new HubRouteUpdateResponseDto(updateHubRoute);
   }
 
+  public void deleteHubRoute(String userId, UUID hubRoutesId) {
+
+    HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
+
+    String currentId = "111"; // 임시 아이디
+
+    hubRoute.setDeletedBy(currentId);
+    hubRoute.setDeletedAt(LocalDateTime.now());
+    hubRouteRepository.save(hubRoute);
+  }
 }
