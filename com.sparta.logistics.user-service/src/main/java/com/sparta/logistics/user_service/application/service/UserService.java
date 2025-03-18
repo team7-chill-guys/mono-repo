@@ -1,5 +1,6 @@
 package com.sparta.logistics.user_service.application.service;
 
+import com.sparta.logistics.user_service.application.dto.request.UserPasswordUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchMeResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
 import com.sparta.logistics.user_service.domain.entity.User;
@@ -7,6 +8,7 @@ import com.sparta.logistics.user_service.domain.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -52,5 +54,20 @@ public class UserService {
             .slackId(user.getSlackId())
             .role(user.getRole().toString())
             .build();
+    }
+
+    // 유저 수정 : 본인 비밀번호 수정
+    public void updatePassword(String userIdHeader, UserPasswordUpdateRequestDto requestDto) {
+        Long userId = Long.parseLong(userIdHeader);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException("해당 유저를 찾을 수 없습니다. userId : " + userId));
+
+        if (BCrypt.checkpw(requestDto.getOldPassword(), user.getPassword())) {
+            user.updatePassword(BCrypt.hashpw(requestDto.getNewPassword(), BCrypt.gensalt()));
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
     }
 }
