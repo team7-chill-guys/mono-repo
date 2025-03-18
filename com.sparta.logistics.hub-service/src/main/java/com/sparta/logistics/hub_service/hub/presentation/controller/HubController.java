@@ -9,7 +9,9 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailRe
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubUpdateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import jakarta.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -54,13 +56,18 @@ public class HubController {
 
   // 허브 조회 및 검색
   @GetMapping
-  public List<HubListResponseDto> getHubList(@RequestParam(required = false) String hubName,
-      @RequestParam(required = false) String address) {
-    return hubData.hubDatabase.stream()
-        .filter(hub -> (hubName == null || hub.getHubName().contains(hubName)) &&
-            (address == null || hub.getAddress().contains(address)))
-        .collect(Collectors.toList());
+  public ResponseEntity<ResponseDto<List<HubListResponseDto>>> getHubList() {
+    List<HubListResponseDto> responseDto = hubService.getHubList();
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
+//  @GetMapping
+//  public List<HubListResponseDto> getHubList(@RequestParam(required = false) String hubName,
+//      @RequestParam(required = false) String address) {
+//    return hubData.hubDatabase.stream()
+//        .filter(hub -> (hubName == null || hub.getHubName().contains(hubName)) &&
+//            (address == null || hub.getAddress().contains(address)))
+//        .collect(Collectors.toList());
+//  }
 
   // 허브 수정
   @PutMapping("/{hubId}")

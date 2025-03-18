@@ -3,9 +3,12 @@ package com.sparta.logistics.hub_service.hub.application.service;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailResponseDto;
+import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -67,6 +70,15 @@ public class HubServiceImpl implements HubService {
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
 
     return HubDetailResponseDto.toResponse(hub);
+  }
+
+  // 허브 전체 조회(목록)
+  @Override
+  public List<HubListResponseDto> getHubList() {
+    List<Hub> hubs = hubRepository.findAll();
+    return hubs.stream()
+        .map(HubListResponseDto::toResponse)
+        .collect(Collectors.toList());
   }
 
 }
