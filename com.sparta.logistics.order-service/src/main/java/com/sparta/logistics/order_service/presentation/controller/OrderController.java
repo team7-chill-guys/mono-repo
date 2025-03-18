@@ -1,17 +1,16 @@
-package com.sparta.logistics.order_service.controller;
+package com.sparta.logistics.order_service.presentation.controller;
 
 import com.sparta.logistics.order_service.domain.OrderStatus;
-import com.sparta.logistics.order_service.dto.request.OrderCreateRequestDto;
-import com.sparta.logistics.order_service.dto.request.OrderUpdateRequestDto;
-import com.sparta.logistics.order_service.dto.response.OrderDetailResponseDto;
-import com.sparta.logistics.order_service.dto.response.PageResponseDto;
-import com.sparta.logistics.order_service.service.OrderService;
+import com.sparta.logistics.order_service.application.dto.request.OrderCreateRequestDto;
+import com.sparta.logistics.order_service.application.dto.request.OrderUpdateRequestDto;
+import com.sparta.logistics.order_service.application.dto.response.OrderDetailResponseDto;
+import com.sparta.logistics.order_service.application.dto.response.PageResponseDto;
+import com.sparta.logistics.order_service.application.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -46,13 +45,14 @@ public class OrderController {
     }
 
     // [삭제]
-    // deletedby 에서 값 받아오는걸로 수정 예정
+    // deletedby 는 유저에서 값 받아오는걸로 수정 예정
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable UUID id, @RequestParam Long deletedBy) {
         orderService.deleteOrder(id, deletedBy);
         return ResponseEntity.ok("Order deleted successfully");
     }
 
+    // [상태 수정]
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateOrderStatus(
             @PathVariable UUID id,

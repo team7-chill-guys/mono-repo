@@ -1,4 +1,4 @@
-package com.sparta.logistics.order_service.dto.request;
+package com.sparta.logistics.order_service.application.dto.request;
 
 import com.sparta.logistics.order_service.domain.OrderStatus;
 import lombok.*;

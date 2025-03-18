@@ -1,7 +1,7 @@
 package com.sparta.logistics.order_service.infrastructure.client;
 
 import com.sparta.logistics.order_service.infrastructure.client.dto.request.ProductStockRequestDto;
-import com.sparta.logistics.order_service.infrastructure.client.dto.request.StockUpdateResponseDto;
+import com.sparta.logistics.order_service.infrastructure.client.dto.response.StockUpdateResponseDto;
 import com.sparta.logistics.order_service.infrastructure.client.dto.response.StockResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public interface ProductClient {
 
     // 상품 재고 복구 (주문 취소 시)
     @PostMapping("/api/products/{productId}/increase-stock")
-    StockResponseDto increaseStock(
+    StockUpdateResponseDto increaseStock(
             @PathVariable UUID productId,
             @RequestParam Long quantity
     );

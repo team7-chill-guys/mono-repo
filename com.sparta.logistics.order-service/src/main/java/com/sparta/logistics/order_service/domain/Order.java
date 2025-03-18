@@ -20,14 +20,17 @@ public class Order {
     @Column(name = "order_id", nullable = false)
     private UUID orderId;
 
+    @Column(name = "delivery_id")
+    private UUID deliveryId;
+
+    @Column(name = "product_id", nullable = false)
+    private UUID productId;
+
     @Column(name = "request_company_id", nullable = false)
     private UUID requestCompanyId;
 
     @Column(name = "response_company_id", nullable = false)
     private UUID responseCompanyId;
-
-    @Column(name = "delivery_id", nullable = false)
-    private UUID deliveryId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

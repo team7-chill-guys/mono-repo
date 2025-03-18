@@ -1,4 +1,4 @@
-package com.sparta.logistics.order_service.dto.response;
+package com.sparta.logistics.order_service.application.dto.response;
 
 import lombok.Getter;
 import org.springframework.data.domain.Page;

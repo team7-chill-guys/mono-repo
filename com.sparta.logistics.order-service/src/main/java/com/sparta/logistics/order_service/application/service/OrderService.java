@@ -1,20 +1,22 @@
-package com.sparta.logistics.order_service.service;
+package com.sparta.logistics.order_service.application.service;
 
+import com.sparta.logistics.order_service.infrastructure.client.DeliveryClient;
+import com.sparta.logistics.order_service.infrastructure.client.ProductClient;
 import com.sparta.logistics.order_service.domain.Order;
 import com.sparta.logistics.order_service.domain.OrderStatus;
-import com.sparta.logistics.order_service.dto.request.OrderCreateRequestDto;
-import com.sparta.logistics.order_service.dto.request.OrderUpdateRequestDto;
-import com.sparta.logistics.order_service.dto.response.OrderDetailResponseDto;
-import com.sparta.logistics.order_service.dto.response.PageResponseDto;
+import com.sparta.logistics.order_service.application.dto.request.OrderCreateRequestDto;
+import com.sparta.logistics.order_service.infrastructure.client.dto.request.OrderDeliveryRequestDto;
+import com.sparta.logistics.order_service.application.dto.request.OrderUpdateRequestDto;
+import com.sparta.logistics.order_service.infrastructure.client.dto.request.ProductStockRequestDto;
+import com.sparta.logistics.order_service.application.dto.response.OrderDetailResponseDto;
+import com.sparta.logistics.order_service.application.dto.response.PageResponseDto;
+import com.sparta.logistics.order_service.infrastructure.client.dto.response.StockUpdateResponseDto;
 import com.sparta.logistics.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -22,11 +24,34 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final ProductClient productClient;
+    private final DeliveryClient deliveryClient;
 
-    // [주문 생성]
     @Transactional
     public OrderDetailResponseDto createOrder(OrderCreateRequestDto requestDto) {
-        Order order = orderRepository.save(requestDto.toEntity());
+        // 상품 재고 확인 및 감소
+        ProductStockRequestDto stockRequestDto = ProductStockRequestDto.builder()
+                .productId(requestDto.getProductId())
+                .quantity(requestDto.getQuantity())
+                .build();
+
+        StockUpdateResponseDto response = productClient.decreaseStock(requestDto.getProductId(), stockRequestDto);
+
+        if (!response.isSuccess()) {
+            throw new RuntimeException("Stock not available");
+        }
+
+        // 주문 ID 생성 및 배송 요청 DTO 변환
+        UUID orderId = UUID.randomUUID(); // 주문 ID를 미리 생성
+        OrderDeliveryRequestDto deliveryRequest = OrderDeliveryRequestDto.fromOrderRequest(requestDto, orderId);
+
+        // 배송 ID 요청
+        UUID deliveryId = deliveryClient.createDelivery(deliveryRequest);
+
+        // 주문 저장
+        Order order = requestDto.toEntity(deliveryId);
+        orderRepository.save(order);
+
         return OrderDetailResponseDto.fromEntity(order);
     }
 
@@ -62,6 +87,14 @@ public class OrderService {
         Order order = orderRepository.findByOrderIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("Order not found or already deleted"));
 
+        // 주문 삭제 시 재고 복구 요청 (값만 전달)
+        StockUpdateResponseDto response = productClient.increaseStock(order.getProductId(), order.getQuantity());
+
+        if (!response.isSuccess()) {
+            throw new RuntimeException("Stock restore failed");
+        }
+
+        // 주문 삭제 처리
         order.deleteOrder(deletedBy);
     }
 

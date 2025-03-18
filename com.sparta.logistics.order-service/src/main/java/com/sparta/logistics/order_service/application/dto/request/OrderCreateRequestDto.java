@@ -1,4 +1,4 @@
-package com.sparta.logistics.order_service.dto.request;
+package com.sparta.logistics.order_service.application.dto.request;
 
 import com.sparta.logistics.order_service.domain.Order;
 import com.sparta.logistics.order_service.domain.OrderStatus;
@@ -12,20 +12,21 @@ import java.util.UUID;
 @Builder
 public class OrderCreateRequestDto {
 
+    private UUID productId;
     private UUID requestCompanyId;
     private UUID responseCompanyId;
-    private UUID deliveryId;
     private OrderStatus status;
     private long quantity;
     private String request;
     private long createdBy;
 
-    public Order toEntity() {
+    public Order toEntity(UUID deliveryId) {
         return Order.builder()
                 .orderId(UUID.randomUUID())
+                .deliveryId(deliveryId)
+                .productId(productId)
                 .requestCompanyId(requestCompanyId)
                 .responseCompanyId(responseCompanyId)
-                .deliveryId(deliveryId)
                 .status(status)
                 .quantity(quantity)
                 .request(request)
