@@ -3,6 +3,7 @@ package com.sparta.logistics.delivery_service.presentation;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerCreateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerResponseDto;
+import com.sparta.logistics.delivery_service.application.service.DeliveryManagerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +17,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DeliveryManagerController {
 
+    private final DeliveryManagerService deliveryManagerService;
+
     /**
      * 배송 담당자 생성
      */
     @PostMapping
     public ResponseEntity<Void> createDeliveryManager(@RequestBody DeliveryManagerCreateRequestDto deliveryManagerCreateRequestDto) {
+        deliveryManagerService.createDeliveryManager(deliveryManagerCreateRequestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -30,7 +34,7 @@ public class DeliveryManagerController {
      */
     @GetMapping
     public ResponseEntity<List<DeliveryManagerResponseDto>> getDeliveryManagerList() {
-        return ResponseEntity.ok().body(new ArrayList<>());
+        return ResponseEntity.ok().body(deliveryManagerService.getDeliveryManagerList());
     }
 
     /**
@@ -38,7 +42,7 @@ public class DeliveryManagerController {
      */
     @GetMapping("/{delivery_manager_id}")
     public ResponseEntity<DeliveryManagerResponseDto> getDeliveryManager(@PathVariable("delivery_manager_id") UUID deliveryManagerId) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(deliveryManagerService.getDeliveryManager(deliveryManagerId));
     }
 
     /**
@@ -47,6 +51,7 @@ public class DeliveryManagerController {
     @PutMapping("/{delivery_manager_id}")
     public ResponseEntity<Void> updateDeliveryManager(@PathVariable("delivery_manager_id") UUID deliveryManagerId,
                                                       @RequestBody DeliveryManagerUpdateRequestDto deliveryManagerUpdateRequestDto) {
+        deliveryManagerService.updateDeliveryManager(deliveryManagerId, deliveryManagerUpdateRequestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -55,6 +60,7 @@ public class DeliveryManagerController {
      */
     @DeleteMapping("/{delivery_manager_id}")
     public ResponseEntity<Void> deleteDeliveryManager(@PathVariable("delivery_manager_id") UUID deliveryManagerId) {
+        deliveryManagerService.deleteDeliveryManager(deliveryManagerId);
         return ResponseEntity.ok().build();
     }
 }
