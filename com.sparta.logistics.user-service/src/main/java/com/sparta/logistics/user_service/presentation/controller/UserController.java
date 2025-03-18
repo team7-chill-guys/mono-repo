@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,18 +20,18 @@ public class UserController {
 
     private final UserService userService;
 
+    // 유저 검색 : 본인
     @GetMapping("/users/me")
-    public ResponseEntity<UserSearchMeResponseDto> getUserMe() {
-        UserSearchMeResponseDto responseDto = UserSearchMeResponseDto.builder()
-            .id(1L)
-            .username("testUser")
-            .slackId("testSlackId")
-            .role("MASTER")
-            .build();
-
+    public ResponseEntity<UserSearchMeResponseDto> getUserMe(@RequestHeader(value = "X-User-Id", required = false) String userIdHeader) {
+        if (userIdHeader == null) {
+            log.warn("header로 받은 정보에 X-User-Id가 존재하지 않습니다. X-User-Id : {}", userIdHeader);
+            return ResponseEntity.badRequest().build();
+        }
+        UserSearchMeResponseDto responseDto = userService.searchMeUser(userIdHeader);
         return ResponseEntity.ok(responseDto);
     }
 
+    // 유저 검색 : userId, username 기반. 동시 검색 X
     @GetMapping("/users/search")
     public ResponseEntity<UserSearchResponseDto> searchUser(@RequestParam(required = false) Long userId,
                                                             @RequestParam(required = false) String username
