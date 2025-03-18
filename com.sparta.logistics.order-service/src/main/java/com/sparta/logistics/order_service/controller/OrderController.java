@@ -4,8 +4,10 @@ import com.sparta.logistics.order_service.domain.OrderStatus;
 import com.sparta.logistics.order_service.dto.request.OrderCreateRequestDto;
 import com.sparta.logistics.order_service.dto.request.OrderUpdateRequestDto;
 import com.sparta.logistics.order_service.dto.response.OrderDetailResponseDto;
+import com.sparta.logistics.order_service.dto.response.PageResponseDto;
 import com.sparta.logistics.order_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +29,8 @@ public class OrderController {
 
     // [전체 조회]
     @GetMapping
-    public ResponseEntity<List<OrderDetailResponseDto>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public ResponseEntity<PageResponseDto<OrderDetailResponseDto>> getAllOrders(Pageable pageable) {
+        return ResponseEntity.ok(orderService.getAllOrders(pageable));
     }
 
     // [개별 조회]
