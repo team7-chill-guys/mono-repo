@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @Getter
 public class DeliveryRouteUpdateRequestDto {
-    private DeliveryRouteStatus status;
     private UUID startHubId;
     private UUID endHubId;
     private Distance estimatedDistance;

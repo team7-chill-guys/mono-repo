@@ -1,5 +1,6 @@
 package com.sparta.logistics.delivery_service.domain.model;
 
+import com.sparta.logistics.delivery_service.application.dto.request.DeliveryRouteUpdateRequestDto;
 import com.sparta.logistics.delivery_service.domain.model.converter.DistanceConverter;
 import com.sparta.logistics.delivery_service.domain.model.converter.TimeConverter;
 import jakarta.persistence.*;
@@ -55,8 +56,8 @@ public class DeliveryRoute extends BaseTimeEntity{
     @ColumnDefault("'PENDING'")
     private DeliveryRouteStatus status = DeliveryRouteStatus.PENDING;
 
-    @Column(nullable = true)
-    private Long HubDeliveryManagerId;
+    @Column
+    private Long hubDeliveryManagerId;
 
     @Builder
     private DeliveryRoute(UUID deliveryId, Integer sequence, UUID startHudId, UUID endHudId,
@@ -69,5 +70,28 @@ public class DeliveryRoute extends BaseTimeEntity{
         this.actualDistance = actualDistance;
         this.estimatedTime = estimatedTime;
         this.actualTime = actualTime;
+    }
+
+    public void updateOf(DeliveryRouteUpdateRequestDto dto) {
+        this.startHudId = dto.getStartHubId();
+        this.endHudId = dto.getEndHubId();
+        this.estimatedDistance = dto.getEstimatedDistance();
+        this.actualDistance = dto.getActualDistance();
+        this.estimatedTime = dto.getEstimatedTime();
+        this.actualTime = dto.getActualTime();
+        this.hubDeliveryManagerId = dto.getHubDeliveryManagerId();
+    }
+
+    public void assignHubDeliveryManager(Long hudDeliveryManagerId) {
+        this.hubDeliveryManagerId = hudDeliveryManagerId;
+        this.status = DeliveryRouteStatus.TRANSIT;
+    }
+
+    public void changeDeliveryStatus(DeliveryRouteStatus status) {
+        this.status = status;
+    }
+
+    public boolean isInfoChangeable() {
+        return this.status == DeliveryRouteStatus.PENDING;
     }
 }

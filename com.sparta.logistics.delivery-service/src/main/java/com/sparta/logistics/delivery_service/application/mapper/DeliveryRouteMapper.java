@@ -1,5 +1,6 @@
 package com.sparta.logistics.delivery_service.application.mapper;
 
+import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRouteResponseDto;
 import com.sparta.logistics.delivery_service.domain.model.*;
 
 import java.util.UUID;
@@ -21,6 +22,22 @@ public class DeliveryRouteMapper {
                 .actualDistance(actualDis)
                 .estimatedTime(estimatedTi)
                 .actualTime(actualTi)
+                .build();
+    }
+
+    public static DeliveryRouteResponseDto toDto(DeliveryRoute deliveryRoute) {
+        return DeliveryRouteResponseDto.builder()
+                .sequence(deliveryRoute.getSequence())
+                .deliveryId(deliveryRoute.getDeliveryId())
+                .startHubId(deliveryRoute.getStartHudId())
+                .endHubId(deliveryRoute.getEndHudId())
+                .estimatedDistance(deliveryRoute.getEstimatedDistance())
+                .actualDistance(deliveryRoute.getActualDistance())
+                .estimatedTime(deliveryRoute.getEstimatedTime())
+                .actualTime(deliveryRoute.getActualTime())
+                .status(deliveryRoute.getStatus())
+                .hubDeliveryManagerId(deliveryRoute.getHubDeliveryManagerId())
+                .updatedAt(deliveryRoute.getUpdatedAt())
                 .build();
     }
 }
