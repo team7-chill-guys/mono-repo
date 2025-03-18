@@ -8,7 +8,6 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailRe
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
 import com.sparta.logistics.hub_service.hub.application.service.HubService;
-import com.sparta.logistics.hub_service.hub.data.HubData;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -31,9 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class HubController {
 
-  private final HubData hubData = new HubData();
-
   private final HubService hubService;
+
+  // TODO : 마스터 관리자 경우에만 허브 생성, 수정, 삭제 가능
 
   // 허브 생성
   @PostMapping

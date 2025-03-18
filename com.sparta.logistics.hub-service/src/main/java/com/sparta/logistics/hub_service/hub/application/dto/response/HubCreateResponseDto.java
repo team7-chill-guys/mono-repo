@@ -1,14 +1,12 @@
 package com.sparta.logistics.hub_service.hub.application.dto.response;
 
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
-import java.beans.ConstructorProperties;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
