@@ -3,9 +3,11 @@ package com.sparta.logistics.hub_service.hubroute.application.service;
 import static org.apache.logging.log4j.util.Strings.isNotEmpty;
 
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
+import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
+import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteUpdateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
 import com.sparta.logistics.hub_service.hubroute.domain.repository.HubRouteRepository;
 import java.util.List;
@@ -82,6 +84,21 @@ public class HubRouteServiceImpl implements HubRouteService {
     return hubRoutes.stream()
         .map(HubRouteListResponseDto::toResponse)
         .collect(Collectors.toList());
+  }
+
+  // 허브 루트 수정
+  @Override
+  @Transactional
+  public HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto) {
+    HubRoute hubRoute = hubRouteRepository.findById(hubId)
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로가 없습니다."));
+
+    // TODO : 추후 updateBy 값 -> 로그인한 userId 값 들어가게 변경
+    hubRoute.updateDeliveryTime(requestDto.getDeliveryTime());
+    hubRoute.updateDeliveryDistance(requestDto.getDeliveryDistance());
+
+    HubRoute updateHubRoute = hubRouteRepository.save(hubRoute);
+    return new HubRouteUpdateResponseDto(updateHubRoute);
   }
 
 }

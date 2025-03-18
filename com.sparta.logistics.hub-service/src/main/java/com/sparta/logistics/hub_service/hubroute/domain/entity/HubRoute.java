@@ -34,7 +34,7 @@ public class HubRoute extends BaseEntity {
 
   @Column(name = "start_hub_name", nullable = false)
   private String startHubName;
-  
+
   @Column(name = "end_hub_name", nullable = false)
   private String endHubName;
 
@@ -43,4 +43,11 @@ public class HubRoute extends BaseEntity {
 
   @Column(name = "delivery_distance", nullable = false)
   private Long deliveryDistance;
+
+  public void updateDeliveryTime(Long deliveryTime) {
+    this.deliveryTime = deliveryTime;
+  }
+  public void updateDeliveryDistance(Long deliveryDistance) {
+    this.deliveryDistance = deliveryDistance;
+  }
 }

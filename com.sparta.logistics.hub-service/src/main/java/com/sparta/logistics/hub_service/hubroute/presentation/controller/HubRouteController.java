@@ -1,21 +1,16 @@
 package com.sparta.logistics.hub_service.hubroute.presentation.controller;
 
 import com.sparta.logistics.hub_service.global.dto.ResponseDto;
-import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
-import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
-import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailResponseDto;
-import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
-import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteService;
-import com.sparta.logistics.hub_service.hubroute.data.HubRouteData;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
+import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
-import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteUpdateResponseDto;
+import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteService;
+import com.sparta.logistics.hub_service.hubroute.data.HubRouteData;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,29 +58,13 @@ public class HubRouteController {
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
-  //hubRouteUpdateDatabase
   // 허브 루트 수정
   @PutMapping("/{hubRoutesId}")
-  public HubRouteUpdateResponseDto updateHubRoute(@PathVariable Long hubRoutesId,
+  public ResponseEntity<ResponseDto<HubRouteUpdateResponseDto>> updateHubRoute(
+      @PathVariable UUID hubRoutesId,
       @RequestBody HubRouteUpdateRequestDto requestDto) {
-    HubRouteDetailResponseDto existingHub = hubRouteData.hubRouteUpdateDatabase.stream()
-//        .filter(hub -> hub.getId() == hubRoutesId)
-        .findFirst()
-        .orElseThrow(() -> new RuntimeException("Hub not found"));
-
-    // 수정
-//    existingHub.setStartHubName(requestDto.getStartHubName());
-//    existingHub.setEndHubName(requestDto.getEndHubName());
-//    existingHub.setDeliveryDistance(requestDto.getDeliveryDistance());
-//    existingHub.setDeliveryTime(requestDto.getDeliveryTime());
-
-    // 반환
-    return HubRouteUpdateResponseDto.builder()
-        .startHubName("서울특별시 센터")
-        .endHubName("부산광역시 센터")
-        .deliveryTime(350L)
-        .deliveryDistance(400L)
-        .build();
+    HubRouteUpdateResponseDto responseDto = hubRouteService.updateHubRoute(hubRoutesId, requestDto);
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
   // 허브 루트 삭제
