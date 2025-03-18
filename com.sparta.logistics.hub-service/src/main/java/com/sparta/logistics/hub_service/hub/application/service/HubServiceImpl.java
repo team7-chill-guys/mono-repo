@@ -86,7 +86,9 @@ public class HubServiceImpl implements HubService {
   @Override
   public List<HubListResponseDto> getSearchHubs(String hubName, String address) {
     List<Hub> hubs = hubRepository.findByHubNameContainingOrAddressContaining(hubName, address);
-    log.info(hubs.toString());
+    if (hubs.isEmpty()) {
+      throw new IllegalArgumentException("해당 검색어를 포함하는 허브 정보가 없습니다.");
+    }
     return hubs.stream()
         .map(HubListResponseDto::toResponse)
         .collect(Collectors.toList());
