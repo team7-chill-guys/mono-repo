@@ -16,8 +16,9 @@ public interface HubRepository extends JpaRepository<Hub, UUID> {
 
   Optional<Hub> findById(UUID hubId);
 
-  List<Hub> findAll();
+  List<Hub> findAll(); // 아마 삭제해도 될듯
 
   List<Hub> findByHubNameContainingOrAddressContaining(String hubName, String address);
 
+  void deleteById(UUID hubId);
 }

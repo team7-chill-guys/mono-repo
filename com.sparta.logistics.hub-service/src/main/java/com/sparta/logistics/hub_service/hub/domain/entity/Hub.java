@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "p_hub")
+@SQLDelete(sql = "UPDATE p_hub SET deleted_by = ? WHERE id = ?")
 public class Hub extends BaseEntity {
 
   @Id

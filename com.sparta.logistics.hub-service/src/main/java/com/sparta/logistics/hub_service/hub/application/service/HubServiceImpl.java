@@ -8,6 +8,7 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResp
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -130,5 +131,17 @@ public class HubServiceImpl implements HubService {
 
     Hub updateHub = hubRepository.save(hub);
     return new HubUpdateResponseDto(updateHub);
+  }
+
+  public void deleteHub(String userId, UUID hubId) {
+
+    Hub hub = hubRepository.findById(hubId)
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
+
+    String currentId = "111"; // 임시 아이디
+
+    hub.setDeletedBy(currentId);
+    hub.setDeletedAt(LocalDateTime.now());
+    hubRepository.save(hub);
   }
 }

@@ -20,4 +20,6 @@ public interface HubService {
   List<HubListResponseDto> getSearchHubs(String hubName, String address);
 
   HubUpdateResponseDto updateHub(UUID hubId, HubUpdateRequestDto requestDto);
+
+  void deleteHub(String userId,UUID hubId);
 }
