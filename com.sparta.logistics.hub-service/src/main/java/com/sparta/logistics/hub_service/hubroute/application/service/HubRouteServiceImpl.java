@@ -29,7 +29,10 @@ public class HubRouteServiceImpl implements HubRouteService {
   @Override
   public HubRouteCreateResponseDto createHubRoute(HubRouteCreateRequestDto requestDto) {
 
-    // 임시 UUID & userId생성
+    // TODO : 허브 생성시 자동으로 허브 루트 생성 구현
+    // TODO : 추후 createBy, updateBy 값 -> 로그인한 userId 값 들어가게 변경
+
+    // 임시 UUID & userId
     UUID startHubId = UUID.randomUUID();
     UUID endHubId = UUID.randomUUID();
 //    UUID startHubId = UUID.fromString("7c68bc02-c060-4660-9713-0e1e93192272");
@@ -44,8 +47,6 @@ public class HubRouteServiceImpl implements HubRouteService {
 
     HubRoute hubRoute = hubRouteRepository.save(
         HubRoute.builder()
-//            .startHubId(requestDto.getStartHubId())
-//            .endHubId(requestDto.getEndHubId())
             .startHubId(startHubId)
             .endHubId(endHubId)
             .startHubName(requestDto.getStartHubName())
@@ -94,7 +95,9 @@ public class HubRouteServiceImpl implements HubRouteService {
     HubRoute hubRoute = hubRouteRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로가 없습니다."));
 
+    // TODO : 허브 수정 -> 자동으로 허브 루트 수정 구현
     // TODO : 추후 updateBy 값 -> 로그인한 userId 값 들어가게 변경
+
     hubRoute.updateDeliveryTime(requestDto.getDeliveryTime());
     hubRoute.updateDeliveryDistance(requestDto.getDeliveryDistance());
 
@@ -107,6 +110,8 @@ public class HubRouteServiceImpl implements HubRouteService {
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
 
+    // TODO : 허브 삭제 -> 관련 허브 루트 자동 삭제 구현
+    // TODO : 추후 deleteBy 값 -> 로그인한 userId 값 들어가게 변경 & userId Long 타입으로 변경
     String currentId = "111"; // 임시 아이디
 
     hubRoute.setDeletedBy(currentId);

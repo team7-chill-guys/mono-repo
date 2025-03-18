@@ -5,11 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @Getter
-@Setter
 @Builder
 public class HubUpdateRequestDto {
 

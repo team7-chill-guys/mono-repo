@@ -14,11 +14,5 @@ public interface HubRepository extends JpaRepository<Hub, UUID> {
 
   boolean existsByAddress(String address);
 
-  Optional<Hub> findById(UUID hubId);
-
-  List<Hub> findAll(); // 아마 삭제해도 될듯
-
   List<Hub> findByHubNameContainingOrAddressContaining(String hubName, String address);
-
-  void deleteById(UUID hubId);
 }
