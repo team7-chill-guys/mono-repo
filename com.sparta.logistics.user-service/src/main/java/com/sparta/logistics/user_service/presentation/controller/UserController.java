@@ -9,6 +9,7 @@ import com.sparta.logistics.user_service.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -66,14 +67,23 @@ public class UserController {
         return ResponseEntity.ok("비밀번호가 변경되었습니다.");
     }
 
-    // TODO : api-gateway 에서 admin 경로 라우팅 설정 필요.
+    // TODO : api-gateway 에서 admin 경로 라우팅 설정 필요. 예상 경로 /api/master/users/{userId} or /master/api/users/{userId}
     // MASTER : 유저 프로필 수정
     @PutMapping("/users/{userId}")
     public ResponseEntity<UserUpdateResponseDto> updateUser(@PathVariable("userId") Long userId,
+                                                            @RequestHeader(value = "X-User-Id") String userIdHeader,
                                                             @RequestBody UserUpdateRequestDto requestDto
     ) {
-        UserUpdateResponseDto responseDto = userService.updateUser(userId, requestDto);
+        UserUpdateResponseDto responseDto = userService.updateUser(userId, requestDto, userIdHeader);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<String> deleteUser(@RequestHeader(value = "X-User-Id") String userIdHeader,
+                                             @PathVariable("userId") Long userId
+    ) {
+        userService.deleteUser(userIdHeader, userId);
+        return ResponseEntity.ok("유저가 삭제되었습니다 userId : " + userId);
     }
 
 }

@@ -42,7 +42,7 @@ public class User extends BaseEntity {
     private UserRole role;
 
     public static User fromRequest(AuthSignupRequestDto requestDto, String password) {
-        return com.sparta.logistics.user_service.domain.entity.User.builder()
+        return User.builder()
             .username(requestDto.getUsername())
             .password(password)
             .slackId(requestDto.getSlackId())
