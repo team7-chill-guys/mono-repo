@@ -5,8 +5,11 @@ import com.sparta.logistics.order_service.domain.OrderStatus;
 import com.sparta.logistics.order_service.dto.request.OrderCreateRequestDto;
 import com.sparta.logistics.order_service.dto.request.OrderUpdateRequestDto;
 import com.sparta.logistics.order_service.dto.response.OrderDetailResponseDto;
+import com.sparta.logistics.order_service.dto.response.PageResponseDto;
 import com.sparta.logistics.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
@@ -27,13 +30,11 @@ public class OrderService {
         return OrderDetailResponseDto.fromEntity(order);
     }
 
-
     // [조회]
     @Transactional(readOnly = true)
-    public List<OrderDetailResponseDto> getAllOrders() {
-        return orderRepository.findAllByDeletedAtIsNull().stream()
-                .map(OrderDetailResponseDto::fromEntity)
-                .toList();
+    public PageResponseDto<OrderDetailResponseDto> getAllOrders(Pageable pageable) {
+        Page<Order> orders = orderRepository.findAllByDeletedAtIsNull(pageable);
+        return new PageResponseDto<>(orders.map(OrderDetailResponseDto::fromEntity));
     }
 
     // [개별 조회]
