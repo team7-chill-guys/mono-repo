@@ -1,15 +1,15 @@
 package com.sparta.logistics.hub_service.hubroute.application.dto.response;
 
+import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Builder
-@Setter
 public class HubRouteDetailResponseDto {
 
+  private UUID id;
   private UUID startHubId;
   private UUID endHubId;
   private String startHubName;
@@ -17,6 +17,15 @@ public class HubRouteDetailResponseDto {
   private Long deliveryTime;
   private Long deliveryDistance;
 
-  private Long id; // 임시
-
+  public static HubRouteDetailResponseDto toResponse(HubRoute hubRoute) {
+    return new HubRouteDetailResponseDto(
+        hubRoute.getId(),
+        hubRoute.getStartHubId(),
+        hubRoute.getEndHubId(),
+        hubRoute.getStartHubName(),
+        hubRoute.getEndHubName(),
+        hubRoute.getDeliveryTime(),
+        hubRoute.getDeliveryDistance()
+    );
+  }
 }

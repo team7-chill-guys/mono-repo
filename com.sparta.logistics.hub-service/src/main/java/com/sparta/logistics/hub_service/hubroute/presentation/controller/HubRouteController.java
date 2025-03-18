@@ -3,6 +3,7 @@ package com.sparta.logistics.hub_service.hubroute.presentation.controller;
 import com.sparta.logistics.hub_service.global.dto.ResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
+import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteService;
 import com.sparta.logistics.hub_service.hubroute.data.HubRouteData;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
@@ -43,16 +44,11 @@ public class HubRouteController {
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
-
-
   // 허브 루트 단일 조회
   @GetMapping("/{hubRoutesId}")
-  public HubRouteDetailResponseDto getHubRouteDetail(@PathVariable Long hubRoutesId) {
-
-    return hubRouteData.hubRouteDetailDatabase.stream()
-        .filter(hub -> hub.getId() == hubRoutesId)
-        .findFirst()
-        .orElseThrow(() -> new RuntimeException("Hub not found"));
+  public ResponseEntity<ResponseDto<HubRouteDetailResponseDto>> getHubRouteDetail(@PathVariable UUID hubRoutesId) {
+    HubRouteDetailResponseDto responseDto = hubRouteService.getHubRouteDetail(hubRoutesId);
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
   // 허브 루트 조회 및 검색
@@ -74,15 +70,15 @@ public class HubRouteController {
   public HubRouteUpdateResponseDto updateHubRoute(@PathVariable Long hubRoutesId,
       @RequestBody HubRouteUpdateRequestDto requestDto) {
     HubRouteDetailResponseDto existingHub = hubRouteData.hubRouteUpdateDatabase.stream()
-        .filter(hub -> hub.getId() == hubRoutesId)
+//        .filter(hub -> hub.getId() == hubRoutesId)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Hub not found"));
 
     // 수정
-    existingHub.setStartHubName(requestDto.getStartHubName());
-    existingHub.setEndHubName(requestDto.getEndHubName());
-    existingHub.setDeliveryDistance(requestDto.getDeliveryDistance());
-    existingHub.setDeliveryTime(requestDto.getDeliveryTime());
+//    existingHub.setStartHubName(requestDto.getStartHubName());
+//    existingHub.setEndHubName(requestDto.getEndHubName());
+//    existingHub.setDeliveryDistance(requestDto.getDeliveryDistance());
+//    existingHub.setDeliveryTime(requestDto.getDeliveryTime());
 
     // 반환
     return HubRouteUpdateResponseDto.builder()
@@ -97,7 +93,7 @@ public class HubRouteController {
   @DeleteMapping("/{hubRoutesId}")
   public String deleteHubRoute(@PathVariable Long hubRoutesId) {
     HubRouteDetailResponseDto existingHub = hubRouteData.hubRouteDeleteDatabase.stream()
-        .filter(hub -> hub.getId() == hubRoutesId)
+//        .filter(hub -> hub.getId() == hubRoutesId)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Hub not found"));
     String startHubName = existingHub.getStartHubName();

@@ -2,6 +2,7 @@ package com.sparta.logistics.hub_service.hubroute.application.service;
 
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
+import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
 import com.sparta.logistics.hub_service.hubroute.domain.repository.HubRouteRepository;
 import java.util.UUID;
@@ -28,7 +29,8 @@ public class HubRouteServiceImpl implements HubRouteService {
 
     String currentId = "1";
 
-    if(hubRouteRepository.existsByStartHubId(startHubId) && hubRouteRepository.existsByEndHubId(endHubId)){
+    if (hubRouteRepository.existsByStartHubId(startHubId) && hubRouteRepository.existsByEndHubId(
+        endHubId)) {
       throw new IllegalArgumentException("이미 등록된 경로 입니다.");
     }
 
@@ -48,5 +50,13 @@ public class HubRouteServiceImpl implements HubRouteService {
     );
 
     return new HubRouteCreateResponseDto(hubRoute);
+  }
+
+  // 허브 루트 단일 조회
+  @Override
+  public HubRouteDetailResponseDto getHubRouteDetail(UUID hubRoutesId) {
+    HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로가 없습니다."));
+    return HubRouteDetailResponseDto.toResponse(hubRoute);
   }
 }
