@@ -7,6 +7,7 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResp
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
 import java.util.List;
+import java.util.SimpleTimeZone;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -76,6 +77,16 @@ public class HubServiceImpl implements HubService {
   @Override
   public List<HubListResponseDto> getHubList() {
     List<Hub> hubs = hubRepository.findAll();
+    return hubs.stream()
+        .map(HubListResponseDto::toResponse)
+        .collect(Collectors.toList());
+  }
+
+  // 허브 검색 서비스
+  @Override
+  public List<HubListResponseDto> getSearchHubs(String hubName, String address) {
+    List<Hub> hubs = hubRepository.findByHubNameContainingOrAddressContaining(hubName, address);
+    log.info(hubs.toString());
     return hubs.stream()
         .map(HubListResponseDto::toResponse)
         .collect(Collectors.toList());
