@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/delivery")
+@RequestMapping("/api/deliveries")
 @RequiredArgsConstructor
 public class DelieveryController {
 
@@ -47,7 +47,7 @@ public class DelieveryController {
     /**
      * 배송 수정
      */
-    @PutMapping("/{delivery_id")
+    @PutMapping("/{delivery_id}")
     public ResponseEntity<Void> updateDelivery(@PathVariable("delivery_id") UUID deliveryId,
                                                @RequestBody DeliveryUpdateRequestDto updateDeliveryUpdateRequestDto) {
         deliveryService.updateDelivery(deliveryId, updateDeliveryUpdateRequestDto);
