@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/delivery/{delivery_id}/routes")
+@RequestMapping("/api/deliveries/{delivery_id}/routes")
 @RequiredArgsConstructor
 public class DeliveryRouteController {
 
