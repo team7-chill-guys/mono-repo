@@ -72,31 +72,12 @@ public class HubController {
 
   // 허브 수정
   @PutMapping("/{hubId}")
-  public HubUpdateResponseDto updateHub(@PathVariable Long hubId,
-      @RequestBody HubUpdateRequestDto requestDto) {
-
-    HubDetailResponseDto existingHub = hubData.hubUpdateDatabase.stream()
-//        .filter(hub -> hub.getFakeHubId() == hubId)
-        .findFirst()
-        .orElseThrow(() -> new RuntimeException("Hub not found"));
-
-    // 수정
-    existingHub.setHubName(requestDto.getHubName());
-    existingHub.setAddress(requestDto.getAddress());
-    existingHub.setLatitude(requestDto.getLatitude());
-    existingHub.setLongitude(requestDto.getLongitude());
-
-    // 반환
-    return HubUpdateResponseDto.builder()
-//        .hubId(existingHub.getFakeHubId())
-        .userId(existingHub.getUserId())
-        .hubName(existingHub.getHubName())
-        .address(existingHub.getAddress())
-        .latitude(existingHub.getLatitude())
-        .longitude(existingHub.getLongitude())
-        .build();
-
+  public ResponseEntity<ResponseDto<HubUpdateResponseDto>> updateHub(@PathVariable UUID hubId,
+      @Valid @RequestBody HubUpdateRequestDto requestDto) {
+    HubUpdateResponseDto responseDto = hubService.updateHub(hubId, requestDto);
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
+
 
   // 허브 삭제
   @DeleteMapping("/{hubId}")

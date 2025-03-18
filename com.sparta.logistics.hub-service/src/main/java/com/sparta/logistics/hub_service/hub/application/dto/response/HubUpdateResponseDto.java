@@ -1,18 +1,32 @@
 package com.sparta.logistics.hub_service.hub.application.dto.response;
 
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import java.math.BigDecimal;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class HubUpdateResponseDto {
-  private long userId;
+
+  private UUID id;
+  private Long userId;
   private String hubName;
   private String address;
   private BigDecimal latitude;
   private BigDecimal longitude;
 
-  // 테스트를 위한 임시 추가
-  private long hubId;
+  public HubUpdateResponseDto(Hub hub) {
+    this.id = hub.getId();
+    this.userId = hub.getUserId();
+    this.hubName = hub.getHubName();
+    this.address = hub.getAddress();
+    this.latitude = hub.getLatitude();
+    this.longitude = hub.getLongitude();
+  }
 }

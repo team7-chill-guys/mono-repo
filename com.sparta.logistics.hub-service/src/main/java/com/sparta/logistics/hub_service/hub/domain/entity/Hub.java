@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
@@ -42,6 +43,26 @@ public class Hub extends BaseEntity {
 
   @Column(name = "longitude", nullable = false)
   private BigDecimal longitude;
+
+  public void updateUserId(long userId) {
+    this.userId = userId;
+  }
+
+  public void updateHubName(String hubName) {
+    this.hubName = hubName;
+  }
+
+  public void updateAddress(String address) {
+    this.address = address;
+  }
+
+  public void updateLatitude(BigDecimal latitude) {
+    this.latitude = latitude;
+  }
+
+  public void updateLongitude(BigDecimal longitude) {
+    this.longitude = longitude;
+  }
 
 
 }
