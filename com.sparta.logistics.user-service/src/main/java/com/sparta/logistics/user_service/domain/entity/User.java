@@ -26,13 +26,13 @@ public class User extends BaseEntity {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
-    @Column(name = "slack_id")
+    @Column(name = "slack_id", unique = true)
     private String slackId;
 
-    @Column
+    @Column(name = "password")
     private String password;
 
     @Column(name = "role", nullable = false)
