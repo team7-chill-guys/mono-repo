@@ -2,8 +2,10 @@ package com.sparta.logistics.hub_service.hub.application.service;
 
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
+import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailResponseDto;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class HubServiceImpl implements HubService {
   // TODO : 마스터 관리자 경우에만 허브 생성 가능
   // 허브 생성
   @Transactional
+  @Override
   public HubCreateResponseDto createHub(HubCreateRequestDto requestDto) {
 
     // 동일한 유저 아이디 존재
@@ -55,4 +58,15 @@ public class HubServiceImpl implements HubService {
     log.info("허브 서비스 - builder 완료");
     return new HubCreateResponseDto(hub);
   }
+
+  // 허브 단일 조회
+  @Override
+  public HubDetailResponseDto getHubDetail(UUID hubId) {
+    log.info("여기는 허브 단일 조회 서비스 레이어");
+    Hub hub = hubRepository.findById(hubId)
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
+
+    return HubDetailResponseDto.toResponse(hub);
+  }
+
 }

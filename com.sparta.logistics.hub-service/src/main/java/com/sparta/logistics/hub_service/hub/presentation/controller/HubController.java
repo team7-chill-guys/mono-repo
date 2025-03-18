@@ -11,6 +11,7 @@ import com.sparta.logistics.hub_service.hub.application.dto.request.HubUpdateReq
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,12 +46,9 @@ public class HubController {
 
   // 허브 단일 조회
   @GetMapping("/{hubId}")
-  public HubDetailResponseDto getHubDetail(@PathVariable Long hubId) {
-
-    return hubData.hubDetailDatabase.stream()
-        .filter(hub -> hub.getHubId() == hubId)
-        .findFirst()
-        .orElseThrow(() -> new RuntimeException("Hub not found"));
+  public ResponseEntity<ResponseDto<HubDetailResponseDto>> getHubDetail(@PathVariable UUID hubId) {
+    HubDetailResponseDto responseDto = hubService.getHubDetail(hubId);
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
 
   }
 
@@ -70,7 +68,7 @@ public class HubController {
       @RequestBody HubUpdateRequestDto requestDto) {
 
     HubDetailResponseDto existingHub = hubData.hubUpdateDatabase.stream()
-        .filter(hub -> hub.getHubId() == hubId)
+//        .filter(hub -> hub.getFakeHubId() == hubId)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Hub not found"));
 
@@ -82,7 +80,7 @@ public class HubController {
 
     // 반환
     return HubUpdateResponseDto.builder()
-        .hubId(existingHub.getHubId())
+//        .hubId(existingHub.getFakeHubId())
         .userId(existingHub.getUserId())
         .hubName(existingHub.getHubName())
         .address(existingHub.getAddress())
@@ -96,7 +94,7 @@ public class HubController {
   @DeleteMapping("/{hubId}")
   public String deleteHub(@PathVariable Long hubId) {
     HubDetailResponseDto existingHub = hubData.hubDeleteDatabase.stream()
-        .filter(hub -> hub.getHubId() == hubId)
+//        .filter(hub -> hub.getFakeHubId() == hubId)
         .findFirst()
         .orElseThrow(() -> new RuntimeException("Hub not found"));
     String hubName = existingHub.getHubName();
