@@ -33,6 +33,7 @@ public class DeliveryMapper {
                 .departureHubId(delivery.getDepartureHubId())
                 .destinationHubId(delivery.getDestinationHubId())
                 .recipientCompany(delivery.getRecipientCompany())
+                .createdAt(delivery.getCreatedAt())
                 .build();
     }
 }
