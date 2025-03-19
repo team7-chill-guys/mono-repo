@@ -18,19 +18,19 @@ public class MockHubRouteService {
     public HubRouteInfoDto getHubRouteInfoDto() {
         return HubRouteInfoDto.builder()
                 .hubRouteId(hubRouteId)
-                .departureHubId(UUID.randomUUID())
-                .destinationHubId(UUID.randomUUID())
+                .startHubId(UUID.randomUUID())
+                .endHubId(UUID.randomUUID())
                 .estimatedTime(200)
                 .estimatedDistance(50.457)
                 .build();
     }
 
-    public List<UUID> getHubRoute(UUID departureHubId, UUID destinationHubId) {
-        List<UUID> hubRouteIdList = new ArrayList<>();
-        hubRouteIdList.add(firstHubRouteId);
-        hubRouteIdList.add(secondHubRouteId);
+    public List<HubRouteInfoDto> getHubRoute(UUID departureHubId, UUID destinationHubId) {
+        List<HubRouteInfoDto> hubRouteInfoList = new ArrayList<>();
+        hubRouteInfoList.add(getHubRouteInfoDto());
+        hubRouteInfoList.add(getHubRouteInfoDto());
 
-        return hubRouteIdList;
+        return hubRouteInfoList;
     }
 
     public Double getEstimatedDistance(UUID hubRouteId) {

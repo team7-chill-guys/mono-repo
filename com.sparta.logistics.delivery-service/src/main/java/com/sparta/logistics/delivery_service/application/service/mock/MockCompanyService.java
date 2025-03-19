@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class MockDeliveryManager {
-    public Long getDeliveryManager(UUID departureHubId) {
-        return 1342L;
+public class MockCompanyService {
+    public UUID getHubId(UUID companyId) {
+        return UUID.randomUUID();
     }
 }
