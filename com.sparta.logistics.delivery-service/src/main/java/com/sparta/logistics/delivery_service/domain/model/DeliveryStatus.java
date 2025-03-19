@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 
 public enum DeliveryStatus {
     PENDING,
-    READY,
     SHIPPING,
     DELIVERED;
 

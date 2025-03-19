@@ -5,6 +5,7 @@ import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpd
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
 import com.sparta.logistics.delivery_service.application.dto.response.PageResponseDto;
 import com.sparta.logistics.delivery_service.application.service.DeliveryService;
+import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +52,25 @@ public class DelieveryController {
     public ResponseEntity<Void> updateDelivery(@PathVariable("delivery_id") UUID deliveryId,
                                                @RequestBody DeliveryUpdateRequestDto updateDeliveryUpdateRequestDto) {
         deliveryService.updateDelivery(deliveryId, updateDeliveryUpdateRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 업체 배송 담당자 배정
+     */
+    @PutMapping("/{delivery_id}/assign")
+    public ResponseEntity<Void> assignDeliveryManager(@PathVariable("delivery_id") UUID deliveryId) {
+        deliveryService.assignDeliveryManager(deliveryId);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 배송 상태 변경
+     */
+    @PutMapping("/{delivery_id}/status")
+    public ResponseEntity<Void> changeDeliveryStatus(@PathVariable("delivery_id") UUID deliveryId,
+                                                     @RequestParam("status")DeliveryStatus status) {
+        deliveryService.changeDeliveryStatus(deliveryId, status);
         return ResponseEntity.ok().build();
     }
 

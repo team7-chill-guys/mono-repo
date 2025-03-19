@@ -3,6 +3,7 @@ package com.sparta.logistics.delivery_service.presentation;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryRouteUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRouteResponseDto;
 import com.sparta.logistics.delivery_service.application.service.DeliveryRouteService;
+import com.sparta.logistics.delivery_service.domain.model.DeliveryRouteStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,13 +38,35 @@ public class DeliveryRouteController {
     /**
      * 배송 경로 기록 수정
      */
-    @PostMapping("/{routes_id}")
+    @PutMapping("/{routes_id}")
     public ResponseEntity<Void> updateDeliveryRoute(@PathVariable("delivery_id")UUID deliveryId,
                                                     @PathVariable("routes_id") UUID routesId,
                                                     @RequestBody DeliveryRouteUpdateRequestDto updateDeliveryRouteUpdateRequestDto) {
         deliveryRouteService.updateDeliveryRoute(deliveryId, routesId, updateDeliveryRouteUpdateRequestDto);
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 허브 배송 담당자 배정
+     */
+    @PutMapping("/{routes_id}/assign")
+    public ResponseEntity<Void> assignHubDeliveryManager(@PathVariable("delivery_id") UUID deliveryId,
+                                                         @PathVariable("routes_id") UUID routesId) {
+        deliveryRouteService.assignHudDeliveryManager(deliveryId, routesId);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 배송 상태 변경
+     */
+    @PutMapping("/{routes_id}/status")
+    public ResponseEntity<Void> changeDeliveryStatus(@PathVariable("delivery_id") UUID deliveryId,
+                                                     @PathVariable("routes_id") UUID routesId,
+                                                     @RequestParam("status")DeliveryRouteStatus status) {
+        deliveryRouteService.changeDeliveryStatus(deliveryId, routesId, status);
+        return ResponseEntity.ok().build();
+    }
+
 
     /**
      * 배송 경로 기록 삭제

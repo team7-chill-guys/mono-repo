@@ -30,10 +30,12 @@ public class DeliveryMapper {
     public static DeliveryResponseDto toDto (Delivery delivery){
         return DeliveryResponseDto.builder()
                 .orderId(delivery.getOrderId())
+                .status(delivery.getDeliveryStatus())
                 .departureHubId(delivery.getDepartureHubId())
                 .destinationHubId(delivery.getDestinationHubId())
                 .recipientCompany(delivery.getRecipientCompany())
                 .createdAt(delivery.getCreatedAt())
+                .deliveryManagerId(delivery.getDeliveryManagerId())
                 .build();
     }
 }
