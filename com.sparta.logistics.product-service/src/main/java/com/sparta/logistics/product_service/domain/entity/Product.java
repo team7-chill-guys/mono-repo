@@ -27,4 +27,6 @@ public class Product {
     private Long createdBy;
     private Timestamp updatedAt;
     private Long updatedBy;
+    private Timestamp deletedAt;
+    private Long deletedBy;
 }

@@ -13,6 +13,7 @@ import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -142,10 +143,12 @@ public class ProductService {
     }
 
     public ResponseEntity<Void> deleteProduct(UUID productId) {
-        productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다: " + productId));
 
-        productRepository.deleteById(productId);
+        product.setDeletedAt(new Timestamp(System.currentTimeMillis()));
+
+        productRepository.save(product);
 
         return ResponseEntity.ok().build();
     }
