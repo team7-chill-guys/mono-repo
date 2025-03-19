@@ -11,7 +11,7 @@ import lombok.Getter;
 public class HubDetailResponseDto {
 
   private UUID id;
-  private long userId;
+  private Long userId;
   private String hubName;
   private String address;
   private BigDecimal latitude;

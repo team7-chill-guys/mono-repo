@@ -38,7 +38,7 @@ public class HubRouteServiceImpl implements HubRouteService {
 //    UUID startHubId = UUID.fromString("7c68bc02-c060-4660-9713-0e1e93192272");
 //    UUID endHubId = UUID.fromString("a5705bcc-ec76-4a5c-8a84-da9f5a4d7ca5");
 
-    String currentId = "1";
+    Long currentId = 1L;
 
     if (hubRouteRepository.existsByStartHubId(startHubId) && hubRouteRepository.existsByEndHubId(
         endHubId)) {
@@ -105,14 +105,14 @@ public class HubRouteServiceImpl implements HubRouteService {
     return new HubRouteUpdateResponseDto(updateHubRoute);
   }
 
-  public void deleteHubRoute(String userId, UUID hubRoutesId) {
+  public void deleteHubRoute(Long userId, UUID hubRoutesId) {
 
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
 
     // TODO : 허브 삭제 -> 관련 허브 루트 자동 삭제 구현
     // TODO : 추후 deleteBy 값 -> 로그인한 userId 값 들어가게 변경 & userId Long 타입으로 변경
-    String currentId = "111"; // 임시 아이디
+    Long currentId = 1L; // 임시 아이디
 
     hubRoute.setDeletedBy(currentId);
     hubRoute.setDeletedAt(LocalDateTime.now());

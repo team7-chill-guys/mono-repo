@@ -39,7 +39,7 @@ public class HubServiceImpl implements HubService {
     }
 
     // TODO : 추후 createBy, updateBy 값 -> 로그인한 userId 값 들어가게 변경
-    String currentId = "1";
+    Long currentId = 1L;
 
     Hub hub = hubRepository.save(
         Hub.builder()
@@ -117,13 +117,13 @@ public class HubServiceImpl implements HubService {
     return new HubUpdateResponseDto(updateHub);
   }
 
-  public void deleteHub(String userId, UUID hubId) {
+  public void deleteHub(Long userId, UUID hubId) {
 
     Hub hub = hubRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
 
     // TODO : 추후 deleteBy 값 -> 로그인한 userId 값 들어가게 변경 & userId Long 타입으로 변경
-    String currentId = "111"; // 임시 아이디
+    Long currentId = 1L; // 임시 아이디
 
     hub.setDeletedBy(currentId);
     hub.setDeletedAt(LocalDateTime.now());
