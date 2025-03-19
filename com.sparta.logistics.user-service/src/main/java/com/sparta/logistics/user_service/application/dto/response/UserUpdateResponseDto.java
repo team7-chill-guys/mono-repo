@@ -1,14 +1,8 @@
 package com.sparta.logistics.user_service.application.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@Builder
+@Data
 public class UserUpdateResponseDto {
-    private Long userId;
-    private String username;
-    private String slackId;
-    private String role;
 
 }
