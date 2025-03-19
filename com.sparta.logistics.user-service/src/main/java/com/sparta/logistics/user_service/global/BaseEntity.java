@@ -24,38 +24,41 @@ public class BaseEntity {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @CreatedBy
     @JoinColumn(name = "created_by")
-    private UUID createdBy;
+    private Long createdBy;
 
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @LastModifiedBy
     @JoinColumn(name = "updated_by")
-    private UUID updatedBy;
+    private Long updatedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @JoinColumn(name = "deleted_by")
-    private UUID deletedBy;
+    private Long deletedBy;
 
     // 생성을 위한 method 추가
-    public BaseEntity(UUID authId) {
-        this.createdBy = authId;
-        this.updatedBy = authId;
+    public BaseEntity(Long userId) {
+        this.createdBy = userId;
+        this.updatedBy = userId;
+    }
+
+    public void createInfo(Long userId) {
+        this.createdBy = userId;
+        this.updatedBy = userId;
     }
 
     // 소프트 delete를 위한 method 추가
-    public void delete(UUID authId) {
+    public void deleteInfo(Long userId) {
         this.deletedAt = LocalDateTime.now();
-        this.deletedBy = authId;
+        this.deletedBy = userId;
     }
 
     // 업데이트를 위한 method 추가
-    public void update(UUID authId) {
-        this.updatedBy = authId;
+    public void updateInfo(Long userId) {
+        this.updatedBy = userId;
     }
 }

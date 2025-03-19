@@ -4,12 +4,15 @@ import com.sparta.logistics.delivery_service.domain.model.DeliveryRouteStatus;
 import com.sparta.logistics.delivery_service.domain.model.Distance;
 import com.sparta.logistics.delivery_service.domain.model.Time;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
 @Builder
 public class DeliveryRouteResponseDto {
+    private Integer sequence;
     private UUID deliveryId;
     private UUID startHubId;
     private UUID endHubId;

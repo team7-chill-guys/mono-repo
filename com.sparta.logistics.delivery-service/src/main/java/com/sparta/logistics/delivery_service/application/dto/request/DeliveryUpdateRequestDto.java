@@ -7,11 +7,11 @@ import java.util.UUID;
 
 @Getter
 public class DeliveryUpdateRequestDto {
-    private DeliveryStatus deliveryStatus;
     private UUID departureHubId;
     private UUID destinationHubId;
+    private UUID companyId;
     private String address;
     private String slackId;
     private String phoneNumber;
-    private UUID deliveryManagerId;
+    private Long deliveryManagerId;
 }

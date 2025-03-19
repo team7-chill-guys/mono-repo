@@ -1,5 +1,6 @@
 package com.sparta.logistics.delivery_service.domain.model;
 
+import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
@@ -41,12 +42,39 @@ public class Delivery extends BaseTimeEntity{
     private Delivery(UUID orderId,
                     UUID departureHubId,
                     UUID destinationHubId,
-                    RecipientCompany recipientCompany) {
+                    RecipientCompany recipientCompany,
+                     Long deliveryManagerId) {
         this.orderId = orderId;
         this.departureHubId = departureHubId;
         this.destinationHubId = destinationHubId;
         this.recipientCompany = recipientCompany;
+        this.deliveryManagerId = deliveryManagerId;
     }
 
+    public void updateOf(DeliveryUpdateRequestDto dto) {
+        RecipientCompany recipientCompany = RecipientCompany.builder()
+                .companyId(dto.getCompanyId())
+                .address(dto.getAddress())
+                .slackId(dto.getSlackId())
+                .phone(dto.getPhoneNumber())
+                .build();
+        this.departureHubId = dto.getDepartureHubId();
+        this.destinationHubId = dto.getDestinationHubId();
+        this.recipientCompany = recipientCompany;
+        this.deliveryManagerId = dto.getDeliveryManagerId();
+    }
+
+    public void assignDeliveryManager(Long deliveryManagerId) {
+        this.deliveryManagerId = deliveryManagerId;
+        this.deliveryStatus = DeliveryStatus.SHIPPING;
+    }
+
+    public void changeDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+
+    public boolean isInfoChangeable() {
+        return this.deliveryStatus == DeliveryStatus.PENDING;
+    }
 
 }

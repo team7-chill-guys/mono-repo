@@ -1,17 +1,12 @@
 package com.sparta.logistics.user_service.application.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Builder
 public class UserUpdateRequestDto {
-    private Long id;
-    private String username;
-    private String slackId;
-    private String role;
-    private String password;
-
+    private String newUsername;
+    private String newSlackId;
+    private String newRole;
 }
