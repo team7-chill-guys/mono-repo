@@ -1,5 +1,6 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 public interface HubRouteService {
 
-  HubRouteCreateResponseDto createHubRoute(HubRouteCreateRequestDto requestDto);
+//  HubRouteCreateResponseDto createHubRoute(HubRouteCreateRequestDto requestDto);
 
   HubRouteDetailResponseDto getHubRouteDetail(UUID hubRoutesId);
 

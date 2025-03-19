@@ -8,6 +8,7 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResp
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
+import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HubServiceImpl implements HubService {
 
   private final HubRepository hubRepository;
+  private final KakaoMapApiServiceImpl kakaoMapApiService;
 
   // 허브 생성
   @Transactional
@@ -52,6 +54,10 @@ public class HubServiceImpl implements HubService {
             .updatedBy(currentId)
             .build()
     );
+
+// TODO: 허브 생성 시, 모든 가능한 이동 경로를 자동으로 생성 (반복문을 사용하여 허브들 간의 가능한 모든 경로 조합을 계산하여 생성)
+// kakaoMapApiService.autoCreateHubRoute();
+
     return new HubCreateResponseDto(hub);
   }
 

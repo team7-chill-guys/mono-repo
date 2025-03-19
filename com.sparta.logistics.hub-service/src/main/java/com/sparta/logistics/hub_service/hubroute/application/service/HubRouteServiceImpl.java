@@ -25,41 +25,41 @@ public class HubRouteServiceImpl implements HubRouteService {
   private final HubRouteRepository hubRouteRepository;
 
   // 허브 루트 생성
-  @Transactional
-  @Override
-  public HubRouteCreateResponseDto createHubRoute(HubRouteCreateRequestDto requestDto) {
-
-    // TODO : 허브 생성시 자동으로 허브 루트 생성 구현
-    // TODO : 추후 createBy, updateBy 값 -> 로그인한 userId 값 들어가게 변경
-
-    // 임시 UUID & userId
-    UUID startHubId = UUID.randomUUID();
-    UUID endHubId = UUID.randomUUID();
-//    UUID startHubId = UUID.fromString("7c68bc02-c060-4660-9713-0e1e93192272");
-//    UUID endHubId = UUID.fromString("a5705bcc-ec76-4a5c-8a84-da9f5a4d7ca5");
-
-    Long currentId = 1L;
-
-    if (hubRouteRepository.existsByStartHubId(startHubId) && hubRouteRepository.existsByEndHubId(
-        endHubId)) {
-      throw new IllegalArgumentException("이미 등록된 경로 입니다.");
-    }
-
-    HubRoute hubRoute = hubRouteRepository.save(
-        HubRoute.builder()
-            .startHubId(startHubId)
-            .endHubId(endHubId)
-            .startHubName(requestDto.getStartHubName())
-            .endHubName(requestDto.getEndHubName())
-            .deliveryTime(requestDto.getDeliveryTime())
-            .deliveryDistance(requestDto.getDeliveryDistance())
-            .createdBy(currentId)
-            .updatedBy(currentId)
-            .build()
-    );
-
-    return new HubRouteCreateResponseDto(hubRoute);
-  }
+//  @Transactional
+////  @Override
+//  public HubRouteCreateResponseDto createHubRoute(HubRouteCreateRequestDto requestDto) {
+//
+//    // TODO : 허브 생성시 자동으로 허브 루트 생성 구현
+//    // TODO : 추후 createBy, updateBy 값 -> 로그인한 userId 값 들어가게 변경
+//
+//    // 임시 UUID & userId
+//    UUID startHubId = UUID.randomUUID();
+//    UUID endHubId = UUID.randomUUID();
+////    UUID startHubId = UUID.fromString("7c68bc02-c060-4660-9713-0e1e93192272");
+////    UUID endHubId = UUID.fromString("a5705bcc-ec76-4a5c-8a84-da9f5a4d7ca5");
+//
+//    Long currentId = 1L;
+//
+//    if (hubRouteRepository.existsByStartHubId(startHubId) && hubRouteRepository.existsByEndHubId(
+//        endHubId)) {
+//      throw new IllegalArgumentException("이미 등록된 경로 입니다.");
+//    }
+//
+//    HubRoute hubRoute = hubRouteRepository.save(
+//        HubRoute.builder()
+//            .startHubId(startHubId)
+//            .endHubId(endHubId)
+//            .startHubName(requestDto.getStartHubName())
+//            .endHubName(requestDto.getEndHubName())
+//            .deliveryTime(requestDto.getDeliveryTime())
+//            .deliveryDistance(requestDto.getDeliveryDistance())
+//            .createdBy(currentId)
+//            .updatedBy(currentId)
+//            .build()
+//    );
+//
+//    return new HubRouteCreateResponseDto(hubRoute);
+//  }
 
   // 허브 루트 단일 조회
   @Override
@@ -105,6 +105,7 @@ public class HubRouteServiceImpl implements HubRouteService {
     return new HubRouteUpdateResponseDto(updateHubRoute);
   }
 
+  @Override
   public void deleteHubRoute(Long userId, UUID hubRoutesId) {
 
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)

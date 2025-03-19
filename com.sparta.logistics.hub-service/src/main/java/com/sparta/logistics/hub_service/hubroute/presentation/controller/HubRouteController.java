@@ -8,6 +8,7 @@ import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRou
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteUpdateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteService;
+import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HubRouteController {
 
   private final HubRouteService hubRouteService;
+  private final KakaoMapApiServiceImpl kakaoMapApiService;
 
   // TODO : 마스터 관리자 경우에만 허브 생성, 수정, 삭제 가능
 
@@ -35,7 +37,9 @@ public class HubRouteController {
   @PostMapping
   public ResponseEntity<ResponseDto<HubRouteCreateResponseDto>> createHubRoute(
       @RequestBody HubRouteCreateRequestDto requestDto) {
-    HubRouteCreateResponseDto responseDto = hubRouteService.createHubRoute(requestDto);
+//    HubRouteCreateResponseDto responseDto = hubRouteService.createHubRoute(requestDto);
+    HubRouteCreateResponseDto responseDto = kakaoMapApiService.autoCreateHubRoute(requestDto);
+
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
