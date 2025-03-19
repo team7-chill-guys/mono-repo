@@ -38,6 +38,7 @@ public class CompanyController {
     }
 
     // [수정]
+    // 사용자 정보를 서비스 단에서 처리하도록 수정 예정 (통합 이후)
     @PutMapping("/{id}")
     public ResponseEntity<CompanyDetailResponseDto> updateCompany(
             @PathVariable UUID id,

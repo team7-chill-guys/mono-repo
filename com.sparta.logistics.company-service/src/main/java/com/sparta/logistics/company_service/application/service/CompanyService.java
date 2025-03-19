@@ -29,7 +29,7 @@ public class CompanyService {
     }
 
     // [개별 조회]
-    @Transactional
+    @Transactional(readOnly = true)
     public CompanyDetailResponseDto getCompanyById(UUID id) {
         return companyRepository.findByIdAndDeletedAtIsNull(id)
                 .map(CompanyDetailResponseDto::fromEntity)
@@ -37,7 +37,7 @@ public class CompanyService {
     }
 
     // [전체 조회]
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<CompanyDetailResponseDto> getAllCompanies(Pageable pageable) {
         return companyRepository.findAllByDeletedAtIsNull(pageable)
                 .map(CompanyDetailResponseDto::fromEntity);
