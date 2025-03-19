@@ -55,6 +55,7 @@ public class JwtUtil {
             .compact();
     }
 
+    // refresh 토큰 생성
     public String createRefreshToken(Long userId, String username, String role) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + jwtRefreshExpTime);
@@ -69,10 +70,17 @@ public class JwtUtil {
             .compact();
     }
 
-    // 헤더에서 토큰 추출
-    public String getTokenFromHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        return removeBearer(bearerToken);
+    // 토큰 만료 시간 반환
+    public Date getExpiration(String token) {
+        Claims claims = getUserInfoFromToken(token);
+        return claims.getExpiration();
+    }
+
+    // 토큰 만료시간 계산
+    public long getMilliSecond(String token) {
+        Date exp = getExpiration(token);
+        long now = System.currentTimeMillis();
+        return exp.getTime() - now;
     }
 
     // 헤더에서 추출한 토큰의 Bearer 접두사 제거

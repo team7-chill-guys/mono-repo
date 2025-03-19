@@ -1,7 +1,5 @@
 package com.sparta.logistics.user_service.application.service;
 
-
-import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 import com.sparta.logistics.user_service.application.dto.request.AuthLoginRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.AuthSignupRequestDto;
 import com.sparta.logistics.user_service.application.dto.response.AuthSignupResponseDto;
@@ -11,8 +9,10 @@ import com.sparta.logistics.user_service.domain.entity.UserRole;
 import com.sparta.logistics.user_service.domain.repository.UserRepository;
 import com.sparta.logistics.user_service.jwt.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +21,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final StringRedisTemplate stringRedisTemplate;
 
     // 회원가입
     public AuthSignupResponseDto createUser(AuthSignupRequestDto requestDto, String userIdHeader) {
@@ -59,6 +60,28 @@ public class AuthService {
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .build();
+    }
+
+    // 로그아웃
+    public void logoutUser(String accessToken, String refreshToken) {
+        long accessTokenExpCheck = jwtUtil.getMilliSecond(accessToken);
+        long refreshTokenExpCheck = jwtUtil.getMilliSecond(refreshToken);
+
+        // 레디스에 블랙리스트 토큰 저장.
+        stringRedisTemplate.opsForValue().set(
+            "blacklist" + accessToken,
+            "LOGOUT",
+            accessTokenExpCheck,
+            TimeUnit.MILLISECONDS
+        );
+
+        stringRedisTemplate.opsForValue().set(
+            "blacklist" + refreshToken,
+            "LOGOUT",
+            refreshTokenExpCheck,
+            TimeUnit.MILLISECONDS
+        );
+
     }
 
     // 회원가입시 마스터가 생성하는 것을 가정하여 마스터의 userId를 생성자 필드에 넣을 수 있도록 메서드 제작. master 가 아니라면 기본값 0l 넣기
