@@ -3,10 +3,9 @@ package com.sparta.logistics.delivery_service.application.service;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryCreateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
+import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
 import com.sparta.logistics.delivery_service.application.service.mock.MockCompanyService;
-import com.sparta.logistics.delivery_service.application.service.mock.MockDeliveryManagerService;
-import com.sparta.logistics.delivery_service.application.service.mock.MockOrderService;
 import com.sparta.logistics.delivery_service.application.service.mock.MockProductService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
@@ -33,6 +32,8 @@ public class DeliveryService {
     private final MockCompanyService mockCompanyService;
 
     private final DeliveryManagerClient deliveryManagerClient;
+
+    private final ProducerService producerService;
 
     @Transactional
     public void createDelivery(DeliveryCreateRequestDto deliveryCreateRequestDto) {
@@ -97,13 +98,16 @@ public class DeliveryService {
 
             for(Delivery delivery : pendingDeliveryies) {
                 UUID departureHubId = delivery.getDepartureHubId();
-                Long deliveryManagerId = deliveryManagerClient.getDeliveryManager(departureHubId, "COMPANY");
+                String type = "COMPANY";
+                Long deliveryManagerId = deliveryManagerClient.getDeliveryManager(departureHubId, type);
                 delivery.assignDeliveryManager(deliveryManagerId);
 
-                // TODO: 슬랙에 이벤트 전송
-
                 deliveryRepository.save(delivery);
+
                 log.info("DeliveryManager Assigned");
+
+                // 배송정보를 kafka로 전송
+                producerService.sendInfo(type, DeliveryInfoMapper.toDto(delivery));
             }
         }
     }
