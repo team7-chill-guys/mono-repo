@@ -9,8 +9,8 @@ import java.util.UUID;
 @Builder
 public class HubRouteInfoDto {
     private UUID hubRouteId;
-    private UUID departureHubId;
-    private UUID destinationHubId;
+    private UUID startHubId;
+    private UUID endHubId;
     private Integer estimatedTime;
     private Double estimatedDistance;
 }

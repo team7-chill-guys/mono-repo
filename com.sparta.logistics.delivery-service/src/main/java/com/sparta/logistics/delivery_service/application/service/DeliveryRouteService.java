@@ -1,5 +1,6 @@
 package com.sparta.logistics.delivery_service.application.service;
 
+import com.sparta.logistics.delivery_service.application.dto.mock.HubRouteInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryRouteUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRouteResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryRouteMapper;
@@ -34,16 +35,16 @@ public class DeliveryRouteService {
     public void createDeliveryRoutes(Delivery delivery) {
 
         // 1. 출발+도착 허브 보고 허브간 이동경로 조회
-        List<UUID> hubRouteId = mockHubRouteService.getHubRoute(delivery.getDepartureHubId(), delivery.getDestinationHubId());
+        List<HubRouteInfoDto> hubRouteList = mockHubRouteService.getHubRoute(delivery.getDepartureHubId(), delivery.getDestinationHubId());
 
         // 2. 조회 된 허브간 이동 경로에서 시작허브, 도착허브 예상거리, 예상 소요시간 조회
         Integer sequence = 1;
 
-        for(UUID routeId : hubRouteId){
-            UUID startHubId = mockHubRouteService.getStartHubId(routeId);
-            UUID endHubId = mockHubRouteService.getEndHubId(routeId);
-            Double estimatedDistance = mockHubRouteService.getEstimatedDistance(routeId);
-            Integer estimatedTime = mockHubRouteService.getEstimatedTime(routeId);
+        for(HubRouteInfoDto hubRoute : hubRouteList){
+            UUID startHubId = hubRoute.getStartHubId();
+            UUID endHubId = hubRoute.getEndHubId();
+            Double estimatedDistance = hubRoute.getEstimatedDistance();
+            Integer estimatedTime = hubRoute.getEstimatedTime();
 
             Double actualDistance = 212.4677;
             Integer actualTime = 135;
