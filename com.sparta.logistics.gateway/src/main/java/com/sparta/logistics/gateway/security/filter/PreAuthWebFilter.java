@@ -33,14 +33,14 @@ public class PreAuthWebFilter implements WebFilter, Ordered {
         log.info("PreAuthWebFilter 필터 실행");
 
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        log.debug("추출한 Authorization 헤더: {}", authHeader);
+        log.info("추출한 Authorization 헤더: {}", authHeader);
 
         if (authHeader == null) {
             return chain.filter(exchange);
         }
 
         String token = jwtUtil.removeBearer(authHeader);
-        log.debug("Bearer 제거 후 토큰: {}", token);
+        log.info("Bearer 제거 후 토큰: {}", token);
         if (!jwtUtil.validateToken(token)) {
             log.error("유효하지 않은 토큰입니다.");
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -49,7 +49,7 @@ public class PreAuthWebFilter implements WebFilter, Ordered {
 
         // 블랙리스트 체크
         if (blackListCheck.isBlacklisted(token)) {
-            log.debug("블랙리스트 토큰입니다. token : " + token);
+            log.error("블랙리스트 토큰입니다. token : " + token);
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
@@ -58,7 +58,7 @@ public class PreAuthWebFilter implements WebFilter, Ordered {
         String userId = claims.getSubject();
         String username = claims.get("username", String.class);
         String role = claims.get("role", String.class);
-        log.debug("토큰에서 추출한 클레임 - userId: {}, username: {}, role: {}", userId, username, role);
+        log.info("토큰에서 추출한 클레임 - userId: {}, username: {}, role: {}", userId, username, role);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
             username,
