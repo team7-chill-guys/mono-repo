@@ -12,6 +12,7 @@ import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApi
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/hub-routes")
 @RequiredArgsConstructor
+@Slf4j
 public class HubRouteController {
 
   private final HubRouteService hubRouteService;
@@ -37,7 +39,6 @@ public class HubRouteController {
   @PostMapping
   public ResponseEntity<ResponseDto<HubRouteCreateResponseDto>> createHubRoute(
       @RequestBody HubRouteCreateRequestDto requestDto) {
-//    HubRouteCreateResponseDto responseDto = hubRouteService.createHubRoute(requestDto);
     HubRouteCreateResponseDto responseDto = kakaoMapApiService.autoCreateHubRoute(requestDto);
 
     return ResponseEntity.ok(ResponseDto.success(responseDto));
@@ -52,6 +53,7 @@ public class HubRouteController {
   }
 
   // 허브 루트 조회 및 검색
+  // URL: /api/hub-routes
   @GetMapping
   public ResponseEntity<ResponseDto<List<HubRouteListResponseDto>>> getHubRouteList(
       @RequestParam(required = false) UUID startHubId,
