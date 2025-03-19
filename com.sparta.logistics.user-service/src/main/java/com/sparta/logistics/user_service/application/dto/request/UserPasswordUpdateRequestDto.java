@@ -1,8 +1,11 @@
 package com.sparta.logistics.user_service.application.dto.request;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Getter
+@Builder
 public class UserPasswordUpdateRequestDto {
-
+    private String oldPassword;
+    private String newPassword;
 }

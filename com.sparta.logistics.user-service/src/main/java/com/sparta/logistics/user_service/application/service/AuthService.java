@@ -23,7 +23,9 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     // 회원가입
-    public AuthSignupResponseDto createUser(AuthSignupRequestDto requestDto) {
+    public AuthSignupResponseDto createUser(AuthSignupRequestDto requestDto, String userIdHeader) {
+        Long userId = parseOrDefault(userIdHeader);
+
         User user = User.builder()
             .username(requestDto.getUsername())
             .password(BCrypt.hashpw(requestDto.getPassword(), BCrypt.gensalt()))
@@ -31,6 +33,7 @@ public class AuthService {
             .role(UserRole.ROLE_USER)
             .build();
 
+        user.createInfo(userId);
         userRepository.save(user);
 
         return AuthSignupResponseDto.builder()
@@ -39,6 +42,7 @@ public class AuthService {
             .build();
     }
 
+    // 로그인
     public AuthTokenResponseDto loginUser(AuthLoginRequestDto requestDto) {
         User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(() ->
             new EntityNotFoundException("해당하는 사용자가 존재하지 않습니다. 받은 username : " + requestDto.getUsername()));
@@ -51,11 +55,20 @@ public class AuthService {
         String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUsername(), user.getRole().name());
         String refreshToken = jwtUtil.createRefreshToken(user.getId(), user.getUsername(), user.getRole().name());
 
-        AuthTokenResponseDto authTokenResponseDto = AuthTokenResponseDto.builder()
+        return AuthTokenResponseDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .build();
-
-        return authTokenResponseDto;
     }
+
+    // 회원가입시 마스터가 생성하는 것을 가정하여 마스터의 userId를 생성자 필드에 넣을 수 있도록 메서드 제작. master 가 아니라면 기본값 0l 넣기
+    private Long parseOrDefault(String header) {
+        if (header == null) return 0L;
+        try {
+            return Long.valueOf(header);
+        } catch (NumberFormatException e) {
+            return 0L;
+        }
+    }
+
 }
