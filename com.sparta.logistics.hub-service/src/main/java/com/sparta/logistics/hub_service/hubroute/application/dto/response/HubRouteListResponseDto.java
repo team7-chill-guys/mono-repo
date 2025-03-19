@@ -10,8 +10,8 @@ public class HubRouteListResponseDto {
 
   private String startHubName;
   private String endHubName;
-  private Long deliveryTime;
-  private Long deliveryDistance;
+  private Integer deliveryTime;
+  private Double deliveryDistance;
 
   public static HubRouteListResponseDto toResponse(HubRoute hubRoute) {
     return new HubRouteListResponseDto(
