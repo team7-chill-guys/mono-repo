@@ -16,7 +16,7 @@ public interface HubRouteService {
 
   HubRouteDetailResponseDto getHubRouteDetail(UUID hubRoutesId);
 
-  List<HubRouteListResponseDto> getHubRouteList(String startHubName, String endHubName);
+  List<HubRouteListResponseDto> getHubRouteList(UUID startHubId, UUID endHubId);
 
   HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto);
 

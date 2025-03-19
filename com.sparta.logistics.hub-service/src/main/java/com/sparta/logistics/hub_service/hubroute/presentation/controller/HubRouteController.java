@@ -54,10 +54,10 @@ public class HubRouteController {
   // 허브 루트 조회 및 검색
   @GetMapping
   public ResponseEntity<ResponseDto<List<HubRouteListResponseDto>>> getHubRouteList(
-      @RequestParam(required = false) String startHubName,
-      @RequestParam(required = false) String endHubName) {
-    List<HubRouteListResponseDto> responseDto = hubRouteService.getHubRouteList(startHubName,
-        endHubName);
+      @RequestParam(required = false) UUID startHubId,
+      @RequestParam(required = false) UUID endHubId) {
+    List<HubRouteListResponseDto> responseDto = hubRouteService.getHubRouteList(startHubId,
+        endHubId);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 

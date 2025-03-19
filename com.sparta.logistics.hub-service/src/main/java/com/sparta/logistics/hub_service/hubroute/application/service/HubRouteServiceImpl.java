@@ -71,15 +71,15 @@ public class HubRouteServiceImpl implements HubRouteService {
 
   // 허브 루트 전체 조회(목록) 및 검색
   @Override
-  public List<HubRouteListResponseDto> getHubRouteList(String startHubName, String endHubName) {
+  public List<HubRouteListResponseDto> getHubRouteList(UUID startHubId, UUID endHubId) {
     List<HubRoute> hubRoutes;
 
-    if (isNotEmpty(startHubName) && isNotEmpty(endHubName)) {
-      hubRoutes = hubRouteRepository.findByStartHubNameContainingAndEndHubNameContaining(startHubName,
-          endHubName);
-    } else if (isNotEmpty(startHubName) || isNotEmpty(endHubName)) {
-      hubRoutes = hubRouteRepository.findByStartHubNameContainingOrEndHubNameContaining(startHubName,
-          endHubName);
+    if (startHubId != null && endHubId != null) {
+      hubRoutes = hubRouteRepository.findByStartHubIdAndEndHubId(startHubId,
+          endHubId);
+    } else if (startHubId != null || endHubId != null) {
+      hubRoutes = hubRouteRepository.findByStartHubIdOrEndHubId(startHubId,
+          endHubId);
     } else {
       hubRoutes = hubRouteRepository.findAll();
     }
