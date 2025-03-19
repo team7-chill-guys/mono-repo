@@ -19,6 +19,12 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
+    // [배송 -> 회사]
+    @GetMapping("/api/companies/{companyId}/hub")
+    public UUID getHubIdByCompanyId(@PathVariable UUID companyId) {
+        return companyService.getHubIdByCompanyId(companyId);
+    }
+
     // [생성]
     @PostMapping
     public ResponseEntity<CompanyDetailResponseDto> createCompany(@RequestBody CompanyCreateRequestDto requestDto) {
