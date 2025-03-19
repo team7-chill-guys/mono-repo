@@ -7,6 +7,7 @@ import com.sparta.logistics.user_service.application.dto.response.AuthTokenRespo
 import com.sparta.logistics.user_service.application.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -35,6 +36,15 @@ public class AuthController {
     ) {
         AuthTokenResponseDto responseDto = authService.loginUser(requestDto);
         return ResponseEntity.ok(responseDto);
+    }
+
+    // 로그아웃
+    @DeleteMapping("/auth/logout")
+    public ResponseEntity<String> logoutUser(@RequestHeader(value = "X-Access-Token") String accessTokenHeader,
+                                             @RequestHeader(value = "X-Refresh-Token") String refreshTokenHeader
+    ) {
+        authService.logoutUser(accessTokenHeader, refreshTokenHeader);
+        return ResponseEntity.ok("로그아웃이 완료되었습니다.");
     }
 
 }
