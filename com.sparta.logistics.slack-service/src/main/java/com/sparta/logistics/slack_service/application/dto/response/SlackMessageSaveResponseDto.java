@@ -1,7 +1,6 @@
-package com.sparta.logistics.slack_service.dto;
+package com.sparta.logistics.slack_service.application.dto.response;
 
 import lombok.*;
-import org.w3c.dom.Text;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -11,10 +10,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SlackMessageCreateResponseDto {
+public class SlackMessageSaveResponseDto {
     private UUID id;
-    private Long userId;
-    private Text notificationData;
+    private String text;
     private Timestamp createdAt;
     private Long createdBy;
 }
