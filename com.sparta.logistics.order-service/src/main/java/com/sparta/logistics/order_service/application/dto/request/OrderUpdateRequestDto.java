@@ -11,5 +11,5 @@ public class OrderUpdateRequestDto {
     private OrderStatus status;
     private long quantity;
     private String request;
-    private long updatedBy;
+    private Long updatedBy;
 }

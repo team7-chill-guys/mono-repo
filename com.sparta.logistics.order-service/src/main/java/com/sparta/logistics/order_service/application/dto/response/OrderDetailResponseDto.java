@@ -13,6 +13,9 @@ public class OrderDetailResponseDto {
     private UUID orderId;
     private UUID requestCompanyId;
     private UUID responseCompanyId;
+    private String slackId;
+    private String phone;
+    private String address;
     private UUID deliveryId;
     private Long quantity;
     private String status;
@@ -29,6 +32,9 @@ public class OrderDetailResponseDto {
                 .orderId(order.getOrderId())
                 .requestCompanyId(order.getRequestCompanyId())
                 .responseCompanyId(order.getResponseCompanyId())
+                .slackId(order.getSlackId())
+                .phone(order.getPhone())
+                .address(order.getAddress())
                 .deliveryId(order.getDeliveryId())
                 .quantity(order.getQuantity())
                 .status(order.getStatus().name())

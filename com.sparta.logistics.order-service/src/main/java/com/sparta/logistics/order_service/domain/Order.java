@@ -1,5 +1,7 @@
 package com.sparta.logistics.order_service.domain;
 
+import com.sparta.logistics.order_service.application.dto.request.OrderCreateRequestDto;
+import com.sparta.logistics.order_service.infrastructure.client.dto.request.OrderDeliveryRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +34,15 @@ public class Order {
     @Column(name = "response_company_id", nullable = false)
     private UUID responseCompanyId;
 
+    @Column(name = "slack_id")
+    private String slackId;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "address")
+    private String address;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private OrderStatus status;
@@ -59,6 +70,28 @@ public class Order {
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
+
+    public static Order toEntity(OrderCreateRequestDto dto, UUID deliveryId) {
+        return Order.builder()
+                .orderId(UUID.randomUUID())
+                .deliveryId(deliveryId)
+                .productId(dto.getProductId())
+                .requestCompanyId(dto.getRequestCompanyId())
+                .responseCompanyId(dto.getResponseCompanyId())
+                .slackId(dto.getSlackId())
+                .phone(dto.getPhone())
+                .address(dto.getAddress())
+                .status(OrderStatus.PENDING)
+                .quantity(dto.getQuantity())
+                .request(dto.getRequest())
+                .createdBy(dto.getCreatedBy())
+                .createdAt(Timestamp.from(Instant.now()))
+                .updatedBy(dto.getCreatedBy())
+                .updatedAt(Timestamp.from(Instant.now()))
+                .deletedBy(null)
+                .deletedAt(null)
+                .build();
+    }
 
     public void deleteOrder(Long deletedBy) {
         this.deletedAt = Timestamp.from(Instant.now());

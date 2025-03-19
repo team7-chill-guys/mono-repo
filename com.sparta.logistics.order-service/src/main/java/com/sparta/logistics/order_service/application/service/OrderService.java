@@ -49,7 +49,7 @@ public class OrderService {
         UUID deliveryId = deliveryClient.createDelivery(deliveryRequest);
 
         // 주문 저장
-        Order order = requestDto.toEntity(deliveryId);
+        Order order = Order.toEntity(requestDto, deliveryId);
         orderRepository.save(order);
 
         return OrderDetailResponseDto.fromEntity(order);
