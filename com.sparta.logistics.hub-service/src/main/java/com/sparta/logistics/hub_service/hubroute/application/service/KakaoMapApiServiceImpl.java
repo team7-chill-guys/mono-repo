@@ -1,8 +1,14 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
+import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.KakaoResponseDto;
+import com.sparta.logistics.hub_service.hubroute.application.dto.response.KakaoResponseDto.Route;
+import com.sparta.logistics.hub_service.hubroute.application.dto.response.KakaoResponseDto.Section;
+import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
+import com.sparta.logistics.hub_service.hubroute.domain.repository.HubRouteRepository;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +28,9 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class KakaoMapApiServiceImpl implements KakaoMapService {
 
+  private final HubRepository hubRepository;
+  private final HubRouteRepository hubRouteRepository;
+
   @Value("${kakao.rest.api.key}")
   private String apiKey;
 
@@ -30,17 +39,22 @@ public class KakaoMapApiServiceImpl implements KakaoMapService {
   @Override
   public HubRouteCreateResponseDto autoCreateHubRoute(HubRouteCreateRequestDto requestDto) {
 
+    Hub startHub = hubRepository.findById(requestDto.getStartHubId())
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브가 없습니다."));
+    Hub endHub = hubRepository.findById(requestDto.getEndHubId())
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브가 없습니다."));
+
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
 
     headers.set("Authorization", "KakaoAK " + apiKey);
 
-    String location1 = requestDto.getStartLongitude() + "," + requestDto.getStartLatitude();
-    String location2 = requestDto.getEndLongitude() + "," + requestDto.getEndLatitude();
+    String startLocation = startHub.getLongitude() + "," + startHub.getLatitude();
+    String endLocation = endHub.getLongitude() + "," + endHub.getLatitude();
 
     HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-    String encodeOrigin = URLEncoder.encode(location1, StandardCharsets.UTF_8);
-    String encodeDestination = URLEncoder.encode(location2, StandardCharsets.UTF_8);
+    String encodeOrigin = URLEncoder.encode(startLocation, StandardCharsets.UTF_8);
+    String encodeDestination = URLEncoder.encode(endLocation, StandardCharsets.UTF_8);
     String rawURI =
         "https://apis-navi.kakaomobility.com/v1/directions?origin=" + encodeOrigin + "&destination="
             + encodeDestination + "&summary=" + true;
@@ -49,21 +63,43 @@ public class KakaoMapApiServiceImpl implements KakaoMapService {
     ResponseEntity<KakaoResponseDto> res = restTemplate.exchange(uri, HttpMethod.GET, entity,
         KakaoResponseDto.class);
 
+    Integer time = 0;
+    Double distance = 0.0;
+
     if (res.getBody() != null && res.getBody().getRoutes() != null && !res.getBody().getRoutes()
         .isEmpty()) {
-      KakaoResponseDto.Route route = res.getBody().getRoutes().get(0);
+      Route route = res.getBody().getRoutes().get(0);
       if (route.getSections() != null && !route.getSections().isEmpty()) {
-        KakaoResponseDto.Section section = route.getSections().get(0);
-        double distance = section.getDistance();
+        Section section = route.getSections().get(0);
+        distance = section.getDistance();
         int duration = section.getDuration();
+        time = duration / 60;
         log.info("Distance : " + distance);
-        log.info("Duration : " + duration);
+        log.info("time : " + time);
       }
     }
 
-    // TODO : 데이터 저장하기 (그러려면 hub_id 값으로 정보를 가져와야 한다)
+    if (hubRouteRepository.existsByStartHubId(requestDto.getStartHubId())
+        && hubRouteRepository.existsByEndHubId(
+        requestDto.getEndHubId())) {
+      throw new IllegalArgumentException("이미 등록된 경로 입니다.");
+    }
 
-    return null;
-  }
+    // TODO : 임시 아이디 -> 로그인한 사용자 아이디로 변경
+    Long currentId = 1L;
+
+    HubRoute hubRoute = hubRouteRepository.save(
+        HubRoute.builder()
+            .startHubId(requestDto.getStartHubId())
+            .endHubId(requestDto.getEndHubId())
+            .startHubName(startHub.getHubName())
+            .endHubName(endHub.getHubName())
+            .deliveryTime(time)
+            .deliveryDistance(distance)
+            .createdBy(currentId)
+            .updatedBy(currentId)
+            .build()
+    );
+    return new HubRouteCreateResponseDto(hubRoute);  }
 
 }
