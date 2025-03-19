@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 public class DeliveryAssignmentScheduler {
 
     private final DeliveryService deliveryService;
+    private final DeliveryRouteService deliveryRouteService;
 
     @Scheduled(fixedRate = 60000) //1분
     public void runAssignmentScheduler() {
         deliveryService.assignPendingDeliveries();
+        deliveryRouteService.assignPendingDeliveries();
     }
 }

@@ -8,8 +8,10 @@ import com.sparta.logistics.delivery_service.application.service.mock.MockHubRou
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRoute;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRouteStatus;
+import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRouteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.sparta.logistics.delivery_service.domain.model.QDelivery.delivery;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeliveryRouteService {
@@ -107,6 +112,22 @@ public class DeliveryRouteService {
         deliveryRoute.assignHubDeliveryManager(hudDeliveryManagerId);
 
         deliveryRouteRepository.save(deliveryRoute);
+    }
+
+    @Transactional
+    public void assignPendingDeliveries() {
+        List<DeliveryRoute> pendingDeliveryies = deliveryRouteRepository.findByStatusAndDeletedAtIsNull(DeliveryRouteStatus.PENDING);
+
+        if(!pendingDeliveryies.isEmpty()) {
+            for(DeliveryRoute deliveryRoute : pendingDeliveryies) {
+                UUID startHubId = deliveryRoute.getStartHudId();
+                Long hubDeliveryManagerId = mockDeliveryManagerService.getDeliveryManager(startHubId, "HUB");
+                deliveryRoute.assignHubDeliveryManager(hubDeliveryManagerId);
+
+                deliveryRouteRepository.save(deliveryRoute);
+                log.info("HubDeliveryManager Assigned");
+            }
+        }
     }
 
     @Transactional
