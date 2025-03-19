@@ -30,6 +30,7 @@ public class DeliveryRouteService {
     private final MockHubRouteService mockHubRouteService;
     private final MockDeliveryManagerService mockDeliveryManagerService;
 
+    @Transactional
     public void createDeliveryRoutes(Delivery delivery) {
 
         // 1. 출발+도착 허브 보고 허브간 이동경로 조회
@@ -61,6 +62,7 @@ public class DeliveryRouteService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<DeliveryRouteResponseDto> getDeliveryRoutesList(UUID deliveryId) {
         List<DeliveryRoute> deliveryRouteList = deliveryRouteRepository.findByDeliveryIdAndDeletedAtIsNull(deliveryId);
 
@@ -73,6 +75,7 @@ public class DeliveryRouteService {
         return deliveryRouteResponseDtoList;
     }
 
+    @Transactional(readOnly = true)
     public DeliveryRouteResponseDto getDeliveryRoute(UUID deliveryId, UUID routesId) {
         DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
                 .orElseThrow(() -> new RuntimeException("배송 기록 없음"));

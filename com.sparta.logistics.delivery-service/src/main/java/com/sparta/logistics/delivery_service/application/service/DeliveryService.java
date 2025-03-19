@@ -32,6 +32,7 @@ public class DeliveryService {
     private final MockCompanyService mockCompanyService;
     private final MockDeliveryManagerService mockDeliveryManagerService;
 
+    @Transactional
     public void createDelivery(DeliveryCreateRequestDto deliveryCreateRequestDto) {
         // 1. 상품을 보고 출발 허브 결정
         UUID productId = deliveryCreateRequestDto.getProductId();
@@ -48,6 +49,7 @@ public class DeliveryService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<DeliveryResponseDto> getDeliveryList() {
         List<Delivery> deliveryList = deliveryRepository.findByAndDeletedAtIsNull();
 
@@ -58,6 +60,7 @@ public class DeliveryService {
         return deliveryResponseDtoList;
     }
 
+    @Transactional(readOnly = true)
     public DeliveryResponseDto getDelivery(UUID deliveryId) {
         Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
                 .orElseThrow(() -> new RuntimeException());
