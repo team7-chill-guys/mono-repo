@@ -3,12 +3,11 @@ package com.sparta.logistics.delivery_service.application.service;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryRouteUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRouteResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryRouteMapper;
-import com.sparta.logistics.delivery_service.application.service.mock.MockDeliveryManager;
+import com.sparta.logistics.delivery_service.application.service.mock.MockDeliveryManagerService;
 import com.sparta.logistics.delivery_service.application.service.mock.MockHubRouteService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRoute;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRouteStatus;
-import com.sparta.logistics.delivery_service.domain.repository.DeliveryRepository;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRouteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class DeliveryRouteService {
 
     private final DeliveryRouteRepository deliveryRouteRepository;
     private final MockHubRouteService mockHubRouteService;
-    private final MockDeliveryManager mockDeliveryManager;
+    private final MockDeliveryManagerService mockDeliveryManagerService;
 
     public void createDeliveryRoutes(Delivery delivery) {
 
@@ -103,7 +102,7 @@ public class DeliveryRouteService {
                 .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
 
         UUID departureHubId = deliveryRoute.getStartHudId();
-        Long hudDeliveryManagerId = mockDeliveryManager.getDeliveryManager(departureHubId);
+        Long hudDeliveryManagerId = mockDeliveryManagerService.getDeliveryManager(departureHubId, "HUB");
 
         deliveryRoute.assignHubDeliveryManager(hudDeliveryManagerId);
 

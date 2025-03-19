@@ -56,15 +56,6 @@ public class DelieveryController {
     }
 
     /**
-     * 업체 배송 담당자 배정
-     */
-    @PutMapping("/{delivery_id}/assign")
-    public ResponseEntity<Void> assignDeliveryManager(@PathVariable("delivery_id") UUID deliveryId) {
-        deliveryService.assignDeliveryManager(deliveryId);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
      * 배송 상태 변경
      */
     @PutMapping("/{delivery_id}/status")
