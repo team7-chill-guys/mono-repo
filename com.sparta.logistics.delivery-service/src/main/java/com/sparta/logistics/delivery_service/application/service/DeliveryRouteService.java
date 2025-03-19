@@ -9,6 +9,7 @@ import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRoute;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRouteStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRouteRepository;
+import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
 import com.sparta.logistics.delivery_service.infrastructure.client.HubRouteClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +27,8 @@ import java.util.UUID;
 public class DeliveryRouteService {
 
     private final DeliveryRouteRepository deliveryRouteRepository;
-    private final MockDeliveryManagerService mockDeliveryManagerService;
     private final HubRouteClient hubRouteClient;
+    private final DeliveryManagerClient deliveryManagerClient;
 
     @Transactional
     public void createDeliveryRoutes(Delivery delivery) {
@@ -104,18 +105,6 @@ public class DeliveryRouteService {
         deliveryRoute.deletedOf();
     }
 
-    @Transactional
-    public void assignHudDeliveryManager(UUID deliveryId, UUID routesId) {
-        DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
-
-        UUID departureHubId = deliveryRoute.getStartHudId();
-        Long hudDeliveryManagerId = mockDeliveryManagerService.getDeliveryManager(departureHubId, "HUB");
-
-        deliveryRoute.assignHubDeliveryManager(hudDeliveryManagerId);
-
-        deliveryRouteRepository.save(deliveryRoute);
-    }
 
     @Transactional
     public void assignPendingDeliveries() {
@@ -124,7 +113,7 @@ public class DeliveryRouteService {
         if(!pendingDeliveryies.isEmpty()) {
             for(DeliveryRoute deliveryRoute : pendingDeliveryies) {
                 UUID startHubId = deliveryRoute.getStartHudId();
-                Long hubDeliveryManagerId = mockDeliveryManagerService.getDeliveryManager(startHubId, "HUB");
+                Long hubDeliveryManagerId = deliveryManagerClient.getDeliveryManager(startHubId, "HUB");
                 deliveryRoute.assignHubDeliveryManager(hubDeliveryManagerId);
 
                 deliveryRouteRepository.save(deliveryRoute);

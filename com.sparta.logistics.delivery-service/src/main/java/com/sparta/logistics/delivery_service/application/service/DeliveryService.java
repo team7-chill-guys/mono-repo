@@ -11,6 +11,7 @@ import com.sparta.logistics.delivery_service.application.service.mock.MockProduc
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRepository;
+import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,8 @@ public class DeliveryService {
 
     private final MockProductService mockProductService;
     private final MockCompanyService mockCompanyService;
-    private final MockDeliveryManagerService mockDeliveryManagerService;
+
+    private final DeliveryManagerClient deliveryManagerClient;
 
     @Transactional
     public void createDelivery(DeliveryCreateRequestDto deliveryCreateRequestDto) {
@@ -95,7 +97,7 @@ public class DeliveryService {
 
             for(Delivery delivery : pendingDeliveryies) {
                 UUID departureHubId = delivery.getDepartureHubId();
-                Long deliveryManagerId = mockDeliveryManagerService.getDeliveryManager(departureHubId, "COMPANY");
+                Long deliveryManagerId = deliveryManagerClient.getDeliveryManager(departureHubId, "COMPANY");
                 delivery.assignDeliveryManager(deliveryManagerId);
 
                 // TODO: 슬랙에 이벤트 전송
