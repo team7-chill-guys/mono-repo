@@ -26,14 +26,7 @@ public class AuthService {
     // 회원가입
     public AuthSignupResponseDto createUser(AuthSignupRequestDto requestDto, String userIdHeader) {
         Long userId = parseOrDefault(userIdHeader);
-
-        User user = User.builder()
-            .username(requestDto.getUsername())
-            .password(BCrypt.hashpw(requestDto.getPassword(), BCrypt.gensalt()))
-            .slackId(requestDto.getSlackId())
-            .role(UserRole.ROLE_USER)
-            .build();
-
+        User user = User.fromRequest(requestDto);
         user.createInfo(userId);
         userRepository.save(user);
 

@@ -1,4 +1,4 @@
-package com.sparta.logistics.user_service.presentation.controller;
+package com.sparta.logistics.user_service.presentation.feignClient;
 
 import com.sparta.logistics.user_service.application.dto.request.AuthSignupRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
