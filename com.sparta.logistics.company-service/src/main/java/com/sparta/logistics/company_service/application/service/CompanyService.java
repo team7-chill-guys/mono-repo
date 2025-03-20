@@ -7,6 +7,7 @@ import com.sparta.logistics.company_service.domain.Company;
 import com.sparta.logistics.company_service.domain.HubId;
 import com.sparta.logistics.company_service.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,13 @@ import java.util.UUID;
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
+
+    // [배송에서 아이디 가져오기]
+    public UUID getHubIdByCompanyId(UUID companyId) {
+        Company company = companyRepository.findByIdAndDeletedAtIsNull(companyId)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+        return company.getHubId().getHubId();
+    }
 
     // [생성]
     @Transactional
