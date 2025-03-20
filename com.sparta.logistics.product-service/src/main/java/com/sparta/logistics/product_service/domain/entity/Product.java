@@ -29,4 +29,15 @@ public class Product {
     private Long updatedBy;
     private Timestamp deletedAt;
     private Long deletedBy;
+
+    public void decreaseStock(long quantity) {
+        if (this.stock >= quantity) {
+            this.stock -= quantity;
+        } else {
+            throw new RuntimeException("Not enough stock");
+        }
+    }
+    public void increaseStock(long quantity) {
+        this.stock += quantity;
+    }
 }
