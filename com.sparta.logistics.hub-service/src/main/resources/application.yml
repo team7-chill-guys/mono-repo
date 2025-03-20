@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${POSTGRES_DB}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+  application:
+    name: hub-service
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    register-with-eureka: false # 나중에 true 로 변경
+    fetch-registry: false # 나중에 true 로 변경
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:19090/eureka/
+  instance:
+    hostname: localhost
+kakao:
+  rest:
+    api:
+      key: ${KAKAO_KEY}
