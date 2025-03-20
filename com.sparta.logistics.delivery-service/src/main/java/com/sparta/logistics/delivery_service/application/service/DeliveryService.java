@@ -6,7 +6,6 @@ import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfo
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
-import com.sparta.logistics.delivery_service.application.service.mock.MockCompanyService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRepository;
@@ -29,8 +28,6 @@ public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
     private final DeliveryRouteService deliveryRouteService;
-
-    private final MockCompanyService mockCompanyService;
 
     private final DeliveryManagerClient deliveryManagerClient;
     private final CompanyClient companyClient;
