@@ -1,8 +1,10 @@
 package com.sparta.logistics.delivery_service.domain.repository;
 
 import com.sparta.logistics.delivery_service.domain.model.DeliveryManager;
+import com.sparta.logistics.delivery_service.domain.model.DeliveryManagerType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,5 +16,13 @@ public interface DeliveryManagerRepository extends JpaRepository<DeliveryManager
     Optional<DeliveryManager> findByIdAndDeletedAtIsNull(Long deliveryManagerId);
 
     @Query("SELECT COALESCE(MAX(d.sequence), 0) FROM DeliveryManager d")
-    Integer getMaxSequence();
+    Long getMaxSequence();
+
+    @Query("SELECT d FROM DeliveryManager d " +
+            "WHERE d.hubId = :hubId AND d.type = :type AND d.deletedAt IS NULL " +
+            "ORDER BY d.sequence ASC")
+    List<DeliveryManager> findByHubIdAndTypeAndDeletedAtIsNullOrdered(@Param("hubId") UUID hubId,
+                                                                      @Param("type") DeliveryManagerType type);
+    @Query("SELECT MAX(d.sequence) FROM DeliveryManager d")
+    Long findMaxSequence();
 }

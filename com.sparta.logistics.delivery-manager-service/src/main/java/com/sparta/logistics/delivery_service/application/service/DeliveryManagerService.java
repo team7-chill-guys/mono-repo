@@ -5,6 +5,7 @@ import com.sparta.logistics.delivery_service.application.dto.request.DeliveryMan
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryManagerMapper;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryManager;
+import com.sparta.logistics.delivery_service.domain.model.DeliveryManagerType;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryManagerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,9 @@ public class DeliveryManagerService {
     @Transactional
     public void createDeliveryManager(DeliveryManagerCreateRequestDto deliveryManagerCreateRequestDto) {
         // User에서 id 값 받아오기
-        Long id = 555L;
+        Long id = 4L;
 
-        Integer sequence = deliveryManagerRepository.getMaxSequence() + 1;
+        Long sequence = deliveryManagerRepository.getMaxSequence() + 1;
 
         DeliveryManager deliveryManager = DeliveryManagerMapper.toEntity(deliveryManagerCreateRequestDto, id, sequence);
         deliveryManagerRepository.save(deliveryManager);
@@ -65,5 +66,23 @@ public class DeliveryManagerService {
                 .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
 
         deliveryManager.deletedOf();
+    }
+
+    @Transactional
+    public Long assignDeliveryManager(UUID startHubId, UUID endHubId, DeliveryManagerType type) {
+        //출발허브아이디와 타입으로 배송담당자 조회
+        List<DeliveryManager> deliveryManagerList = deliveryManagerRepository.findByHubIdAndTypeAndDeletedAtIsNullOrdered(startHubId, type);
+
+        //순번이 가장 먼저인 배송 담당자 배정
+        if(deliveryManagerList.isEmpty()) {
+            throw new RuntimeException("적합한 배송 담당자 없음");
+        }
+
+        DeliveryManager deliveryManager = deliveryManagerList.get(0);
+        Long id = deliveryManager.getId();
+        Long maxSequence = deliveryManagerRepository.findMaxSequence();
+        deliveryManager.changeHubId(endHubId, maxSequence);
+
+        return id;
     }
 }

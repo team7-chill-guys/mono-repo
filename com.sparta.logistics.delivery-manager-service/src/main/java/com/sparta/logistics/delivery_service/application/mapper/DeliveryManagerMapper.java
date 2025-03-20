@@ -6,7 +6,7 @@ import com.sparta.logistics.delivery_service.domain.model.DeliveryManager;
 
 public class DeliveryManagerMapper {
 
-    public static DeliveryManager toEntity(DeliveryManagerCreateRequestDto dto, Long id, Integer sequence) {
+    public static DeliveryManager toEntity(DeliveryManagerCreateRequestDto dto, Long id, Long sequence) {
         return DeliveryManager.builder()
                 .id(id)
                 .hubId(dto.getHubId())
