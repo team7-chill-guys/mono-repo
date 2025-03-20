@@ -1,10 +1,10 @@
 package com.sparta.logistics.delivery_service.application.service;
 
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryRouteUpdateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRouteResponseDto;
-import com.sparta.logistics.delivery_service.application.dto.response.HubRouteListResponseDto;
+import com.sparta.logistics.delivery_service.application.dto.HubRouteListResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryRouteMapper;
-import com.sparta.logistics.delivery_service.application.service.mock.MockDeliveryManagerService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRoute;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRouteStatus;
@@ -113,8 +113,9 @@ public class DeliveryRouteService {
         if(!pendingDeliveryies.isEmpty()) {
             for(DeliveryRoute deliveryRoute : pendingDeliveryies) {
                 UUID startHubId = deliveryRoute.getStartHudId();
-                Long hubDeliveryManagerId = deliveryManagerClient.getDeliveryManager(startHubId, "HUB");
-                deliveryRoute.assignHubDeliveryManager(hubDeliveryManagerId);
+                UUID endHubId = deliveryRoute.getEndHudId();
+                DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(startHubId, endHubId, "HUB");
+                deliveryRoute.assignHubDeliveryManager(dto.getId());
 
                 deliveryRouteRepository.save(deliveryRoute);
                 log.info("HubDeliveryManager Assigned");

@@ -2,6 +2,7 @@ package com.sparta.logistics.delivery_service.application.service;
 
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryCreateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpdateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
@@ -98,16 +99,17 @@ public class DeliveryService {
 
             for(Delivery delivery : pendingDeliveryies) {
                 UUID departureHubId = delivery.getDepartureHubId();
+                UUID destinationHubId = delivery.getDestinationHubId();
                 String type = "COMPANY";
-                Long deliveryManagerId = deliveryManagerClient.getDeliveryManager(departureHubId, type);
-                delivery.assignDeliveryManager(deliveryManagerId);
+                DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(departureHubId, destinationHubId, type);
+                delivery.assignDeliveryManager(dto.getId());
 
                 deliveryRepository.save(delivery);
 
                 log.info("DeliveryManager Assigned");
 
                 // 배송정보를 kafka로 전송
-                producerService.sendInfo(type, DeliveryInfoMapper.toDto(delivery));
+                producerService.sendInfo(type, DeliveryInfoMapper.toDto(delivery, dto.getSlackId()));
             }
         }
     }
