@@ -46,15 +46,6 @@ public class DeliveryRouteController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * 허브 배송 담당자 배정
-     */
-    @PutMapping("/{routes_id}/assign")
-    public ResponseEntity<Void> assignHubDeliveryManager(@PathVariable("delivery_id") UUID deliveryId,
-                                                         @PathVariable("routes_id") UUID routesId) {
-        deliveryRouteService.assignHudDeliveryManager(deliveryId, routesId);
-        return ResponseEntity.ok().build();
-    }
 
     /**
      * 배송 상태 변경

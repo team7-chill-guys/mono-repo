@@ -2,15 +2,16 @@ package com.sparta.logistics.delivery_service.application.service;
 
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryCreateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpdateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
+import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
 import com.sparta.logistics.delivery_service.application.service.mock.MockCompanyService;
-import com.sparta.logistics.delivery_service.application.service.mock.MockDeliveryManagerService;
-import com.sparta.logistics.delivery_service.application.service.mock.MockOrderService;
 import com.sparta.logistics.delivery_service.application.service.mock.MockProductService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRepository;
+import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,10 @@ public class DeliveryService {
 
     private final MockProductService mockProductService;
     private final MockCompanyService mockCompanyService;
-    private final MockDeliveryManagerService mockDeliveryManagerService;
+
+    private final DeliveryManagerClient deliveryManagerClient;
+
+    private final ProducerService producerService;
 
     @Transactional
     public void createDelivery(DeliveryCreateRequestDto deliveryCreateRequestDto) {
@@ -95,13 +99,17 @@ public class DeliveryService {
 
             for(Delivery delivery : pendingDeliveryies) {
                 UUID departureHubId = delivery.getDepartureHubId();
-                Long deliveryManagerId = mockDeliveryManagerService.getDeliveryManager(departureHubId, "COMPANY");
-                delivery.assignDeliveryManager(deliveryManagerId);
-
-                // TODO: 슬랙에 이벤트 전송
+                UUID destinationHubId = delivery.getDestinationHubId();
+                String type = "COMPANY";
+                DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(departureHubId, destinationHubId, type);
+                delivery.assignDeliveryManager(dto.getId());
 
                 deliveryRepository.save(delivery);
+
                 log.info("DeliveryManager Assigned");
+
+                // 배송정보를 kafka로 전송
+                producerService.sendInfo(type, DeliveryInfoMapper.toDto(delivery, dto.getSlackId()));
             }
         }
     }

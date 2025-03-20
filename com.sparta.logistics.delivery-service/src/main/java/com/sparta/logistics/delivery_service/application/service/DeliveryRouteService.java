@@ -1,16 +1,16 @@
 package com.sparta.logistics.delivery_service.application.service;
 
-import com.sparta.logistics.delivery_service.application.dto.mock.HubRouteInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryRouteUpdateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRouteResponseDto;
+import com.sparta.logistics.delivery_service.application.dto.HubRouteListResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryRouteMapper;
-import com.sparta.logistics.delivery_service.application.service.mock.MockDeliveryManagerService;
-import com.sparta.logistics.delivery_service.application.service.mock.MockHubRouteService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRoute;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRouteStatus;
-import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRouteRepository;
+import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
+import com.sparta.logistics.delivery_service.infrastructure.client.HubRouteClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.sparta.logistics.delivery_service.domain.model.QDelivery.delivery;
 
 @Slf4j
 @Service
@@ -28,24 +27,25 @@ import static com.sparta.logistics.delivery_service.domain.model.QDelivery.deliv
 public class DeliveryRouteService {
 
     private final DeliveryRouteRepository deliveryRouteRepository;
-    private final MockHubRouteService mockHubRouteService;
-    private final MockDeliveryManagerService mockDeliveryManagerService;
+    private final HubRouteClient hubRouteClient;
+    private final DeliveryManagerClient deliveryManagerClient;
 
     @Transactional
     public void createDeliveryRoutes(Delivery delivery) {
 
         // 1. 출발+도착 허브 보고 허브간 이동경로 조회
-        List<HubRouteInfoDto> hubRouteList = mockHubRouteService.getHubRoute(delivery.getDepartureHubId(), delivery.getDestinationHubId());
+        List<HubRouteListResponseDto> hubRouteList = hubRouteClient.getHubRouteList(delivery.getDepartureHubId(), delivery.getDestinationHubId());
 
         // 2. 조회 된 허브간 이동 경로에서 시작허브, 도착허브 예상거리, 예상 소요시간 조회
         Integer sequence = 1;
 
-        for(HubRouteInfoDto hubRoute : hubRouteList){
+        for(HubRouteListResponseDto hubRoute : hubRouteList){
             UUID startHubId = hubRoute.getStartHubId();
             UUID endHubId = hubRoute.getEndHubId();
-            Double estimatedDistance = hubRoute.getEstimatedDistance();
-            Integer estimatedTime = hubRoute.getEstimatedTime();
+            Double estimatedDistance = hubRoute.getDeliveryDistance();
+            Integer estimatedTime = hubRoute.getDeliveryTime();
 
+            // TODO: 실제 걸린시간 어딘가에서 가져오기..
             Double actualDistance = 212.4677;
             Integer actualTime = 135;
 
@@ -105,18 +105,6 @@ public class DeliveryRouteService {
         deliveryRoute.deletedOf();
     }
 
-    @Transactional
-    public void assignHudDeliveryManager(UUID deliveryId, UUID routesId) {
-        DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
-
-        UUID departureHubId = deliveryRoute.getStartHudId();
-        Long hudDeliveryManagerId = mockDeliveryManagerService.getDeliveryManager(departureHubId, "HUB");
-
-        deliveryRoute.assignHubDeliveryManager(hudDeliveryManagerId);
-
-        deliveryRouteRepository.save(deliveryRoute);
-    }
 
     @Transactional
     public void assignPendingDeliveries() {
@@ -125,8 +113,9 @@ public class DeliveryRouteService {
         if(!pendingDeliveryies.isEmpty()) {
             for(DeliveryRoute deliveryRoute : pendingDeliveryies) {
                 UUID startHubId = deliveryRoute.getStartHudId();
-                Long hubDeliveryManagerId = mockDeliveryManagerService.getDeliveryManager(startHubId, "HUB");
-                deliveryRoute.assignHubDeliveryManager(hubDeliveryManagerId);
+                UUID endHubId = deliveryRoute.getEndHudId();
+                DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(startHubId, endHubId, "HUB");
+                deliveryRoute.assignHubDeliveryManager(dto.getId());
 
                 deliveryRouteRepository.save(deliveryRoute);
                 log.info("HubDeliveryManager Assigned");
