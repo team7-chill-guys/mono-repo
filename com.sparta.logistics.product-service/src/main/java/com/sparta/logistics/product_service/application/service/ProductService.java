@@ -5,7 +5,6 @@ import com.sparta.logistics.product_service.application.dto.request.ProductUpdat
 import com.sparta.logistics.product_service.application.dto.response.*;
 import com.sparta.logistics.product_service.client.CompanyClient;
 import com.sparta.logistics.product_service.client.HubClient;
-import com.sparta.logistics.product_service.client.dto.CompanyResponseDto;
 import com.sparta.logistics.product_service.client.dto.HubResponseDto;
 import com.sparta.logistics.product_service.domain.entity.Product;
 import com.sparta.logistics.product_service.domain.repository.ProductRepository;
@@ -34,7 +33,7 @@ public class ProductService {
         UUID findCompanyId = requestProductCreateDto.getCompanyId();
         UUID findHubId = requestProductCreateDto.getHubId();
 
-        CompanyResponseDto companyResponse = companyClient.getCompany(findCompanyId);
+        UUID companyResponse = companyClient.getCompany(findCompanyId);
         if (companyResponse == null) {
             throw new IllegalArgumentException("회사를 찾을 수 없습니다: " + findCompanyId);
         }
@@ -45,8 +44,8 @@ public class ProductService {
         }
 
         Product product = Product.builder()
-                .companyId(findCompanyId)
-                .hubId(findHubId)
+                .companyId(companyResponse)
+                .hubId(hubResponse.getId())
                 .name(requestProductCreateDto.getName())
                 .stock(requestProductCreateDto.getStock())
                 .build();
@@ -153,20 +152,31 @@ public class ProductService {
         return ResponseEntity.ok().build();
     }
 
-    public ProductIdResponseDto getProductIdByName(String name) {
-        Product product = productRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
-        return ProductIdResponseDto.builder()
-                .productId(product.getId())
-                .build();
-    }
-
-    public ProductStockResponseDto getStockByProductId(UUID productId) {
+    public StockUpdateResponseDto reduceStock(UUID productId, Long quantity) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
-        return ProductStockResponseDto.builder()
-                .productId(product.getId())
-                .stock(product.getStock())
-                .build();
+
+        boolean success = product.decreaseStock(quantity);
+        product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        productRepository.save(product);
+
+        return new StockUpdateResponseDto(success);
+    }
+
+    public StockUpdateResponseDto addStock(UUID productId, Long quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+
+        boolean success = product.increaseStock(quantity);
+        product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        productRepository.save(product);
+
+        return new StockUpdateResponseDto(success);
+    }
+
+    public UUID getHubIdByProductId(UUID productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+        return product.getHubId();
     }
 }
