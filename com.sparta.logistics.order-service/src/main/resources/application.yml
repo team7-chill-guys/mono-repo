@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: order-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: team7
+    password: 1234
+    url: jdbc:postgresql://${POSTGRES_HOST_COMPANY}/team7
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+
+server:
+  port: 19095
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:19090/eureka/
+  instance:
+    hostname: localhost
