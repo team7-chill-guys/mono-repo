@@ -43,4 +43,8 @@ public abstract class BaseEntity {
 
   @Column(name = "deleted_by")
   private Long deletedBy;
+
+  public void updateUpdateBy(long updatedBy) {
+    this.updatedBy = updatedBy;
+  }
 }

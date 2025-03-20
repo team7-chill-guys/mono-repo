@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface HubService {
 
-  HubCreateResponseDto createHub(HubCreateRequestDto requestDto);
+  HubCreateResponseDto createHub(HubCreateRequestDto requestDto, String userIdHeader);
 
   HubDetailResponseDto getHubDetail(UUID hubId);
 
@@ -19,7 +19,7 @@ public interface HubService {
 
   List<HubListResponseDto> getSearchHubs(String hubName, String address, UUID hubId);
 
-  HubUpdateResponseDto updateHub(UUID hubId, HubUpdateRequestDto requestDto);
+  HubUpdateResponseDto updateHub(UUID hubId, HubUpdateRequestDto requestDto, String userIdHeader);
 
-  void deleteHub(Long userId, UUID hubId);
+  void deleteHub(Long userId, UUID hubId,String userIdHeader);
 }
