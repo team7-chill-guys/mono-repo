@@ -2,6 +2,7 @@ package com.sparta.logistics.delivery_service.presentation;
 
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerCreateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerUpdateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerResponseDto;
 import com.sparta.logistics.delivery_service.application.service.DeliveryManagerService;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryManagerType;
@@ -69,9 +70,9 @@ public class DeliveryManagerController {
      * 배송 담당자 배정
      */
     @GetMapping("/assign")
-    public ResponseEntity<Long> assignDeliveryManager(@RequestParam UUID startHubId,
-                                                      @RequestParam UUID endHubId,
-                                                      @RequestParam DeliveryManagerType type) {
+    public ResponseEntity<DeliveryManagerInfoDto> assignDeliveryManager(@RequestParam UUID startHubId,
+                                                                        @RequestParam UUID endHubId,
+                                                                        @RequestParam DeliveryManagerType type) {
         return ResponseEntity.ok().body(deliveryManagerService.assignDeliveryManager(startHubId, endHubId, type));
     }
 }

@@ -2,7 +2,9 @@ package com.sparta.logistics.delivery_service.application.service;
 
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerCreateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerUpdateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerResponseDto;
+import com.sparta.logistics.delivery_service.application.mapper.DeliveryManagerInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryManagerMapper;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryManager;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryManagerType;
@@ -69,7 +71,7 @@ public class DeliveryManagerService {
     }
 
     @Transactional
-    public Long assignDeliveryManager(UUID startHubId, UUID endHubId, DeliveryManagerType type) {
+    public DeliveryManagerInfoDto assignDeliveryManager(UUID startHubId, UUID endHubId, DeliveryManagerType type) {
         //출발허브아이디와 타입으로 배송담당자 조회
         List<DeliveryManager> deliveryManagerList = deliveryManagerRepository.findByHubIdAndTypeAndDeletedAtIsNullOrdered(startHubId, type);
 
@@ -83,6 +85,6 @@ public class DeliveryManagerService {
         Long maxSequence = deliveryManagerRepository.findMaxSequence();
         deliveryManager.changeHubId(endHubId, maxSequence);
 
-        return id;
+        return DeliveryManagerInfoMapper.toDto(id, deliveryManager.getSlackId());
     }
 }
