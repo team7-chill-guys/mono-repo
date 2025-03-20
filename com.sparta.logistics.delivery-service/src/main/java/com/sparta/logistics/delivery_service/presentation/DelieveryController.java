@@ -1,6 +1,6 @@
 package com.sparta.logistics.delivery_service.presentation;
 
-import com.sparta.logistics.delivery_service.application.dto.request.DeliveryCreateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.request.OrderDeliveryRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
 import com.sparta.logistics.delivery_service.application.dto.response.PageResponseDto;
@@ -24,9 +24,8 @@ public class DelieveryController {
      * 배송 & 배송 경로 생성
      */
     @PostMapping
-    public ResponseEntity<Void> createDelivery(@RequestBody DeliveryCreateRequestDto deliveryCreateRequestDto) {
-        deliveryService.createDelivery(deliveryCreateRequestDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UUID> createDelivery(@RequestBody OrderDeliveryRequestDto orderDeliveryRequestDto) {
+        return ResponseEntity.ok().body(deliveryService.createDelivery(orderDeliveryRequestDto));
     }
 
     /**

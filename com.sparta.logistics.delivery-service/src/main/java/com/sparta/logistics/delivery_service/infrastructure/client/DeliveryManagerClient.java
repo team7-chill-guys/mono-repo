@@ -1,6 +1,6 @@
 package com.sparta.logistics.delivery_service.infrastructure.client;
 
-import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfoDto;
+import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -1,6 +1,6 @@
 package com.sparta.logistics.delivery_service.application.mapper;
 
-import com.sparta.logistics.delivery_service.application.dto.request.DeliveryCreateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.request.OrderDeliveryRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.RecipientCompany;
@@ -9,14 +9,14 @@ import java.util.UUID;
 
 public class DeliveryMapper {
 
-    public static Delivery toEntity(DeliveryCreateRequestDto dto,
+    public static Delivery toEntity(OrderDeliveryRequestDto dto,
                                     UUID departureHubId,
                                     UUID destinationHubId){
         RecipientCompany recipientCompany = RecipientCompany.builder()
-                .companyId(dto.getCompanyId())
+                .companyId(dto.getRequestCompanyId())
                 .address(dto.getAddress())
                 .slackId(dto.getSlackId())
-                .phone(dto.getPhoneNumber())
+                .phone(dto.getPhone())
                 .build();
 
         return Delivery.builder()
