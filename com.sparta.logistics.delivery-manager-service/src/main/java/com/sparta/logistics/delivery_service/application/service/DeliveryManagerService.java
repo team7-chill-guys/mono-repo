@@ -1,6 +1,5 @@
 package com.sparta.logistics.delivery_service.application.service;
 
-import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerCreateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerResponseDto;
@@ -24,13 +23,10 @@ public class DeliveryManagerService {
     private final DeliveryManagerRepository deliveryManagerRepository;
 
     @Transactional
-    public void createDeliveryManager(DeliveryManagerCreateRequestDto deliveryManagerCreateRequestDto) {
-        // User에서 id 값 받아오기
-        Long id = 4L;
-
+    public void createDeliveryManager(Long id, String slackId) {
         Long sequence = deliveryManagerRepository.getMaxSequence() + 1;
 
-        DeliveryManager deliveryManager = DeliveryManagerMapper.toEntity(deliveryManagerCreateRequestDto, id, sequence);
+        DeliveryManager deliveryManager = DeliveryManagerMapper.toEntity(id, slackId, sequence);
         deliveryManagerRepository.save(deliveryManager);
     }
 
@@ -86,5 +82,14 @@ public class DeliveryManagerService {
         deliveryManager.changeHubId(endHubId, maxSequence);
 
         return DeliveryManagerInfoMapper.toDto(id, deliveryManager.getSlackId());
+    }
+
+    @Transactional
+    public void assignHubAndType(Long id, UUID hubId, DeliveryManagerType type) {
+        DeliveryManager deliveryManager = deliveryManagerRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
+
+        deliveryManager.setHubAndType(hubId, type);
+
     }
 }
