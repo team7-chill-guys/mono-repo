@@ -24,7 +24,8 @@ public class DelieveryController {
      * 배송 & 배송 경로 생성
      */
     @PostMapping
-    public ResponseEntity<UUID> createDelivery(@RequestBody OrderDeliveryRequestDto orderDeliveryRequestDto) {
+    public ResponseEntity<UUID> createDelivery(@RequestBody OrderDeliveryRequestDto orderDeliveryRequestDto,
+                                               @RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok().body(deliveryService.createDelivery(orderDeliveryRequestDto));
     }
 
@@ -49,7 +50,8 @@ public class DelieveryController {
      */
     @PutMapping("/{delivery_id}")
     public ResponseEntity<Void> updateDelivery(@PathVariable("delivery_id") UUID deliveryId,
-                                               @RequestBody DeliveryUpdateRequestDto updateDeliveryUpdateRequestDto) {
+                                               @RequestBody DeliveryUpdateRequestDto updateDeliveryUpdateRequestDto,
+                                               @RequestHeader("X-User-Id") String userId) {
         deliveryService.updateDelivery(deliveryId, updateDeliveryUpdateRequestDto);
         return ResponseEntity.ok().build();
     }
@@ -59,7 +61,8 @@ public class DelieveryController {
      */
     @PutMapping("/{delivery_id}/status")
     public ResponseEntity<Void> changeDeliveryStatus(@PathVariable("delivery_id") UUID deliveryId,
-                                                     @RequestParam("status")DeliveryStatus status) {
+                                                     @RequestParam("status")DeliveryStatus status,
+                                                     @RequestHeader("X-User-Id") String userId) {
         deliveryService.changeDeliveryStatus(deliveryId, status);
         return ResponseEntity.ok().build();
     }
@@ -68,8 +71,9 @@ public class DelieveryController {
      * 배송 삭제
      */
     @DeleteMapping("/{delivery_id}")
-    public ResponseEntity<Void> deleteDelivery(@PathVariable("delivery_id") UUID deliveryId) {
-        deliveryService.deleteDelivery(deliveryId);
+    public ResponseEntity<Void> deleteDelivery(@PathVariable("delivery_id") UUID deliveryId,
+                                               @RequestHeader(value = "X-User-Id") String userId) {
+        deliveryService.deleteDelivery(deliveryId, userId);
         return ResponseEntity.ok().build();
     }
 

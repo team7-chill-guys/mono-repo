@@ -98,11 +98,12 @@ public class DeliveryRouteService {
 
 
     @Transactional
-    public void deleteDeliveryRoute(UUID deliveryId, UUID routesId) {
+    public void deleteDeliveryRoute(UUID deliveryId, UUID routesId, String userId) {
         DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
                 .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
+        Long id = Long.parseLong(userId);
 
-        deliveryRoute.deletedOf();
+        deliveryRoute.deletedOf(id);
     }
 
 
