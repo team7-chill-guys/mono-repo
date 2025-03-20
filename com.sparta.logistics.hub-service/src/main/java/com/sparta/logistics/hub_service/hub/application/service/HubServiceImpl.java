@@ -10,8 +10,10 @@ import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
 import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -80,8 +82,18 @@ public class HubServiceImpl implements HubService {
 
   // 허브 검색 서비스
   @Override
-  public List<HubListResponseDto> getSearchHubs(String hubName, String address) {
-    List<Hub> hubs = hubRepository.findByHubNameContainingOrAddressContaining(hubName, address);
+  public List<HubListResponseDto> getSearchHubs(String hubName, String address, UUID hubId) {
+    List<Hub> hubs = new ArrayList<>();
+
+    if (hubId != null) {
+      Optional<Hub> result = hubRepository.findById(hubId);
+      if (result.isPresent()) {
+        Hub hub = result.get();
+        hubs.add(hub);
+      }
+    } else {
+      hubs = hubRepository.findByHubNameContainingOrAddressContaining(hubName, address);
+    }
     return hubs.stream()
         .map(HubListResponseDto::toResponse)
         .collect(Collectors.toList());
