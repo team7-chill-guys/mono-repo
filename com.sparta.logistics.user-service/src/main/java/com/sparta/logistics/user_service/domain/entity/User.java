@@ -1,6 +1,7 @@
 package com.sparta.logistics.user_service.domain.entity;
 
 import com.sparta.logistics.user_service.application.dto.request.AuthSignupRequestDto;
+import com.sparta.logistics.user_service.application.dto.request.UserRoleUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
 import com.sparta.logistics.user_service.global.BaseEntity;
 import jakarta.persistence.Column;
@@ -52,6 +53,16 @@ public class User extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void updateRole(UserRoleUpdateRequestDto requestDto) {
+        if (requestDto.getNewRole() != null && !requestDto.getNewRole().isEmpty()) {
+            try {
+                this.role = UserRole.valueOf(requestDto.getNewRole());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("권한 변경에 잘못된 ROLE 값이 들어왔습니다. 받아온 ROLE : " + requestDto.getNewRole());
+            }
+        }
     }
 
     public void updateUser(UserUpdateRequestDto requestDto) {
