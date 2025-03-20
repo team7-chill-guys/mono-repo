@@ -9,7 +9,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductStockResponseDto {
-    private UUID productId;
-    private long availableStock;
+public class ProductHubIdResponseDto {
+    private UUID hubId;
 }
