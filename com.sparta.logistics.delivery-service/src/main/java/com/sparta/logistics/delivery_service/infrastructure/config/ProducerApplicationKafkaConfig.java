@@ -1,6 +1,6 @@
 package com.sparta.logistics.delivery_service.infrastructure.config;
 
-import com.sparta.logistics.delivery_service.application.dto.request.DeliveryInfoDto;
+import com.sparta.logistics.delivery_service.application.dto.DeliveryInfoDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;

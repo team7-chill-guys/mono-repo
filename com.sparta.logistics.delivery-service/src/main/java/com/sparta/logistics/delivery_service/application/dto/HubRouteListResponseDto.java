@@ -1,4 +1,4 @@
-package com.sparta.logistics.delivery_service.application.dto.response;
+package com.sparta.logistics.delivery_service.application.dto;
 
 import lombok.Getter;
 
