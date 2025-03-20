@@ -1,5 +1,9 @@
-package com.sparta.logistics.product_service.dto;
+package com.sparta.logistics.product_service.domain.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -10,7 +14,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResponseProductGetDto {
+@Entity
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private UUID companyId;
     private UUID hubId;
@@ -20,4 +27,6 @@ public class ResponseProductGetDto {
     private Long createdBy;
     private Timestamp updatedAt;
     private Long updatedBy;
+    private Timestamp deletedAt;
+    private Long deletedBy;
 }

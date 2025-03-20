@@ -1,4 +1,4 @@
-package com.sparta.logistics.product_service.dto;
+package com.sparta.logistics.product_service.application.dto.response;
 
 import lombok.*;
 
@@ -10,14 +10,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResponseProductCreateDto {
+public class ProductUpdateResponseDto {
     private UUID id;
     private UUID companyId;
     private UUID hubId;
     private String name;
     private Long stock;
-    private Timestamp createdAt;
-    private Long createdBy;
     private Timestamp updatedAt;
     private Long updatedBy;
 }
