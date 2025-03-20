@@ -54,12 +54,13 @@ public class HubController {
   @GetMapping
   public ResponseEntity<ResponseDto<List<HubListResponseDto>>> getHubList(
       @RequestParam(required = false) String hubName,
-      @RequestParam(required = false) String address) {
+      @RequestParam(required = false) String address,
+      @RequestParam(required = false) UUID hubId) {
 
     List<HubListResponseDto> responseDto = hubService.getHubList();
-    List<HubListResponseDto> searchResponseDto = hubService.getSearchHubs(hubName, address);
+    List<HubListResponseDto> searchResponseDto = hubService.getSearchHubs(hubName, address, hubId);
 
-    if (hubName == null && address == null) {
+    if (hubName == null && address == null && hubId == null) {
       return ResponseEntity.ok(ResponseDto.success(responseDto));
     } else {
       return ResponseEntity.ok(ResponseDto.success(searchResponseDto));
