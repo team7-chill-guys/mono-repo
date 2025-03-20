@@ -6,9 +6,6 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class SlackMessageSaveResponseDto {
     private UUID id;
