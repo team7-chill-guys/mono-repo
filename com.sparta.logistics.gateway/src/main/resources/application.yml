@@ -86,4 +86,4 @@ management:
 
 jwt:
   secret:
-    key: RyYSFXj0FFZDdly9yOmEspG1rMk0++GjPUZLUSZzN1IyZaAEq8CNXjO3NxsfS1GlFOfYVUodjBocRWhC6+Wbog==
+    key: ${JWT_SECRET_KEY}
