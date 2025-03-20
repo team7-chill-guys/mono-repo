@@ -1,6 +1,7 @@
 package com.sparta.logistics.product_service.presentation.controller;
 
 import com.sparta.logistics.product_service.application.dto.request.ProductCreateRequestDto;
+import com.sparta.logistics.product_service.application.dto.request.ProductStockRequestDto;
 import com.sparta.logistics.product_service.application.dto.request.ProductUpdateRequestDto;
 import com.sparta.logistics.product_service.application.dto.response.*;
 import com.sparta.logistics.product_service.application.service.ProductService;
@@ -62,5 +63,23 @@ public class ProductController {
     public ResponseEntity<ProductStockResponseDto> getProductStock(@PathVariable UUID productId) {
         ProductStockResponseDto productStock = productService.getStockByProductId(productId);
         return ResponseEntity.ok(productStock);
+    }
+
+    @PostMapping("/decrease-stock")
+    public ResponseEntity<String> decreaseStock(@RequestBody ProductStockRequestDto requestDto) {
+        productService.reduceStock(requestDto.getProductId(), requestDto.getQuantity());
+        return ResponseEntity.ok("Stock decreased successfully.");
+    }
+
+    @PostMapping("/increase-stock")
+    public ResponseEntity<String> increaseStock(@RequestBody ProductStockRequestDto requestDto) {
+        productService.addStock(requestDto.getProductId(), requestDto.getQuantity());
+        return ResponseEntity.ok("Stock increased successfully.");
+    }
+
+    @GetMapping("/{productId}/hub")
+    public ResponseEntity<ProductHubIdResponseDto> getHubIdByProductId(@PathVariable("productId") UUID productId) {
+        ProductHubIdResponseDto hubId = productService.getHubIdByProductId(productId);
+        return ResponseEntity.ok(hubId);
     }
 }

@@ -166,7 +166,33 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
         return ProductStockResponseDto.builder()
                 .productId(product.getId())
-                .stock(product.getStock())
+                .availableStock(product.getStock())
+                .build();
+    }
+
+    public void reduceStock(UUID productId, long quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+
+        product.decreaseStock(quantity);
+        product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        productRepository.save(product);
+    }
+
+    public void addStock(UUID productId, long quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+
+        product.increaseStock(quantity);
+        product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        productRepository.save(product);
+    }
+
+    public ProductHubIdResponseDto getHubIdByProductId(UUID productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+        return ProductHubIdResponseDto.builder()
+                .hubId(product.getHubId())
                 .build();
     }
 }
