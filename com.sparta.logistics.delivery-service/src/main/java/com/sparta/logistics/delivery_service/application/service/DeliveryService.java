@@ -7,10 +7,10 @@ import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRe
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
 import com.sparta.logistics.delivery_service.application.service.mock.MockCompanyService;
-import com.sparta.logistics.delivery_service.application.service.mock.MockProductService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRepository;
+import com.sparta.logistics.delivery_service.infrastructure.client.CompanyClient;
 import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +29,10 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final DeliveryRouteService deliveryRouteService;
 
-    private final MockProductService mockProductService;
     private final MockCompanyService mockCompanyService;
 
     private final DeliveryManagerClient deliveryManagerClient;
+    private final CompanyClient companyClient;
 
     private final ProducerService producerService;
 
@@ -40,7 +40,7 @@ public class DeliveryService {
     public void createDelivery(DeliveryCreateRequestDto deliveryCreateRequestDto) {
         // 1. 상품을 보고 출발 허브 결정
         UUID productId = deliveryCreateRequestDto.getProductId();
-        UUID departureHubId = mockProductService.getHubId(productId);
+        UUID departureHubId = companyClient.getHubIdByCompanyId(productId);
 
         // 2. 수령 업체 보고 도착 허브 결정
         UUID destinationHubId = mockCompanyService.getHubId(deliveryCreateRequestDto.getCompanyId());
