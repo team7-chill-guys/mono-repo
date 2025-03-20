@@ -56,7 +56,7 @@ public class Company {
     @Column(name = "deleted_by")
     private Long deletedBy;
 
-    public static Company create(CompanyCreateRequestDto requestDto, HubId hubId) {
+    public static Company create(CompanyCreateRequestDto requestDto, HubId hubId, Long userId) {
         return Company.builder()
                 .id(UUID.randomUUID())
                 .hubId(hubId)
@@ -64,10 +64,12 @@ public class Company {
                 .type(requestDto.getType())
                 .address(requestDto.getAddress())
                 .phone(requestDto.getPhone())
-                .createdBy(requestDto.getCreatedBy())
+                .createdBy(userId)
                 .createdAt(Timestamp.from(Instant.now()))
-                .updatedBy(requestDto.getCreatedBy())
+                .updatedBy(userId)
                 .updatedAt(Timestamp.from(Instant.now()))
+                .deletedBy(null)
+                .deletedAt(null)
                 .build();
     }
 
