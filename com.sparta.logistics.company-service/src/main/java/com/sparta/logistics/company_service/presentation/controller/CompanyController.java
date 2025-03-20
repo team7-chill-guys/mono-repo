@@ -27,8 +27,10 @@ public class CompanyController {
 
     // [생성]
     @PostMapping
-    public ResponseEntity<CompanyDetailResponseDto> createCompany(@RequestBody CompanyCreateRequestDto requestDto) {
-        return ResponseEntity.ok(companyService.createCompany(requestDto));
+    public ResponseEntity<CompanyDetailResponseDto> createCompany(
+            @RequestBody CompanyCreateRequestDto requestDto,
+            @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        return ResponseEntity.ok(companyService.createCompany(requestDto, userIdHeader));
     }
 
     // [개별 조회]
@@ -44,19 +46,18 @@ public class CompanyController {
     }
 
     // [수정]
-    // 사용자 정보를 서비스 단에서 처리하도록 수정 예정 (통합 이후)
     @PutMapping("/{id}")
     public ResponseEntity<CompanyDetailResponseDto> updateCompany(
             @PathVariable UUID id,
             @RequestBody CompanyUpdateRequestDto updateDto,
-            @RequestParam Long updatedBy) {
-        return ResponseEntity.ok(companyService.updateCompany(id, updateDto, updatedBy));
+            @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        return ResponseEntity.ok(companyService.updateCompany(id, updateDto, userIdHeader));
     }
 
     // [삭제]
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCompany(@PathVariable UUID id, @RequestParam Long deletedBy) {
-        companyService.deleteCompany(id, deletedBy);
+    public ResponseEntity<Void> deleteCompany(@PathVariable UUID id,  @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        companyService.deleteCompany(id, userIdHeader);
         return ResponseEntity.ok().build();
     }
 }
