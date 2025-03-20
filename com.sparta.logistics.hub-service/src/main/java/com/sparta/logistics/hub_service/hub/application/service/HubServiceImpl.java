@@ -6,9 +6,11 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateRe
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
+import com.sparta.logistics.hub_service.hub.application.dto.response.UserRoleSearchResponseDto;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
 import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
+import com.sparta.logistics.hub_service.hub.infrastructure.Client.UserClient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +30,14 @@ public class HubServiceImpl implements HubService {
 
   private final HubRepository hubRepository;
   private final KakaoMapApiServiceImpl kakaoMapApiService;
+    private final UserClient userClient;
 
   // 허브 생성
   @Transactional
   @Override
   public HubCreateResponseDto createHub(HubCreateRequestDto requestDto, String userIdHeader) {
+
+    List<UserRoleSearchResponseDto> userRoles = userClient.roleSearchUser("ROLE_HUB_MANAGER");
 
     if (hubRepository.existsByUserId(requestDto.getUserId())) {
       throw new IllegalArgumentException("이미 다른 허브에 관리자로 지정되어 있습니다");
