@@ -22,8 +22,8 @@ public class OrderController {
 
     // [등록]
     @PostMapping
-    public ResponseEntity<OrderDetailResponseDto> createOrder(@RequestBody OrderCreateRequestDto requestDto) {
-        return ResponseEntity.ok(orderService.createOrder(requestDto));
+    public ResponseEntity<OrderDetailResponseDto> createOrder(@RequestBody OrderCreateRequestDto requestDto, @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        return ResponseEntity.ok(orderService.createOrder(requestDto, userIdHeader));
     }
 
     // [전체 조회]
@@ -40,15 +40,14 @@ public class OrderController {
 
     // [수정]
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDetailResponseDto> updateOrder(@PathVariable UUID id, @RequestBody OrderUpdateRequestDto updateDto) {
-        return ResponseEntity.ok(orderService.updateOrder(id, updateDto));
+    public ResponseEntity<OrderDetailResponseDto> updateOrder(@PathVariable UUID id, @RequestBody OrderUpdateRequestDto updateDto, @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        return ResponseEntity.ok(orderService.updateOrder(id, updateDto, userIdHeader));
     }
 
     // [삭제]
-    // deletedby 는 유저에서 값 받아오는걸로 수정 예정
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable UUID id, @RequestParam Long deletedBy) {
-        orderService.deleteOrder(id, deletedBy);
+    public ResponseEntity<String> deleteOrder(@PathVariable UUID id, @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        orderService.deleteOrder(id, userIdHeader);
         return ResponseEntity.ok("Order deleted successfully");
     }
 
@@ -56,9 +55,10 @@ public class OrderController {
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateOrderStatus(
             @PathVariable UUID id,
-            @RequestParam OrderStatus status
+            @RequestParam OrderStatus status,
+            @RequestHeader(value = "X-User-Id") String userIdHeader
     ) {
-        orderService.updateOrderStatus(id, status);
+        orderService.updateOrderStatus(id, status, userIdHeader);
         return ResponseEntity.ok("Order status updated successfully");
     }
 }
