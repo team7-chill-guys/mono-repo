@@ -21,5 +21,4 @@ public class OrderCreateRequestDto {
     private OrderStatus status;
     private long quantity;
     private String request;
-    private Long createdBy;
 }
