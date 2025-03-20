@@ -14,6 +14,7 @@ import com.sparta.logistics.slack_service.infrastructure.dto.HubResponseDto;
 import com.sparta.logistics.slack_service.repository.SlackRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.util.UUID;
 
 @Service
@@ -33,7 +34,6 @@ public class SlackService {
         this.slackClient = slackClient;
         this.hubClient = hubClient;
     }
-
 
     public SlackMessageSaveResponseDto saveSlackMessage(DeliveryResponseDto deliveryResponseDto) {
         // 1. hubId로 hub 주소 찾기
@@ -72,11 +72,11 @@ public class SlackService {
         sb.append("배송지: ").append(deliveryDto.getAddress()).append("\n");
 
         sb.append("출발 허브 정보:\n");
-        sb.append("출발 허브 이름: ").append(hubStartResponseDto.getName()).append("\n");
+        sb.append("출발 허브 이름: ").append(hubStartResponseDto.getHubName()).append("\n");
         sb.append("출발 허브 주소: ").append(hubStartResponseDto.getAddress()).append("\n");
 
         sb.append("도착 허브 정보:\n");
-        sb.append("도착 허브 이름: ").append(hubEndResponseDto.getName()).append("\n");
+        sb.append("도착 허브 이름: ").append(hubEndResponseDto.getHubName()).append("\n");
         sb.append("도착 허브 주소: ").append(hubEndResponseDto.getAddress()).append("\n");
 
         return sb.toString();
