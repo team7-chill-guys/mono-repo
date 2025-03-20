@@ -17,7 +17,7 @@ public interface HubService {
 
   List<HubListResponseDto> getHubList();
 
-  List<HubListResponseDto> getSearchHubs(String hubName, String address);
+  List<HubListResponseDto> getSearchHubs(String hubName, String address, UUID hubId);
 
   HubUpdateResponseDto updateHub(UUID hubId, HubUpdateRequestDto requestDto);
 
