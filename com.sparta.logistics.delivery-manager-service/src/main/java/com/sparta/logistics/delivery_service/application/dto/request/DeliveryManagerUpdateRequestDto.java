@@ -10,5 +10,5 @@ public class DeliveryManagerUpdateRequestDto {
     private UUID hubId;
     private String slackId;
     private DeliveryManagerType type;
-    private Integer sequence;
+    private Long sequence;
 }
