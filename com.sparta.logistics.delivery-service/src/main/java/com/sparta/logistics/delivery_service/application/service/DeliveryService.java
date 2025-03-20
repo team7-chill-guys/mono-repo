@@ -6,12 +6,12 @@ import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfo
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
-import com.sparta.logistics.delivery_service.application.service.mock.MockCompanyService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRepository;
 import com.sparta.logistics.delivery_service.infrastructure.client.CompanyClient;
 import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
+import com.sparta.logistics.delivery_service.infrastructure.client.ProductClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,10 +29,9 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final DeliveryRouteService deliveryRouteService;
 
-    private final MockCompanyService mockCompanyService;
-
     private final DeliveryManagerClient deliveryManagerClient;
     private final CompanyClient companyClient;
+    private final ProductClient productClient;
 
     private final ProducerService producerService;
 
@@ -40,10 +39,10 @@ public class DeliveryService {
     public void createDelivery(DeliveryCreateRequestDto deliveryCreateRequestDto) {
         // 1. 상품을 보고 출발 허브 결정
         UUID productId = deliveryCreateRequestDto.getProductId();
-        UUID departureHubId = companyClient.getHubIdByCompanyId(productId);
+        UUID departureHubId = productClient.getHubIdByProductId(productId);
 
         // 2. 수령 업체 보고 도착 허브 결정
-        UUID destinationHubId = mockCompanyService.getHubId(deliveryCreateRequestDto.getCompanyId());
+        UUID destinationHubId = companyClient.getHubIdByCompanyId(deliveryCreateRequestDto.getCompanyId());
 
         // 3. 배송 저장
         Delivery delivery = DeliveryMapper.toEntity(deliveryCreateRequestDto, departureHubId, destinationHubId);
