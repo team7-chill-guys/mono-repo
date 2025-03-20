@@ -1,6 +1,7 @@
 package com.sparta.logistics.user_service.domain.entity;
 
 import com.sparta.logistics.user_service.application.dto.request.AuthSignupRequestDto;
+import com.sparta.logistics.user_service.application.dto.request.UserPasswordUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserRoleUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
 import com.sparta.logistics.user_service.global.BaseEntity;
@@ -16,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Entity
 @Getter
@@ -42,17 +44,17 @@ public class User extends BaseEntity {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private UserRole role;
 
-    public static User fromRequest(AuthSignupRequestDto requestDto, String password) {
+    public static User fromRequest(AuthSignupRequestDto requestDto) {
         return User.builder()
             .username(requestDto.getUsername())
-            .password(password)
+            .password(BCrypt.hashpw(requestDto.getPassword(), BCrypt.gensalt()))
             .slackId(requestDto.getSlackId())
             .role(UserRole.ROLE_USER)
             .build();
     }
 
-    public void updatePassword(String newPassword) {
-        this.password = newPassword;
+    public void updatePassword(UserPasswordUpdateRequestDto requestDto) {
+        this.password = BCrypt.hashpw(requestDto.getNewPassword(), BCrypt.gensalt());
     }
 
     public void updateRole(UserRoleUpdateRequestDto requestDto) {
@@ -71,13 +73,6 @@ public class User extends BaseEntity {
         }
         if (requestDto.getNewSlackId() != null && !requestDto.getNewSlackId().isEmpty()) {
             this.slackId = requestDto.getNewSlackId();
-        }
-        if (requestDto.getNewRole() != null && !requestDto.getNewRole().isEmpty()) {
-            try {
-                this.role = UserRole.valueOf(requestDto.getNewRole());
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("잘못된 ROLE 입니다. 받아온 ROLE : " + requestDto.getNewRole());
-            }
         }
     }
 

@@ -72,7 +72,7 @@ public class UserService {
             .orElseThrow(() -> new EntityNotFoundException("해당 유저를 찾을 수 없습니다. userId : " + userId));
 
         if (BCrypt.checkpw(requestDto.getOldPassword(), user.getPassword())) {
-            user.updatePassword(BCrypt.hashpw(requestDto.getNewPassword(), BCrypt.gensalt()));
+            user.updatePassword(requestDto);
             user.updateInfo(userId);
             userRepository.save(user);
         } else {
@@ -97,7 +97,6 @@ public class UserService {
             .userId(user.getId())
             .username(user.getUsername())
             .slackId(user.getSlackId())
-            .role(user.getRole().toString())
             .build();
     }
 
