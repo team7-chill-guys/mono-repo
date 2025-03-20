@@ -1,0 +1,89 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  data:
+    redis:
+      host: ${REDIS_HOST_USER}
+      port: 6379
+      password: 1234
+  main:
+    web-application-type: reactive
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-service-users
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+
+        - id: user-service-auth
+          uri: lb://user-service
+          predicates:
+            - Path=/api/auth/**
+
+        - id: hub-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/api/hubs/**
+
+        - id: company-service
+          uri: lb://company-service
+          predicates:
+            - Path=/api/companies/**
+
+        - id: delivery-service
+          uri: lb://delivery-service
+          predicates:
+            - Path=/api/delivery/**
+
+        - id: delivery-manager-service
+          uri: lb://delivery-manager-service
+          predicates:
+            - Path=/api/delivery-managers/**
+
+        - id: hub-route-service
+          uri: lb://hub-route-service
+          predicates:
+            - Path=/api/hub-routes/**
+
+        - id: slack-service
+          uri: lb://slack-service
+          predicates:
+            - Path=/api/slack/**
+
+        - id: ai-service
+          uri: lb://ai-service
+          predicates:
+            - Path=/api/ai/**
+
+      discovery:
+        locator:
+          enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_URL}/eureka/
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    com.sparta.logistics.gateway: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway, routes, health, info
+  endpoint:
+    gateway:
+      enabled: true
+
+jwt:
+  secret:
+    key: RyYSFXj0FFZDdly9yOmEspG1rMk0++GjPUZLUSZzN1IyZaAEq8CNXjO3NxsfS1GlFOfYVUodjBocRWhC6+Wbog==
