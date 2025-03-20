@@ -8,5 +8,4 @@ import lombok.Getter;
 public class UserUpdateRequestDto {
     private String newUsername;
     private String newSlackId;
-    private String newRole;
 }

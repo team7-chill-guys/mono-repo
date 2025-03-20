@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UserUpdateResponseDto {
-    private Long userId;
-    private String username;
-    private String slackId;
+public class UserRoleUpdateResponseDto {
 
+    private Long userId;
+    private String slackId;
+    private String newRole;
 }

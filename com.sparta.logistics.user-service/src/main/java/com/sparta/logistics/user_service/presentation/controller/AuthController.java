@@ -8,6 +8,7 @@ import com.sparta.logistics.user_service.application.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,7 +40,7 @@ public class AuthController {
     }
 
     // 로그아웃
-    @DeleteMapping("/auth/logout")
+    @PostMapping("/auth/logout")
     public ResponseEntity<String> logoutUser(@RequestHeader(value = "X-Access-Token") String accessTokenHeader,
                                              @RequestHeader(value = "X-Refresh-Token") String refreshTokenHeader
     ) {

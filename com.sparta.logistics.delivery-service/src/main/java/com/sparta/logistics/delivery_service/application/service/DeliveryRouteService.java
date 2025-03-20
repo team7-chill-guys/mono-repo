@@ -1,9 +1,9 @@
 package com.sparta.logistics.delivery_service.application.service;
 
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryRouteUpdateRequestDto;
-import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfoDto;
+import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRouteResponseDto;
-import com.sparta.logistics.delivery_service.application.dto.HubRouteListResponseDto;
+import com.sparta.logistics.delivery_service.application.dto.response.HubRouteListResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryRouteMapper;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRoute;
