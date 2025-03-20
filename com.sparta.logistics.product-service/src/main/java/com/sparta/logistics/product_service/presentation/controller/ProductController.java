@@ -53,33 +53,27 @@ public class ProductController {
         return productService.deleteProduct(productId);
     }
 
-    @GetMapping("/id")
-    public ResponseEntity<ProductIdResponseDto> getProductIdByName(@RequestParam String name) {
-        ProductIdResponseDto productId = productService.getProductIdByName(name);
-        return ResponseEntity.ok(productId);
+    @PostMapping("/{productId}/decrease-stock")
+    public ResponseEntity<StockUpdateResponseDto> decreaseStock(
+            @PathVariable UUID productId,
+            @RequestBody ProductStockRequestDto requestDto
+    ) {
+        StockUpdateResponseDto response = productService.reduceStock(productId, requestDto.getQuantity());
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{productId}/stock")
-    public ResponseEntity<ProductStockResponseDto> getProductStock(@PathVariable UUID productId) {
-        ProductStockResponseDto productStock = productService.getStockByProductId(productId);
-        return ResponseEntity.ok(productStock);
-    }
-
-    @PostMapping("/decrease-stock")
-    public ResponseEntity<String> decreaseStock(@RequestBody ProductStockRequestDto requestDto) {
-        productService.reduceStock(requestDto.getProductId(), requestDto.getQuantity());
-        return ResponseEntity.ok("Stock decreased successfully.");
-    }
-
-    @PostMapping("/increase-stock")
-    public ResponseEntity<String> increaseStock(@RequestBody ProductStockRequestDto requestDto) {
-        productService.addStock(requestDto.getProductId(), requestDto.getQuantity());
-        return ResponseEntity.ok("Stock increased successfully.");
+    @PostMapping("/{productId}/increase-stock")
+    public ResponseEntity<StockUpdateResponseDto> increaseStock(
+            @PathVariable UUID productId,
+            @RequestParam Long quantity
+    ) {
+        StockUpdateResponseDto response = productService.addStock(productId, quantity);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{productId}/hub")
-    public ResponseEntity<ProductHubIdResponseDto> getHubIdByProductId(@PathVariable("productId") UUID productId) {
-        ProductHubIdResponseDto hubId = productService.getHubIdByProductId(productId);
+    public ResponseEntity<UUID> getHubIdByProductId(@PathVariable("productId") UUID productId) {
+        UUID hubId = productService.getHubIdByProductId(productId);
         return ResponseEntity.ok(hubId);
     }
 }

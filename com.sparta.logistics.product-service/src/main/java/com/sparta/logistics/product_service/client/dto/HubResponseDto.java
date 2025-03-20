@@ -10,5 +10,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class HubResponseDto {
-    UUID hubId;
+    private UUID id;
+    private Long userId;
+    private String hubName;
+    private String address;
+    private Double latitude;
+    private Double longitude;
 }

@@ -30,14 +30,17 @@ public class Product {
     private Timestamp deletedAt;
     private Long deletedBy;
 
-    public void decreaseStock(long quantity) {
+    public boolean decreaseStock(Long quantity) {
         if (this.stock >= quantity) {
             this.stock -= quantity;
+            return true;
         } else {
-            throw new RuntimeException("Not enough stock");
+            return false;
         }
     }
-    public void increaseStock(long quantity) {
+
+    public boolean increaseStock(Long quantity) {
         this.stock += quantity;
+        return true;
     }
 }

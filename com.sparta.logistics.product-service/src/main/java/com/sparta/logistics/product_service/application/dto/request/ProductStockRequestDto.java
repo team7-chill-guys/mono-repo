@@ -11,5 +11,5 @@ import java.util.UUID;
 @Builder
 public class ProductStockRequestDto {
     private UUID productId;
-    private long quantity;
+    private Long quantity;
 }
