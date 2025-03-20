@@ -17,11 +17,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HubServiceImpl implements HubService {
 
   private final HubRepository hubRepository;
@@ -30,7 +32,7 @@ public class HubServiceImpl implements HubService {
   // 허브 생성
   @Transactional
   @Override
-  public HubCreateResponseDto createHub(HubCreateRequestDto requestDto) {
+  public HubCreateResponseDto createHub(HubCreateRequestDto requestDto, String userIdHeader) {
 
     if (hubRepository.existsByUserId(requestDto.getUserId())) {
       throw new IllegalArgumentException("이미 다른 허브에 관리자로 지정되어 있습니다");
@@ -42,8 +44,7 @@ public class HubServiceImpl implements HubService {
       throw new IllegalArgumentException("이미 존재하는 주소입니다.");
     }
 
-    // TODO : 추후 createBy, updateBy 값 -> 로그인한 userId 값 들어가게 변경
-    Long currentId = 1L;
+    Long currentId = Long.valueOf(userIdHeader);
 
     Hub hub = hubRepository.save(
         Hub.builder()
@@ -102,11 +103,10 @@ public class HubServiceImpl implements HubService {
   // 허브 수정
   @Override
   @Transactional
-  public HubUpdateResponseDto updateHub(UUID hubId, HubUpdateRequestDto requestDto) {
+  public HubUpdateResponseDto updateHub(UUID hubId, HubUpdateRequestDto requestDto,
+      String userIdHeader) {
     Hub hub = hubRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
-
-    // TODO : 추후 updateBy 값 -> 로그인한 userId 값 들어가게 변경
 
     if (!Objects.equals(requestDto.getUserId(), hub.getUserId())) {
       if (hubRepository.existsByUserId(requestDto.getUserId())) {
@@ -128,6 +128,8 @@ public class HubServiceImpl implements HubService {
       }
       hub.updateAddress(requestDto.getAddress());
     }
+    Long currentId = Long.valueOf(userIdHeader);
+    hub.updateUpdateBy(currentId);
     hub.updateLatitude(requestDto.getLatitude());
     hub.updateLongitude(requestDto.getLongitude());
 
@@ -135,14 +137,12 @@ public class HubServiceImpl implements HubService {
     return new HubUpdateResponseDto(updateHub);
   }
 
-  public void deleteHub(Long userId, UUID hubId) {
+  public void deleteHub(Long userId, UUID hubId,String userIdHeader) {
 
     Hub hub = hubRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
 
-    // TODO : 추후 deleteBy 값 -> 로그인한 userId 값 들어가게 변경 & userId Long 타입으로 변경
-    Long currentId = 1L; // 임시 아이디
-
+    Long currentId = Long.valueOf(userIdHeader);
     hub.setDeletedBy(currentId);
     hub.setDeletedAt(LocalDateTime.now());
     hubRepository.save(hub);

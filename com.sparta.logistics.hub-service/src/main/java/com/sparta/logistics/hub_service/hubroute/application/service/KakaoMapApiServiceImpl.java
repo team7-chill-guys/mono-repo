@@ -37,7 +37,7 @@ public class KakaoMapApiServiceImpl implements KakaoMapService {
   private final RestTemplate restTemplate;
 
   @Override
-  public HubRouteCreateResponseDto autoCreateHubRoute(HubRouteCreateRequestDto requestDto) {
+  public HubRouteCreateResponseDto autoCreateHubRoute(HubRouteCreateRequestDto requestDto, String userIdHeader) {
 
     Hub startHub = hubRepository.findById(requestDto.getStartHubId())
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브가 없습니다."));
@@ -85,8 +85,7 @@ public class KakaoMapApiServiceImpl implements KakaoMapService {
       throw new IllegalArgumentException("이미 등록된 경로 입니다.");
     }
 
-    // TODO : 임시 아이디 -> 로그인한 사용자 아이디로 변경
-    Long currentId = 1L;
+    Long currentId = Long.valueOf(userIdHeader);
 
     HubRoute hubRoute = hubRouteRepository.save(
         HubRoute.builder()

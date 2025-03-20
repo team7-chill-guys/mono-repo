@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
@@ -22,7 +22,7 @@ import org.hibernate.annotations.SQLDelete;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "p_hub")
-@SQLDelete(sql = "UPDATE p_hub SET deleted_by = ? WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 public class Hub extends BaseEntity {
 
   @Id

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,8 +38,9 @@ public class HubController {
   // 허브 생성
   @PostMapping
   public ResponseEntity<ResponseDto<HubCreateResponseDto>> createHub(
-      @Valid @RequestBody HubCreateRequestDto requestDto) {
-    HubCreateResponseDto responseDto = hubService.createHub(requestDto);
+      @Valid @RequestBody HubCreateRequestDto requestDto,
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
+    HubCreateResponseDto responseDto = hubService.createHub(requestDto, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
@@ -70,15 +72,17 @@ public class HubController {
   // 허브 수정
   @PutMapping("/{hubId}")
   public ResponseEntity<ResponseDto<HubUpdateResponseDto>> updateHub(@PathVariable UUID hubId,
-      @Valid @RequestBody HubUpdateRequestDto requestDto) {
-    HubUpdateResponseDto responseDto = hubService.updateHub(hubId, requestDto);
+      @Valid @RequestBody HubUpdateRequestDto requestDto,
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
+    HubUpdateResponseDto responseDto = hubService.updateHub(hubId, requestDto, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
   // 허브 삭제
   @DeleteMapping("/{hubId}")
-  public ResponseEntity<?> deleteHub(Long userId, @PathVariable UUID hubId) {
-    hubService.deleteHub(userId, hubId);
+  public ResponseEntity<?> deleteHub(Long userId, @PathVariable UUID hubId,
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
+    hubService.deleteHub(userId, hubId, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success("delete success"));
   }
 
