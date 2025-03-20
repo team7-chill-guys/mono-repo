@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class HubListResponseDto {
 
-  private long userId;
+  private Long userId;
   private String hubName;
   private String address;
 

@@ -12,6 +12,6 @@ public class HubRouteUpdateRequestDto {
   private UUID endHubId;
   private String startHubName;
   private String endHubName;
-  private Long deliveryTime;
-  private Long deliveryDistance;
+  private Integer deliveryTime;
+  private Double deliveryDistance;
 }

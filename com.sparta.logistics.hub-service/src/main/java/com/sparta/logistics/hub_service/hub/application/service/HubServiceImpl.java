@@ -8,6 +8,7 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResp
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
+import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HubServiceImpl implements HubService {
 
   private final HubRepository hubRepository;
+  private final KakaoMapApiServiceImpl kakaoMapApiService;
 
   // 허브 생성
   @Transactional
@@ -39,7 +41,7 @@ public class HubServiceImpl implements HubService {
     }
 
     // TODO : 추후 createBy, updateBy 값 -> 로그인한 userId 값 들어가게 변경
-    String currentId = "1";
+    Long currentId = 1L;
 
     Hub hub = hubRepository.save(
         Hub.builder()
@@ -52,6 +54,10 @@ public class HubServiceImpl implements HubService {
             .updatedBy(currentId)
             .build()
     );
+
+// TODO: 허브 생성 시, 모든 가능한 이동 경로를 자동으로 생성 (반복문을 사용하여 허브들 간의 가능한 모든 경로 조합을 계산하여 생성)
+// kakaoMapApiService.autoCreateHubRoute();
+
     return new HubCreateResponseDto(hub);
   }
 
@@ -117,13 +123,13 @@ public class HubServiceImpl implements HubService {
     return new HubUpdateResponseDto(updateHub);
   }
 
-  public void deleteHub(String userId, UUID hubId) {
+  public void deleteHub(Long userId, UUID hubId) {
 
     Hub hub = hubRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
 
     // TODO : 추후 deleteBy 값 -> 로그인한 userId 값 들어가게 변경 & userId Long 타입으로 변경
-    String currentId = "111"; // 임시 아이디
+    Long currentId = 1L; // 임시 아이디
 
     hub.setDeletedBy(currentId);
     hub.setDeletedAt(LocalDateTime.now());

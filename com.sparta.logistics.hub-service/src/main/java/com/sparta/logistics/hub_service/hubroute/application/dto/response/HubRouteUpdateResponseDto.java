@@ -18,8 +18,8 @@ public class HubRouteUpdateResponseDto {
   private UUID endHubId;
   private String startHubName;
   private String endHubName;
-  private Long deliveryTime;
-  private Long deliveryDistance;
+  private Integer deliveryTime;
+  private Double deliveryDistance;
 
 
   public HubRouteUpdateResponseDto(HubRoute updateHubRoute) {

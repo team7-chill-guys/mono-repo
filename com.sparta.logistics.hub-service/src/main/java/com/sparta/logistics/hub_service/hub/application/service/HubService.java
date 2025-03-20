@@ -21,5 +21,5 @@ public interface HubService {
 
   HubUpdateResponseDto updateHub(UUID hubId, HubUpdateRequestDto requestDto);
 
-  void deleteHub(String userId,UUID hubId);
+  void deleteHub(Long userId, UUID hubId);
 }
