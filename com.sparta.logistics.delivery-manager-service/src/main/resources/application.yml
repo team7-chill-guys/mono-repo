@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: delivery-service
+  datasource:
+    url: jdbc:postgresql://localhost:55432/team7
+    username: team7
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  server:
+    port: 19093
+  eureka:
+    client:
+      service-url:
+        defaultZone:http://localhost:19090/eureka/
