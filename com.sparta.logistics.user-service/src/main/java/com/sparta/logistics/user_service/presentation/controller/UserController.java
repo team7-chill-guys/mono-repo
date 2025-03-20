@@ -3,11 +3,13 @@ package com.sparta.logistics.user_service.presentation.controller;
 import com.sparta.logistics.user_service.application.dto.request.UserPasswordUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserRoleUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
+import com.sparta.logistics.user_service.application.dto.response.UserRoleSearchResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserRoleUpdateResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchMeResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserUpdateResponseDto;
 import com.sparta.logistics.user_service.application.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +60,14 @@ public class UserController {
 
         UserSearchResponseDto responseDto = userService.searchUser(userId, username);
         return ResponseEntity.ok(responseDto);
+    }
+
+    // 유저 권한 기반 조회.
+    @GetMapping("/users/role")
+    public ResponseEntity<List<UserRoleSearchResponseDto>> roleSearchUser(@RequestParam(required = true) String userRole
+    ) {
+        List<UserRoleSearchResponseDto> responseDtoList = userService.roleSearchUser(userRole);
+        return ResponseEntity.ok(responseDtoList);
     }
 
     // 유저 수정 : 본인 비밀번호 수정

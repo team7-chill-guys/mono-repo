@@ -3,6 +3,7 @@ package com.sparta.logistics.user_service.application.service;
 import com.sparta.logistics.user_service.application.dto.request.UserPasswordUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserRoleUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
+import com.sparta.logistics.user_service.application.dto.response.UserRoleSearchResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserRoleUpdateResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchMeResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
@@ -15,6 +16,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
@@ -133,5 +136,27 @@ public class UserService {
             .newRole(user.getRole().toString())
             .build();
 
+    }
+
+    // 권한 기반 유저 조회
+    public List<UserRoleSearchResponseDto> roleSearchUser(String userRole) {
+        UserRole roleEnum;
+        try {
+            roleEnum = UserRole.valueOf(userRole);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("해당하는 권한이 없습니다. : " + userRole);
+        }
+
+        List<User> userList = userRepository.findByRole(roleEnum);
+
+        return userList.stream()
+            .map(user -> UserRoleSearchResponseDto.builder()
+                .userId(user.getId())
+                .username(user.getUsername())
+                .slackId(user.getSlackId())
+                .role(user.getRole().toString())
+                .build()
+            )
+            .collect(Collectors.toList());
     }
 }
