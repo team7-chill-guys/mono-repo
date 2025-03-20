@@ -28,7 +28,10 @@ public class OrderService {
     private final DeliveryClient deliveryClient;
 
     @Transactional
-    public OrderDetailResponseDto createOrder(OrderCreateRequestDto requestDto) {
+    public OrderDetailResponseDto createOrder(OrderCreateRequestDto requestDto, String userIdHeader) {
+        Long userId = Long.parseLong(userIdHeader); //변환
+        UUID orderId = UUID.randomUUID(); // 주문 ID를 미리 생성
+
         // 상품 재고 확인 및 감소
         ProductStockRequestDto stockRequestDto = ProductStockRequestDto.builder()
                 .productId(requestDto.getProductId())
@@ -36,20 +39,18 @@ public class OrderService {
                 .build();
 
         StockUpdateResponseDto response = productClient.decreaseStock(requestDto.getProductId(), stockRequestDto);
-
         if (!response.isSuccess()) {
             throw new RuntimeException("Stock not available");
         }
 
         // 주문 ID 생성 및 배송 요청 DTO 변환
-        UUID orderId = UUID.randomUUID(); // 주문 ID를 미리 생성
         OrderDeliveryRequestDto deliveryRequest = OrderDeliveryRequestDto.fromOrderRequest(requestDto, orderId);
 
         // 배송 ID 요청
         UUID deliveryId = deliveryClient.createDelivery(deliveryRequest);
 
         // 주문 저장
-        Order order = Order.toEntity(requestDto, deliveryId);
+        Order order = Order.toEntity(requestDto, deliveryId, userId);
         orderRepository.save(order);
 
         return OrderDetailResponseDto.fromEntity(order);
@@ -72,18 +73,22 @@ public class OrderService {
 
     // [주문 수정]
     @Transactional
-    public OrderDetailResponseDto updateOrder(UUID id, OrderUpdateRequestDto updateDto) {
+    public OrderDetailResponseDto updateOrder(UUID id, OrderUpdateRequestDto updateDto, String userIdHeader) {
         Order order = orderRepository.findByOrderIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("Order not found or already deleted"));
 
-        order.updateOrder(updateDto.getStatus(), updateDto.getQuantity(), updateDto.getRequest(), updateDto.getUpdatedBy());
+        Long userId = Long.parseLong(userIdHeader); //변환
+
+        order.updateOrder(updateDto.getStatus(), updateDto.getQuantity(), updateDto.getRequest(), userId);
 
         return OrderDetailResponseDto.fromEntity(order);
     }
 
     // [삭제]
     @Transactional
-    public void deleteOrder(UUID id, Long deletedBy) {
+    public void deleteOrder(UUID id, String userIdHeader) {
+        Long userId = Long.parseLong(userIdHeader); //변환
+
         Order order = orderRepository.findByOrderIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("Order not found or already deleted"));
 
@@ -95,15 +100,17 @@ public class OrderService {
         }
 
         // 주문 삭제 처리
-        order.deleteOrder(deletedBy);
+        order.deleteOrder(userId);
     }
 
     // [상태만 수정]
     @Transactional
-    public void updateOrderStatus(UUID id, OrderStatus newStatus) {
+    public void updateOrderStatus(UUID id, OrderStatus newStatus, String userIdHeader) {
         Order order = orderRepository.findByOrderIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("Order not found or already deleted"));
 
-        order.updateStatus(newStatus);
+        Long userId = Long.parseLong(userIdHeader);
+
+        order.updateStatus(newStatus, userId);
     }
 }
