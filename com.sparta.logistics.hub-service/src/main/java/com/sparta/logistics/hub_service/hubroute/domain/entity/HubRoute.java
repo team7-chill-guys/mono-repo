@@ -12,12 +12,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@SQLRestriction("deleted_at IS NULL")
 @Table(name = "p_hub_route")
 public class HubRoute extends BaseEntity {
 
