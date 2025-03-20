@@ -11,9 +11,9 @@ import java.util.UUID;
 @Builder
 public class DeliveryResponseDto {
     private UUID deliveryId;
-    private String status;
+    private UUID startHubId;
+    private UUID endHubId;
     private String recipientName;
     private String address;
-    private String deliveryTime;
     private String notes;
 }
