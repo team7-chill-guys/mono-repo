@@ -8,6 +8,6 @@ import lombok.*;
 public class OrderUpdateRequestDto {
 
     private OrderStatus status;
-    private long quantity;
+    private Long quantity;
     private String request;
 }

@@ -4,6 +4,7 @@ import com.sparta.logistics.order_service.infrastructure.client.dto.request.Orde
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.UUID;
 
@@ -11,5 +12,7 @@ import java.util.UUID;
 public interface DeliveryClient {
 
     @PostMapping("/api/deliveries")
-    UUID createDelivery(@RequestBody OrderDeliveryRequestDto requestDto);
+    UUID createDelivery(@RequestBody OrderDeliveryRequestDto requestDto,
+                        @RequestHeader(value = "X-User-Id") String userIdHeader
+    );
 }

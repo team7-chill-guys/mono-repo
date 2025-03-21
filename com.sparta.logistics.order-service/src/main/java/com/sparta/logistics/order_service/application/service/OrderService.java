@@ -13,6 +13,7 @@ import com.sparta.logistics.order_service.application.dto.response.PageResponseD
 import com.sparta.logistics.order_service.infrastructure.client.dto.response.StockUpdateResponseDto;
 import com.sparta.logistics.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -29,6 +31,7 @@ public class OrderService {
 
     @Transactional
     public OrderDetailResponseDto createOrder(OrderCreateRequestDto requestDto, String userIdHeader) {
+
         Long userId = Long.parseLong(userIdHeader); //변환
         UUID orderId = UUID.randomUUID(); // 주문 ID를 미리 생성
 
@@ -39,6 +42,7 @@ public class OrderService {
                 .build();
 
         StockUpdateResponseDto response = productClient.decreaseStock(requestDto.getProductId(), stockRequestDto);
+
         if (!response.isSuccess()) {
             throw new RuntimeException("Stock not available");
         }
@@ -47,10 +51,10 @@ public class OrderService {
         OrderDeliveryRequestDto deliveryRequest = OrderDeliveryRequestDto.fromOrderRequest(requestDto, orderId);
 
         // 배송 ID 요청
-        UUID deliveryId = deliveryClient.createDelivery(deliveryRequest);
+        UUID deliveryId = deliveryClient.createDelivery(deliveryRequest, userIdHeader);
 
-        // 주문 저장
         Order order = Order.toEntity(requestDto, deliveryId, userId);
+
         orderRepository.save(order);
 
         return OrderDetailResponseDto.fromEntity(order);
