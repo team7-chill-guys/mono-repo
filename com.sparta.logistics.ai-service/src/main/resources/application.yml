@@ -1,16 +1,18 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
-    name: ai-service
+    name: product-service
   datasource:
-    url: jdbc:postgresql://localhost:55432/team7
-    username: team7
-    password: 1234
+    url: jdbc:postgresql://${POSTGRES_HOST_PRODUCT}/team7
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     hikari:
       maximum-pool-size: 10
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${DDL_AUTO}
     show-sql: true
     properties:
       hibernate:
@@ -36,16 +38,11 @@ spring:
         enabled: true
 
 server:
-  port: 19097
+  port: 19095
 
 eureka:
   client:
-    service-url:
-      defaultZone: http://localhost:19090/eureka/
     register-with-eureka: true
     fetch-registry: true
-
-gemini:
-  api:
-    baseurl: ${GEMINI_BASEURL}
-    key: ${GOOGLE_AI_API_KEY}
+    service-url:
+      defaultZone: http://${EUREKA_URL}/eureka/
