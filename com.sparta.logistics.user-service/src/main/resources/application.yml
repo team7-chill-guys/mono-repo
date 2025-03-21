@@ -9,7 +9,7 @@ spring:
   data:
     redis:
       host: ${REDIS_HOST_USER}
-      port: 6379
+      port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
   datasource:
     driver-class-name: org.postgresql.Driver
