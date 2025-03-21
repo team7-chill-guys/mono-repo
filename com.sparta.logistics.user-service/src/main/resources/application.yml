@@ -36,6 +36,6 @@ jwt:
   secret:
     key: ${JWT_SECRET_KEY}
   access:
-    exp: 3600000
+    exp: ${JWT_ACCESS_EXP}
   refresh:
-    exp: 36000000
+    exp: ${JWT_REFRESH_EXP}
