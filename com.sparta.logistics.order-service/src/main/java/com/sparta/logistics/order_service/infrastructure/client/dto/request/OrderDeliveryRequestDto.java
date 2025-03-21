@@ -15,9 +15,9 @@ import java.util.UUID;
 public class OrderDeliveryRequestDto {
 
     private UUID orderId;
+    private UUID productId;
     private UUID requestCompanyId;
     private UUID responseCompanyId;
-    private UUID productId;
     private String slackId;
     private String phone;
     private String address;
@@ -25,9 +25,9 @@ public class OrderDeliveryRequestDto {
     public static OrderDeliveryRequestDto fromOrderRequest(OrderCreateRequestDto requestDto, UUID orderId) {
         return OrderDeliveryRequestDto.builder()
                 .orderId(orderId)
+                .productId(requestDto.getProductId())
                 .requestCompanyId(requestDto.getRequestCompanyId())
                 .responseCompanyId(requestDto.getResponseCompanyId())
-                .productId(requestDto.getProductId())
                 .slackId(requestDto.getSlackId())
                 .phone(requestDto.getPhone())
                 .address(requestDto.getAddress())
