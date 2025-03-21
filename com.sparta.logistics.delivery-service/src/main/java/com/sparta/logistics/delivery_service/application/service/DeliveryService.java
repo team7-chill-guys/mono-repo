@@ -84,11 +84,11 @@ public class DeliveryService {
     }
 
     @Transactional
-    public void deleteDelivery(UUID deliveryId) {
+    public void deleteDelivery(UUID deliveryId, String userId) {
         Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
                 .orElseThrow(() -> new RuntimeException("배송 찾을 수 없음"));
-
-        delivery.deletedOf();
+        Long id = Long.parseLong(userId);
+        delivery.deletedOf(id);
     }
 
     @Transactional

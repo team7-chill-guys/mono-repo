@@ -12,7 +12,7 @@ public class DeliveryAssignmentScheduler {
 
     private final DeliveryService deliveryService;
     private final DeliveryRouteService deliveryRouteService;
-    private boolean shutdown = false;
+    private volatile boolean shutdown = false;
 
     @Scheduled(fixedRate = 60000) //1분
     public void runAssignmentScheduler() {

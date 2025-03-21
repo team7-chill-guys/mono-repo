@@ -40,7 +40,8 @@ public abstract class BaseTimeEntity {
     private Long deletedBy;
 
 
-    public void deletedOf() {
+    public void deletedOf(Long deletedBy) {
         this.deletedAt = LocalDateTime.now();
+        this.deletedBy = deletedBy;
     }
 }
