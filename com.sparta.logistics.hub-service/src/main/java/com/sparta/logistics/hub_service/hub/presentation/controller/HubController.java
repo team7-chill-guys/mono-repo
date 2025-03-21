@@ -45,11 +45,16 @@ public class HubController {
   }
 
   // 허브 단일 조회
+//  @GetMapping("/{hubId}")
+//  public ResponseEntity<ResponseDto<HubDetailResponseDto>> getHubDetail(@PathVariable UUID hubId) {
+//    HubDetailResponseDto responseDto = hubService.getHubDetail(hubId);
+//    return ResponseEntity.ok(ResponseDto.success(responseDto));
+//
+//  }
   @GetMapping("/{hubId}")
-  public ResponseEntity<ResponseDto<HubDetailResponseDto>> getHubDetail(@PathVariable UUID hubId) {
+  public ResponseEntity<HubDetailResponseDto> getHubDetail(@PathVariable UUID hubId) {
     HubDetailResponseDto responseDto = hubService.getHubDetail(hubId);
-    return ResponseEntity.ok(ResponseDto.success(responseDto));
-
+    return ResponseEntity.ok(responseDto);
   }
 
   // 허브 조회 및 검색

@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name="user-service")
 public interface UserClient {
-  @GetMapping("/users/role")
+  @GetMapping("/api/users/role")
   List<UserRoleSearchResponseDto> roleSearchUser(@RequestParam("userRole") String userRole);
 }
