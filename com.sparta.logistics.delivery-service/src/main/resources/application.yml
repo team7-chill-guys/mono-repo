@@ -1,16 +1,18 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: delivery-service
   datasource:
-    url: jdbc:postgresql://localhost:55432/team7
-    username: team7
-    password: 1234
+    url: jdbc:postgresql://${POSTGRES_HOST_DELIVERY}/team7
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${DDL_AUTO}
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_SERVER_URL}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -20,9 +22,7 @@ server:
 
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:19090/eureka/
-  instance:
-    hostname: localhost
+      defaultZone: http://${EUREKA_URL}/eureka/
