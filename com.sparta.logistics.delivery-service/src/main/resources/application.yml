@@ -13,10 +13,16 @@ spring:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.JsonSerializer
-  server:
-    port: 19093
-  eureka:
-    client:
-      service-url:
-        defaultZone:http://localhost:19090/eureka/
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  port: 19094
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:19090/eureka/
+  instance:
+    hostname: localhost

@@ -1,8 +1,11 @@
 spring:
+  config:
+    import: optional:file:./com.sparta.logistics.hub-service/.env[.properties]
   datasource:
-    url: ${DB_URL}
-    username: ${POSTGRES_DB}
+    driver-class-name: org.postgresql.Driver
+    username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST_HUB}/team7
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,7 +23,7 @@ spring:
       port: 6379
 
 server:
-  port: 8080
+  port: 19092
 
 eureka:
   client:

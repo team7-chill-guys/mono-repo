@@ -41,7 +41,8 @@ public class DeliveryRouteController {
     @PutMapping("/{routes_id}")
     public ResponseEntity<Void> updateDeliveryRoute(@PathVariable("delivery_id")UUID deliveryId,
                                                     @PathVariable("routes_id") UUID routesId,
-                                                    @RequestBody DeliveryRouteUpdateRequestDto updateDeliveryRouteUpdateRequestDto) {
+                                                    @RequestBody DeliveryRouteUpdateRequestDto updateDeliveryRouteUpdateRequestDto,
+                                                    @RequestHeader("X-User-Id") String userId) {
         deliveryRouteService.updateDeliveryRoute(deliveryId, routesId, updateDeliveryRouteUpdateRequestDto);
         return ResponseEntity.ok().build();
     }
@@ -53,7 +54,8 @@ public class DeliveryRouteController {
     @PutMapping("/{routes_id}/status")
     public ResponseEntity<Void> changeDeliveryStatus(@PathVariable("delivery_id") UUID deliveryId,
                                                      @PathVariable("routes_id") UUID routesId,
-                                                     @RequestParam("status")DeliveryRouteStatus status) {
+                                                     @RequestParam("status")DeliveryRouteStatus status,
+                                                     @RequestHeader(value = "X-User-Id") String userId) {
         deliveryRouteService.changeDeliveryStatus(deliveryId, routesId, status);
         return ResponseEntity.ok().build();
     }
@@ -64,8 +66,9 @@ public class DeliveryRouteController {
      */
     @DeleteMapping("/{routes_id}")
     public ResponseEntity<Void> deleteDeliveryRoute(@PathVariable("delivery_id")UUID deliveryId,
-                                                    @PathVariable("routes_id") UUID routesId) {
-        deliveryRouteService.deleteDeliveryRoute(deliveryId, routesId);
+                                                    @PathVariable("routes_id") UUID routesId,
+                                                    @RequestHeader(value = "X-User-Id") String userId) {
+        deliveryRouteService.deleteDeliveryRoute(deliveryId, routesId, userId);
         return ResponseEntity.ok().build();
     }
 }
