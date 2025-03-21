@@ -5,12 +5,12 @@ spring:
     name: company-service
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: team7
-    password: 1234
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://${POSTGRES_HOST_COMPANY}/team7
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${DDL_AUTO}
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -23,9 +23,7 @@ server:
 
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:19090/eureka/
-  instance:
-    hostname: localhost
+      defaultZone: http://${EUREKA_URL}/eureka/
