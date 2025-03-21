@@ -7,8 +7,8 @@ spring:
   data:
     redis:
       host: ${REDIS_HOST_USER}
-      port: 6379
-      password: 1234
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
   main:
     web-application-type: reactive
   application:
@@ -21,45 +21,110 @@ spring:
           predicates:
             - Path=/api/users/**
 
+        - id: user-master-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/master/user/**
+
         - id: user-service-auth
           uri: lb://user-service
           predicates:
             - Path=/api/auth/**
+
+        - id: auth-master-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/master/auth/**
 
         - id: hub-service
           uri: lb://hub-service
           predicates:
             - Path=/api/hubs/**
 
+        - id: hub-master-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/api/master/hub/**
+
+        - id: hub-route-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/api/hub-routes/**
+
+        - id: hub-route-master-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/api/master/hub-routes/**
+
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+
+        - id: product-service
+          uri: lb://product-master-service
+          predicates:
+            - Path=/api/master/products/**
+
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+
+        - id: order-master-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/master/orders/**
+
         - id: company-service
           uri: lb://company-service
           predicates:
             - Path=/api/companies/**
 
+        - id: company-master-service
+          uri: lb://company-service
+          predicates:
+            - Path=/api/master/companies/**
+
         - id: delivery-service
           uri: lb://delivery-service
           predicates:
-            - Path=/api/delivery/**
+            - Path=/api/deliveries/**
+
+        - id: delivery-master-service
+          uri: lb://delivery-service
+          predicates:
+            - Path=/api/master/deliveries/**
 
         - id: delivery-manager-service
           uri: lb://delivery-manager-service
           predicates:
             - Path=/api/delivery-managers/**
 
-        - id: hub-route-service
-          uri: lb://hub-route-service
+        - id: delivery-manager-master-service
+          uri: lb://delivery-manager-service
           predicates:
-            - Path=/api/hub-routes/**
+            - Path=/api/master/delivery-managers/**
 
         - id: slack-service
           uri: lb://slack-service
           predicates:
             - Path=/api/slack/**
 
+        - id: slack-master-service
+          uri: lb://slack-service
+          predicates:
+            - Path=/api/master/slack/**
+
         - id: ai-service
           uri: lb://ai-service
           predicates:
             - Path=/api/ai/**
+
+        - id: ai-master-service
+          uri: lb://ai-service
+          predicates:
+            - Path=/api/master/ai/**
 
       discovery:
         locator:

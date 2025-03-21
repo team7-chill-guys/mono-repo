@@ -38,10 +38,24 @@ public class HubServiceImpl implements HubService {
   public HubCreateResponseDto createHub(HubCreateRequestDto requestDto, String userIdHeader) {
 
     List<UserRoleSearchResponseDto> userRoles = userClient.roleSearchUser("ROLE_HUB_MANAGER");
-
-    if (hubRepository.existsByUserId(requestDto.getUserId())) {
-      throw new IllegalArgumentException("이미 다른 허브에 관리자로 지정되어 있습니다");
+    if (userRoles != null && !userRoles.isEmpty()) {
+      log.info("허브 매니저 권한을 가진 유저 목록:");
+      for (UserRoleSearchResponseDto user : userRoles) {
+        log.info(" - 유저 ID: {}, 이름: {}, 권한: {}",
+            user.getUserId(),
+            user.getUsername(),
+            user.getRole());
+      }
+    } else {
+      log.info("ROLE_HUB_MANAGER 권한을 가진 유저가 없습니다.");
     }
+    log.info("받아온 유저 정보 : " + userRoles);
+
+
+
+//    if (hubRepository.existsByUserId(requestDto.getUserId())) {
+//      throw new IllegalArgumentException("이미 다른 허브에 관리자로 지정되어 있습니다");
+//    }
     if (hubRepository.existsByHubName(requestDto.getHubName())) {
       throw new IllegalArgumentException("이미 존재하는 허브 이름입니다.");
     }
@@ -53,7 +67,7 @@ public class HubServiceImpl implements HubService {
 
     Hub hub = hubRepository.save(
         Hub.builder()
-            .userId(requestDto.getUserId())
+            .userId(currentId)
             .hubName(requestDto.getHubName())
             .address(requestDto.getAddress())
             .latitude(requestDto.getLatitude())

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "delivery-manager-service")
 public interface DeliveryManagerFeignClient {
 
-    @PostMapping
+    @PostMapping("/api/delivery-managers")
     ResponseEntity<Void> createDeliveryManager(@RequestParam("id") Long id,
-        @RequestParam("slackId") String slackId
+                                               @RequestParam("slackId") String slackId
     );
 
 }

@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service
 public class SlackService {
 
-    @Value("${SLACK_BOT_TOKEN}")
+    @Value("${slack.bot.token}")
     private String SLACK_BOT_TOKEN;
 
     private final SlackRepository slackRepository;
