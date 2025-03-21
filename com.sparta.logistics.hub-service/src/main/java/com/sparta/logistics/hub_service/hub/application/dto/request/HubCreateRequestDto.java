@@ -14,8 +14,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class HubCreateRequestDto {
 
-  @NotNull(message = "허브 관리자 지정은 필수 입력 사항입니다.")
-  private Long userId;
+//  @NotNull(message = "허브 관리자 지정은 필수 입력 사항입니다.")
+//  private Long userId;
 
   @NotBlank(message = "허브 이름은 필수 입력 사항입니다.")
   private String hubName;
