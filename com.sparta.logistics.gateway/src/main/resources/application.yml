@@ -46,6 +46,36 @@ spring:
           predicates:
             - Path=/api/master/hub/**
 
+        - id: hub-route-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/api/hub-routes/**
+
+        - id: hub-route-master-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/api/master/hub-routes/**
+
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+
+        - id: product-service
+          uri: lb://product-master-service
+          predicates:
+            - Path=/api/master/products/**
+
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+
+        - id: order-master-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/master/orders/**
+
         - id: company-service
           uri: lb://company-service
           predicates:
@@ -75,16 +105,6 @@ spring:
           uri: lb://delivery-manager-service
           predicates:
             - Path=/api/master/delivery-managers/**
-
-        - id: hub-route-service
-          uri: lb://hub-service
-          predicates:
-            - Path=/api/hub-routes/**
-
-        - id: hub-route-master-service
-          uri: lb://hub-service
-          predicates:
-            - Path=/api/master/hub-routes/**
 
         - id: slack-service
           uri: lb://slack-service
