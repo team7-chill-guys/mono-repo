@@ -2,9 +2,9 @@ spring:
   config:
     import: optional:file:.env[.properties]
   application:
-    name: product-service
+    name: ai-service
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST_PRODUCT}/team7
+    url: jdbc:postgresql://${POSTGRES_HOST_AI}/team7
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     hikari:
@@ -38,11 +38,16 @@ spring:
         enabled: true
 
 server:
-  port: 19095
+  port: 19097
 
 eureka:
   client:
-    register-with-eureka: true
-    fetch-registry: true
     service-url:
       defaultZone: http://${EUREKA_URL}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+gemini:
+  api:
+    baseurl: ${GEMINI_BASEURL}
+    key: ${GOOGLE_AI_API_KEY}
