@@ -10,11 +10,11 @@ spring:
     redis:
       host: ${REDIS_HOST_USER}
       port: 6379
-      password: 1234
+      password: ${REDIS_PASSWORD}
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: team7
-    password: 1234
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://${POSTGRES_HOST_USER}/team7
   jpa:
     hibernate:
