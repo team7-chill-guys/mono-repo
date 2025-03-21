@@ -37,3 +37,7 @@ kakao:
   rest:
     api:
       key: ${KAKAO_KEY}
+
+logging:
+  level:
+    org.springframework.cache: DEBUG
