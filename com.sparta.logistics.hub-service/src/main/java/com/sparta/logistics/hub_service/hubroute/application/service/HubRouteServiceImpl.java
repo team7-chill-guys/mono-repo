@@ -11,11 +11,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HubRouteServiceImpl implements HubRouteService {
 
   private final HubRouteRepository hubRouteRepository;
@@ -30,7 +33,14 @@ public class HubRouteServiceImpl implements HubRouteService {
 
   // 허브 루트 전체 조회(목록) 및 검색
   @Override
+  @Cacheable(
+      value = "hubRoutes",
+      key = "((#startHubId != null ? #startHubId.toString() : '')) + '-' + ((#endHubId != null ? #endHubId.toString() : ''))"
+  )
   public List<HubRouteListResponseDto> getHubRouteList(UUID startHubId, UUID endHubId) {
+
+    log.debug("DB 조회 시작: startHubId = {}, endHubId = {}", startHubId, endHubId);
+
     List<HubRoute> hubRoutes;
 
     if (startHubId != null && endHubId != null) {

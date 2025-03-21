@@ -20,7 +20,7 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6379
+      port: ${REDIS_PORT}
 
 server:
   port: 19092
@@ -37,3 +37,7 @@ kakao:
   rest:
     api:
       key: ${KAKAO_KEY}
+
+logging:
+  level:
+    org.springframework.cache: DEBUG
