@@ -13,7 +13,6 @@ public class CompanyUpdateRequestDto {
     private CompanyType type;
     private String address;
     private String phone;
-    private Long updatedBy;
 }
 
 

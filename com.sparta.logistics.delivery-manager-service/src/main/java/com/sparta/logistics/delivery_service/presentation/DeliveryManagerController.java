@@ -1,6 +1,5 @@
 package com.sparta.logistics.delivery_service.presentation;
 
-import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerCreateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryManagerUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerResponseDto;
@@ -24,8 +23,20 @@ public class DeliveryManagerController {
      * 배송 담당자 생성
      */
     @PostMapping
-    public ResponseEntity<Void> createDeliveryManager(@RequestBody DeliveryManagerCreateRequestDto deliveryManagerCreateRequestDto) {
-        deliveryManagerService.createDeliveryManager(deliveryManagerCreateRequestDto);
+    public ResponseEntity<Void> createDeliveryManager(@RequestParam("id") Long id,
+                                                      @RequestParam("slackId") String slackId) {
+        deliveryManagerService.createDeliveryManager(id, slackId);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 담당허브, 타입 지정
+     */
+    @PutMapping("/hub-type/{id}")
+    public ResponseEntity<Void> assignHubAndType(@PathVariable("id") Long id,
+                                                 @RequestParam("hubId") UUID hubId,
+                                                 @RequestParam("type") DeliveryManagerType type) {
+        deliveryManagerService.assignHubAndType(id, hubId, type);
         return ResponseEntity.ok().build();
     }
 

@@ -1,9 +1,9 @@
 package com.sparta.logistics.delivery_service.application.service;
 
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryRouteUpdateRequestDto;
-import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfoDto;
+import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryRouteResponseDto;
-import com.sparta.logistics.delivery_service.application.dto.HubRouteListResponseDto;
+import com.sparta.logistics.delivery_service.application.dto.response.HubRouteListResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryRouteMapper;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRoute;
@@ -98,11 +98,12 @@ public class DeliveryRouteService {
 
 
     @Transactional
-    public void deleteDeliveryRoute(UUID deliveryId, UUID routesId) {
+    public void deleteDeliveryRoute(UUID deliveryId, UUID routesId, String userId) {
         DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
                 .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
+        Long id = Long.parseLong(userId);
 
-        deliveryRoute.deletedOf();
+        deliveryRoute.deletedOf(id);
     }
 
 

@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: ai-service
+  datasource:
+    url: jdbc:postgresql://localhost:55432/team7
+    username: team7
+    password: 1234
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  feign:
+    hystrix:
+      enabled: true
+    client:
+      config:
+        default:
+          loggerLevel: full
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"
+    health:
+      diskspace:
+        enabled: true
+      db:
+        enabled: true
+
+server:
+  port: 19097
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+gemini:
+  api:
+    baseurl: ${GEMINI_BASEURL}
+    key: ${GOOGLE_AI_API_KEY}

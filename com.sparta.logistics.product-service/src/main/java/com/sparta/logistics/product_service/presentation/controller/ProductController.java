@@ -1,6 +1,7 @@
 package com.sparta.logistics.product_service.presentation.controller;
 
 import com.sparta.logistics.product_service.application.dto.request.ProductCreateRequestDto;
+import com.sparta.logistics.product_service.application.dto.request.ProductStockRequestDto;
 import com.sparta.logistics.product_service.application.dto.request.ProductUpdateRequestDto;
 import com.sparta.logistics.product_service.application.dto.response.*;
 import com.sparta.logistics.product_service.application.service.ProductService;
@@ -52,15 +53,27 @@ public class ProductController {
         return productService.deleteProduct(productId);
     }
 
-    @GetMapping("/id")
-    public ResponseEntity<ProductIdResponseDto> getProductIdByName(@RequestParam String name) {
-        ProductIdResponseDto productId = productService.getProductIdByName(name);
-        return ResponseEntity.ok(productId);
+    @PostMapping("/{productId}/decrease-stock")
+    public ResponseEntity<StockUpdateResponseDto> decreaseStock(
+            @PathVariable UUID productId,
+            @RequestBody ProductStockRequestDto requestDto
+    ) {
+        StockUpdateResponseDto response = productService.reduceStock(productId, requestDto.getQuantity());
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{productId}/stock")
-    public ResponseEntity<ProductStockResponseDto> getProductStock(@PathVariable UUID productId) {
-        ProductStockResponseDto productStock = productService.getStockByProductId(productId);
-        return ResponseEntity.ok(productStock);
+    @PostMapping("/{productId}/increase-stock")
+    public ResponseEntity<StockUpdateResponseDto> increaseStock(
+            @PathVariable UUID productId,
+            @RequestParam Long quantity
+    ) {
+        StockUpdateResponseDto response = productService.addStock(productId, quantity);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{productId}/hub")
+    public ResponseEntity<UUID> getHubIdByProductId(@PathVariable("productId") UUID productId) {
+        UUID hubId = productService.getHubIdByProductId(productId);
+        return ResponseEntity.ok(hubId);
     }
 }

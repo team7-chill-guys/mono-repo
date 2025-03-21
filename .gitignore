@@ -38,6 +38,8 @@ out/
 
 ## .yml ##
 .env
+.env*
 docker-compose.yml
-application.yml
-
+docker-compose-test.yml
+docker-compose-db.yml
+docker-compose-app.yml

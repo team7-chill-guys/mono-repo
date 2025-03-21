@@ -18,13 +18,13 @@ public class DeliveryManager extends BaseTimeEntity{
     @Id
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private UUID hubId;
 
     @Column(nullable = false)
     private String slackId;
 
-    @Column(nullable = false)
+    @Column
     private DeliveryManagerType type;
 
     @Column(nullable = false)
@@ -49,5 +49,10 @@ public class DeliveryManager extends BaseTimeEntity{
     public void changeHubId(UUID endHubId, Long maxSequence) {
         this.hubId = endHubId;
         this.sequence = maxSequence + 1;
+    }
+
+    public void setHubAndType(UUID hubId, DeliveryManagerType type) {
+        this.hubId = hubId;
+        this.type = type;
     }
 }

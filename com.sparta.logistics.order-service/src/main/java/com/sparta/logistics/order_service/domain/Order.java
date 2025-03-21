@@ -71,7 +71,7 @@ public class Order {
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
-    public static Order toEntity(OrderCreateRequestDto dto, UUID deliveryId) {
+    public static Order toEntity(OrderCreateRequestDto dto, UUID deliveryId, Long userId) {
         return Order.builder()
                 .orderId(UUID.randomUUID())
                 .deliveryId(deliveryId)
@@ -84,9 +84,9 @@ public class Order {
                 .status(OrderStatus.PENDING)
                 .quantity(dto.getQuantity())
                 .request(dto.getRequest())
-                .createdBy(dto.getCreatedBy())
+                .createdBy(userId)
                 .createdAt(Timestamp.from(Instant.now()))
-                .updatedBy(dto.getCreatedBy())
+                .updatedBy(userId)
                 .updatedAt(Timestamp.from(Instant.now()))
                 .deletedBy(null)
                 .deletedAt(null)
@@ -107,7 +107,9 @@ public class Order {
     }
 
     // 주문 상태만 변경하는 메서드
-    public void updateStatus(OrderStatus newStatus) {
+    public void updateStatus(OrderStatus newStatus, Long updatedBy) {
         this.status = newStatus;
+        this.updatedBy = updatedBy;
+        this.updatedAt = Timestamp.from(Instant.now());
     }
 }

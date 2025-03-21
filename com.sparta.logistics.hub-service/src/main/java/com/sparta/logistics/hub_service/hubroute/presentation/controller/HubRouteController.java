@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,8 +39,10 @@ public class HubRouteController {
   // 허브 루트 생성
   @PostMapping
   public ResponseEntity<ResponseDto<HubRouteCreateResponseDto>> createHubRoute(
-      @RequestBody HubRouteCreateRequestDto requestDto) {
-    HubRouteCreateResponseDto responseDto = kakaoMapApiService.autoCreateHubRoute(requestDto);
+      @RequestBody HubRouteCreateRequestDto requestDto,
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
+    HubRouteCreateResponseDto responseDto = kakaoMapApiService.autoCreateHubRoute(requestDto,
+        userIdHeader);
 
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
@@ -67,15 +70,18 @@ public class HubRouteController {
   @PutMapping("/{hubRoutesId}")
   public ResponseEntity<ResponseDto<HubRouteUpdateResponseDto>> updateHubRoute(
       @PathVariable UUID hubRoutesId,
-      @RequestBody HubRouteUpdateRequestDto requestDto) {
-    HubRouteUpdateResponseDto responseDto = hubRouteService.updateHubRoute(hubRoutesId, requestDto);
+      @RequestBody HubRouteUpdateRequestDto requestDto,
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
+    HubRouteUpdateResponseDto responseDto = hubRouteService.updateHubRoute(hubRoutesId, requestDto,
+        userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
   // 허브 루트 삭제
   @DeleteMapping("/{hubRoutesId}")
-  public ResponseEntity<?> deleteHubRoute(Long userId, @PathVariable UUID hubRoutesId) {
-    hubRouteService.deleteHubRoute(userId, hubRoutesId);
+  public ResponseEntity<?> deleteHubRoute(Long userId, @PathVariable UUID hubRoutesId,
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
+    hubRouteService.deleteHubRoute(userId, hubRoutesId, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success("delete success"));
   }
 }

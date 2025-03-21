@@ -1,17 +1,17 @@
 package com.sparta.logistics.delivery_service.application.service;
 
-import com.sparta.logistics.delivery_service.application.dto.request.DeliveryCreateRequestDto;
+import com.sparta.logistics.delivery_service.application.dto.request.OrderDeliveryRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpdateRequestDto;
-import com.sparta.logistics.delivery_service.application.dto.DeliveryManagerInfoDto;
+import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
-import com.sparta.logistics.delivery_service.application.service.mock.MockCompanyService;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRepository;
 import com.sparta.logistics.delivery_service.infrastructure.client.CompanyClient;
 import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
+import com.sparta.logistics.delivery_service.infrastructure.client.ProductClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,28 +29,28 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final DeliveryRouteService deliveryRouteService;
 
-    private final MockCompanyService mockCompanyService;
-
     private final DeliveryManagerClient deliveryManagerClient;
     private final CompanyClient companyClient;
+    private final ProductClient productClient;
 
     private final ProducerService producerService;
 
     @Transactional
-    public void createDelivery(DeliveryCreateRequestDto deliveryCreateRequestDto) {
+    public UUID createDelivery(OrderDeliveryRequestDto orderDeliveryRequestDto) {
         // 1. 상품을 보고 출발 허브 결정
-        UUID productId = deliveryCreateRequestDto.getProductId();
-        UUID departureHubId = companyClient.getHubIdByCompanyId(productId);
+        UUID productId = orderDeliveryRequestDto.getProductId();
+        UUID departureHubId = productClient.getHubIdByProductId(productId);
 
         // 2. 수령 업체 보고 도착 허브 결정
-        UUID destinationHubId = mockCompanyService.getHubId(deliveryCreateRequestDto.getCompanyId());
+        UUID destinationHubId = companyClient.getHubIdByCompanyId(orderDeliveryRequestDto.getRequestCompanyId());
 
         // 3. 배송 저장
-        Delivery delivery = DeliveryMapper.toEntity(deliveryCreateRequestDto, departureHubId, destinationHubId);
+        Delivery delivery = DeliveryMapper.toEntity(orderDeliveryRequestDto, departureHubId, destinationHubId);
         deliveryRepository.save(delivery);
 
         deliveryRouteService.createDeliveryRoutes(delivery);
 
+        return delivery.getId();
     }
 
     @Transactional(readOnly = true)
@@ -84,11 +84,11 @@ public class DeliveryService {
     }
 
     @Transactional
-    public void deleteDelivery(UUID deliveryId) {
+    public void deleteDelivery(UUID deliveryId, String userId) {
         Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
                 .orElseThrow(() -> new RuntimeException("배송 찾을 수 없음"));
-
-        delivery.deletedOf();
+        Long id = Long.parseLong(userId);
+        delivery.deletedOf(id);
     }
 
     @Transactional

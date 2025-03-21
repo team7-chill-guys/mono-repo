@@ -30,8 +30,10 @@ public class CompanyService {
 
     // [생성]
     @Transactional
-    public CompanyDetailResponseDto createCompany(CompanyCreateRequestDto requestDto) {
-        Company company = Company.create(requestDto, new HubId(requestDto.getHubId())); // ✅ 팩토리 메서드 사용
+    public CompanyDetailResponseDto createCompany(CompanyCreateRequestDto requestDto, String userIdHeader) {
+        Long userId = Long.parseLong(userIdHeader);
+
+        Company company = Company.create(requestDto, new HubId(requestDto.getHubId()), userId);
         companyRepository.save(company);
         return CompanyDetailResponseDto.fromEntity(company);
     }
@@ -53,19 +55,24 @@ public class CompanyService {
 
     // [수정]
     @Transactional
-    public CompanyDetailResponseDto updateCompany(UUID id, CompanyUpdateRequestDto updateDto, Long updatedBy) {
+    public CompanyDetailResponseDto updateCompany(UUID id, CompanyUpdateRequestDto updateDto, String userIdHeader) {
         Company company = companyRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
-        company.updateCompany(updateDto, updatedBy);
+        Long userId = Long.parseLong(userIdHeader);
+
+        company.updateCompany(updateDto, userId);
         return CompanyDetailResponseDto.fromEntity(company);
     }
 
     // [삭제]
     @Transactional
-    public void deleteCompany(UUID id, Long deletedBy) {
+    public void deleteCompany(UUID id, String userIdHeader) {
         Company company = companyRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
-        company.deleteCompany(deletedBy);
+
+        Long userId = Long.parseLong(userIdHeader);
+
+        company.deleteCompany(userId);
     }
 }

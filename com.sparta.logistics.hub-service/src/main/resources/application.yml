@@ -1,0 +1,39 @@
+spring:
+  config:
+    import: optional:file:./com.sparta.logistics.hub-service/.env[.properties]
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST_HUB}/team7
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+  application:
+    name: hub-service
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 19092
+
+eureka:
+  client:
+    register-with-eureka: false # 나중에 true 로 변경
+    fetch-registry: false # 나중에 true 로 변경
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:19090/eureka/
+  instance:
+    hostname: localhost
+kakao:
+  rest:
+    api:
+      key: ${KAKAO_KEY}

@@ -29,4 +29,18 @@ public class Product {
     private Long updatedBy;
     private Timestamp deletedAt;
     private Long deletedBy;
+
+    public boolean decreaseStock(Long quantity) {
+        if (this.stock >= quantity) {
+            this.stock -= quantity;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean increaseStock(Long quantity) {
+        this.stock += quantity;
+        return true;
+    }
 }

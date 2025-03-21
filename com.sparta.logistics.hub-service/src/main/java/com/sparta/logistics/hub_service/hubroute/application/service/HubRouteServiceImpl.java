@@ -1,10 +1,6 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
-import static org.apache.logging.log4j.util.Strings.isNotEmpty;
-
-import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
-import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteUpdateResponseDto;
@@ -54,13 +50,13 @@ public class HubRouteServiceImpl implements HubRouteService {
   // 허브 루트 수정
   @Override
   @Transactional
-  public HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto) {
+  public HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto, String userIdHeader) {
     HubRoute hubRoute = hubRouteRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로가 없습니다."));
 
-    // TODO : 허브 수정 -> 자동으로 허브 루트 수정 구현
-    // TODO : 추후 updateBy 값 -> 로그인한 userId 값 들어가게 변경
+    Long currentId = Long.valueOf(userIdHeader);
 
+    hubRoute.updateUpdateBy(currentId);
     hubRoute.updateDeliveryTime(requestDto.getDeliveryTime());
     hubRoute.updateDeliveryDistance(requestDto.getDeliveryDistance());
 
@@ -69,14 +65,12 @@ public class HubRouteServiceImpl implements HubRouteService {
   }
 
   @Override
-  public void deleteHubRoute(Long userId, UUID hubRoutesId) {
+  public void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader) {
 
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
 
-    // TODO : 허브 삭제 -> 관련 허브 루트 자동 삭제 구현
-    // TODO : 추후 deleteBy 값 -> 로그인한 userId 값 들어가게 변경 & userId Long 타입으로 변경
-    Long currentId = 1L; // 임시 아이디
+    Long currentId = Long.valueOf(userIdHeader);
 
     hubRoute.setDeletedBy(currentId);
     hubRoute.setDeletedAt(LocalDateTime.now());

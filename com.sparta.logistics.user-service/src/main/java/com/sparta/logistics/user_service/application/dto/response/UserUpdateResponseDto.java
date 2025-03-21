@@ -9,6 +9,5 @@ public class UserUpdateResponseDto {
     private Long userId;
     private String username;
     private String slackId;
-    private String role;
 
 }
