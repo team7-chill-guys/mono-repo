@@ -5,7 +5,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-    url: jdbc:postgresql://${POSTGRES_HOST}/team7
+    url: jdbc:postgresql://${POSTGRES_HOST_HUB}/team7
   jpa:
     hibernate:
       ddl-auto: update
