@@ -14,9 +14,5 @@ public class HubServiceApplication {
 		SpringApplication.run(HubServiceApplication.class, args);
 
 	}
-		@Bean
-		public RestTemplate restTemplate() {
-			return new RestTemplate();
-		}
 
 }
