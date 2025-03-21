@@ -1,23 +1,13 @@
 spring:
   application:
-    name: ai-service
-  cloud:
-    discovery:
-      enabled: true
-      netflix:
-        eureka:
-          client:
-            service-url:
-              defaultZone: http://eureka-server:8761/eureka/
-        instance:
-          hostname: ai-service
-          prefer-ip-address: true
+    name: product-service
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/aiservice
-    username: postgres
-    password: password
+    url: jdbc:postgresql://localhost:55432/team7
+    username: team7
+    password: 1234
     hikari:
       maximum-pool-size: 10
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -25,6 +15,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
   feign:
     hystrix:
       enabled: true
@@ -32,6 +23,7 @@ spring:
       config:
         default:
           loggerLevel: full
+
   management:
     endpoints:
       web:
@@ -42,9 +34,18 @@ spring:
         enabled: true
       db:
         enabled: true
+
+server:
+  port: 19097
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
 gemini:
   api:
-    baseurl: ${gemini.baseurl}
-    key: ${googleai.api.key}
-server:
-  port: 8080
+    baseurl: ${GEMINI_BASEURL}
+    key: ${GOOGLE_AI_API_KEY}
