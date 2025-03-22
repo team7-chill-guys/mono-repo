@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.type.SqlTypes;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -25,6 +26,7 @@ import org.mindrot.jbcrypt.BCrypt;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "p_user")
+@SQLRestriction("deleted_at IS NULL")
 public class User extends BaseEntity {
 
     @Id

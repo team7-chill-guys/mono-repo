@@ -5,6 +5,7 @@ import com.sparta.logistics.user_service.application.dto.request.AuthSignupReque
 import com.sparta.logistics.user_service.application.dto.response.AuthSignupResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.AuthTokenResponseDto;
 import com.sparta.logistics.user_service.application.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +25,7 @@ public class AuthController {
 
     // 회원가입
     @PostMapping("/auth/signup")
-    public ResponseEntity<AuthSignupResponseDto> createUser(@RequestBody AuthSignupRequestDto requestDto,
+    public ResponseEntity<AuthSignupResponseDto> createUser(@Valid @RequestBody AuthSignupRequestDto requestDto,
                                                             @RequestHeader(value = "X-User-Id", required = false) String userIdHeader
     ) {
         AuthSignupResponseDto responseDto = authService.createUser(requestDto, userIdHeader);

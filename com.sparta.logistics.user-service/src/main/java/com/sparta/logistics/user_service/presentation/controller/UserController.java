@@ -9,6 +9,7 @@ import com.sparta.logistics.user_service.application.dto.response.UserSearchMeRe
 import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserUpdateResponseDto;
 import com.sparta.logistics.user_service.application.service.UserService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +74,7 @@ public class UserController {
     // 유저 수정 : 본인 비밀번호 수정
     @PutMapping("/users/password")
     public ResponseEntity<String> updatePassword(@RequestHeader(value = "X-User-Id") String userIdHeader,
-                                                 @RequestBody UserPasswordUpdateRequestDto requestDto
+                                                 @Valid @RequestBody UserPasswordUpdateRequestDto requestDto
     ) {
         userService.updatePassword(userIdHeader, requestDto);
         return ResponseEntity.ok("비밀번호가 변경되었습니다.");
@@ -84,7 +85,7 @@ public class UserController {
     @PutMapping("master/users/{userId}")
     public ResponseEntity<UserUpdateResponseDto> updateUser(@PathVariable("userId") Long userId,
                                                             @RequestHeader(value = "X-User-Id") String userIdHeader,
-                                                            @RequestBody UserUpdateRequestDto requestDto
+                                                            @Valid @RequestBody UserUpdateRequestDto requestDto
     ) {
         UserUpdateResponseDto responseDto = userService.updateUser(userId, requestDto, userIdHeader);
         return ResponseEntity.ok(responseDto);
@@ -101,7 +102,7 @@ public class UserController {
     }
 
     // MASTER : 회원 탈퇴
-    @DeleteMapping("/users/{userId}")
+    @DeleteMapping("/master/users/{userId}")
     public ResponseEntity<String> deleteUser(@RequestHeader(value = "X-User-Id") String userIdHeader,
                                              @PathVariable("userId") Long userId
     ) {
