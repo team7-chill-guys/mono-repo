@@ -54,14 +54,12 @@ public class JwtUtil {
     }
 
     // refresh 토큰 생성
-    public String createRefreshToken(Long userId, String username, String role) {
+    public String createRefreshToken(Long userId) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + jwtRefreshExpTime);
 
         return Jwts.builder()
             .setSubject(String.valueOf(userId))
-            .claim("username", username)
-            .claim("role", role)
             .setIssuedAt(now)
             .setExpiration(expirationDate)
             .signWith(key, signatureAlgorithm)
@@ -75,7 +73,7 @@ public class JwtUtil {
     }
 
     // 토큰 만료시간 계산
-    public long getMilliSecond(String token) {
+    public Long getMilliSecond(String token) {
         Date exp = getExpiration(token);
         long now = System.currentTimeMillis();
         return exp.getTime() - now;
