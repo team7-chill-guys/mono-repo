@@ -14,13 +14,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-@Component
 @RequiredArgsConstructor
 @Slf4j(topic = "PreAuthWebFilter")
 public class PreAuthWebFilter implements WebFilter, Ordered {
@@ -39,22 +37,43 @@ public class PreAuthWebFilter implements WebFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        String token = jwtUtil.removeBearer(authHeader);
-        log.info("Bearer 제거 후 토큰: {}", token);
-        if (!jwtUtil.validateToken(token)) {
+        String accessToken = jwtUtil.removeBearer(authHeader);
+        log.info("Bearer 제거 후 토큰: {}", accessToken);
+
+        // 쿠키에서 refreshToken 가져오기
+        var cookies = exchange.getRequest().getCookies().get("refreshToken");
+        String refreshToken = cookies.get(0).getValue();
+        log.info("추출한 refreshToken 쿠키: {}", refreshToken);
+
+        // accessToken 검증
+        if (!jwtUtil.validateToken(accessToken)) {
             log.error("유효하지 않은 토큰입니다.");
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
-        // 블랙리스트 체크
-        if (blackListCheck.isBlacklisted(token)) {
-            log.error("블랙리스트 토큰입니다. token : " + token);
+        // refreshToken 검증
+        if (!jwtUtil.validateToken(refreshToken)) {
+            log.error("유효하지 않은 토큰입니다.");
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
-        Claims claims = jwtUtil.getClaims(token);
+        // accessToken 블랙리스트 체크
+        if (blackListCheck.isBlacklisted(accessToken, "AT")) {
+            log.error("블랙리스트 토큰입니다. accessToken : " + accessToken);
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
+        }
+
+        // refreshToken 블랙리스트 체크
+        if (blackListCheck.isBlacklisted(accessToken, "RT")) {
+            log.error("블랙리스트 토큰입니다. refreshToken : " + accessToken);
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
+        }
+
+        Claims claims = jwtUtil.getClaims(accessToken);
         String userId = claims.getSubject();
         String username = claims.get("username", String.class);
         String role = claims.get("role", String.class);
@@ -74,6 +93,8 @@ public class PreAuthWebFilter implements WebFilter, Ordered {
                 headers.set("X-User-Id", userId);
                 headers.set("X-User-Name", username);
                 headers.set("X-User-Role", role);
+                headers.set("X-ACCESS-TOKEN", accessToken);
+                headers.set("X-REFRESH-TOKEN", refreshToken);
             }))
             .build();
 
@@ -83,7 +104,7 @@ public class PreAuthWebFilter implements WebFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return -1;
+        return HIGHEST_PRECEDENCE;
     }
 
 }
