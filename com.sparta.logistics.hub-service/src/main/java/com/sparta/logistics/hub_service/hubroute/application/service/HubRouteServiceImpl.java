@@ -1,5 +1,6 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.global.utils.PaginationUtils;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
@@ -83,15 +84,21 @@ public class HubRouteServiceImpl implements HubRouteService {
   }
 
   @Override
+  @Transactional
   public void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader) {
 
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
-        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로 정보가 없습니다."));
 
     Long currentId = Long.valueOf(userIdHeader);
 
     hubRoute.setDeletedBy(currentId);
     hubRoute.setDeletedAt(LocalDateTime.now());
     hubRouteRepository.save(hubRoute);
+    if (hubRoute.isDeleted()) {
+      throw new IllegalStateException("이미 삭제된 허브 이동 경로입니다.");
+    }
+
+    hubRoute.softDelete(currentId);
   }
 }
