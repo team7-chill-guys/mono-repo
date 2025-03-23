@@ -15,6 +15,7 @@ import java.util.UUID;
 public class Slack {
     @Id
     private UUID id;
+    private String slackId;
     private String text;
     private Timestamp createdAt;
     private Long createdBy;

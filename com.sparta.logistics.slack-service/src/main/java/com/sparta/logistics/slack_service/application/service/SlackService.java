@@ -52,6 +52,7 @@ public class SlackService {
         // 5. Slack entity 저장
         Slack slack = Slack.builder()
                 .id(UUID.randomUUID())
+                .slackId(deliveryResponseDto.getSlackId())
                 .text(slackText)
                 .build();
 
@@ -60,6 +61,7 @@ public class SlackService {
         // 6. 저장된 메시지 DTO로 반환
         return SlackMessageSaveResponseDto.builder()
                 .id(slack.getId())
+                .slackId(slack.getSlackId())
                 .text(slack.getText())
                 .build();
     }
@@ -106,7 +108,7 @@ public class SlackService {
 
         return SlackMessageSendResponseDto.builder()
                 .id(requestDto.getId())
-                .channel(requestDto.getChannel())
+                .slackId(requestDto.getSlackId())
                 .result(responseText)
                 .build();
     }
