@@ -1,6 +1,7 @@
 package com.sparta.logistics.hub_service.hubroute.presentation.controller;
 
 import com.sparta.logistics.hub_service.global.dto.ResponseDto;
+import com.sparta.logistics.hub_service.global.utils.PageableUtils;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,10 +66,18 @@ public class HubRouteController {
   public ResponseEntity<List<HubRouteListResponseDto>> getHubRouteList(
       @RequestParam(required = false) UUID startHubId,
       @RequestParam(required = false) UUID endHubId,
-      Pageable pageable) {
+      @PageableDefault(
+          size = 10,
+          page = 1,
+          sort = {"createdAt", "updatedAt"},
+          direction = Direction.ASC
+      ) Pageable pageable) {
+
+    Pageable validatedPageable = PageableUtils.validatePageable(pageable);
+
 
     Page<HubRouteListResponseDto> responseDto = hubRouteService.getHubRouteList(startHubId,
-        endHubId, pageable);
+        endHubId, validatedPageable);
     List<HubRouteListResponseDto> listResponseDto = responseDto.getContent();
     return ResponseEntity.ok().body(listResponseDto);
   }

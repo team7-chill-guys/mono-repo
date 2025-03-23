@@ -1,6 +1,7 @@
 package com.sparta.logistics.hub_service.hub.presentation.controller;
 
 import com.sparta.logistics.hub_service.global.dto.ResponseDto;
+import com.sparta.logistics.hub_service.global.utils.PageableUtils;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubUpdateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,19 +56,42 @@ public class HubController {
   }
 
   // 허브 조회 및 검색
+//  @GetMapping
+//  public ResponseEntity<ResponseDto<Page<HubListResponseDto>>> getHubList(
+//      @RequestParam(required = false) String hubName,
+//      @RequestParam(required = false) String address,
+//      @RequestParam(required = false) UUID hubId,
+//      Pageable pageable) {
+//
+//    Page<HubListResponseDto> result;
+//
+//    if (hubName == null && address == null && hubId == null) {
+//      result = hubService.getHubList(pageable);
+//    } else {
+//      result = hubService.getSearchHubs(hubName, address, hubId, pageable);
+//    }
+//    return ResponseEntity.ok(ResponseDto.success(result));
+//  }
   @GetMapping
   public ResponseEntity<ResponseDto<Page<HubListResponseDto>>> getHubList(
       @RequestParam(required = false) String hubName,
       @RequestParam(required = false) String address,
       @RequestParam(required = false) UUID hubId,
-      Pageable pageable) {
+      @PageableDefault(
+          size = 10,
+          page = 1,
+          sort = {"createdAt", "updatedAt"},
+          direction = Direction.ASC
+      ) Pageable pageable) {
+
+    Pageable validatedPageable = PageableUtils.validatePageable(pageable);
 
     Page<HubListResponseDto> result;
 
     if (hubName == null && address == null && hubId == null) {
-      result = hubService.getHubList(pageable);
+      result = hubService.getHubList(validatedPageable);
     } else {
-      result = hubService.getSearchHubs(hubName, address, hubId, pageable);
+      result = hubService.getSearchHubs(hubName, address, hubId, validatedPageable);
     }
     return ResponseEntity.ok(ResponseDto.success(result));
   }
