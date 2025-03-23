@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,10 +62,13 @@ public class HubRouteController {
   @GetMapping
   public ResponseEntity<List<HubRouteListResponseDto>> getHubRouteList(
       @RequestParam(required = false) UUID startHubId,
-      @RequestParam(required = false) UUID endHubId) {
-    List<HubRouteListResponseDto> responseDto = hubRouteService.getHubRouteList(startHubId,
-        endHubId);
-    return ResponseEntity.ok().body(responseDto);
+      @RequestParam(required = false) UUID endHubId,
+      Pageable pageable) {
+
+    Page<HubRouteListResponseDto> responseDto = hubRouteService.getHubRouteList(startHubId,
+        endHubId, pageable);
+    List<HubRouteListResponseDto> listResponseDto = responseDto.getContent();
+    return ResponseEntity.ok().body(listResponseDto);
   }
 
   // 허브 루트 수정

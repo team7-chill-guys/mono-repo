@@ -7,12 +7,16 @@ import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRou
 import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
 import com.sparta.logistics.hub_service.hubroute.domain.repository.HubRouteRepository;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +41,7 @@ public class HubRouteServiceImpl implements HubRouteService {
       value = "hubRoutes",
       key = "((#startHubId != null ? #startHubId.toString() : '')) + '-' + ((#endHubId != null ? #endHubId.toString() : ''))"
   )
-  public List<HubRouteListResponseDto> getHubRouteList(UUID startHubId, UUID endHubId) {
+  public Page<HubRouteListResponseDto> getHubRouteList(UUID startHubId, UUID endHubId, Pageable pageable) {
 
     log.debug("DB 조회 시작: startHubId = {}, endHubId = {}", startHubId, endHubId);
 
@@ -52,9 +56,18 @@ public class HubRouteServiceImpl implements HubRouteService {
     } else {
       hubRoutes = hubRouteRepository.findAll();
     }
-    return hubRoutes.stream()
+    List<HubRouteListResponseDto> dtoList =  hubRoutes.stream()
         .map(HubRouteListResponseDto::toResponse)
         .collect(Collectors.toList());
+
+    return paginateList(dtoList, pageable);
+  }
+
+  private <T> Page<T> paginateList(List<T> list, Pageable pageable) {
+    int start = (int) pageable.getOffset();
+    int end = Math.min(start + pageable.getPageSize(), list.size());
+    List<T> subList = start > list.size() ? Collections.emptyList() : list.subList(start, end);
+    return new PageImpl<>(subList, pageable, list.size());
   }
 
   // 허브 루트 수정
