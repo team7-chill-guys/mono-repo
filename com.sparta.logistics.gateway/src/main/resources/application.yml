@@ -24,7 +24,7 @@ spring:
         - id: user-master-service
           uri: lb://user-service
           predicates:
-            - Path=/api/master/user/**
+            - Path=/api/master/users/**
 
         - id: user-service-auth
           uri: lb://user-service
@@ -44,7 +44,7 @@ spring:
         - id: hub-master-service
           uri: lb://hub-service
           predicates:
-            - Path=/api/master/hub/**
+            - Path=/api/master/hubs/**
 
         - id: hub-route-service
           uri: lb://hub-service
