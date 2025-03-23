@@ -6,8 +6,9 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateRe
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubDetailResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
-import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface HubService {
 
@@ -15,9 +16,9 @@ public interface HubService {
 
   HubDetailResponseDto getHubDetail(UUID hubId);
 
-  List<HubListResponseDto> getHubList();
+  Page<HubListResponseDto> getHubList(Pageable pageable);
 
-  List<HubListResponseDto> getSearchHubs(String hubName, String address, UUID hubId);
+  Page<HubListResponseDto> getSearchHubs(String hubName, String address, UUID hubId, Pageable pageable);
 
   HubUpdateResponseDto updateHub(UUID hubId, HubUpdateRequestDto requestDto, String userIdHeader);
 
