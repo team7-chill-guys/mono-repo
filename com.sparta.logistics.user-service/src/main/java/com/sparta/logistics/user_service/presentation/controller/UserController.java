@@ -82,7 +82,7 @@ public class UserController {
 
     // TODO : api-gateway 에서 admin 경로 라우팅 설정 필요. 예상 경로 /api/master/users/{userId} or /master/api/users/{userId}
     // MASTER : 유저 프로필 수정
-    @PutMapping("master/users/{userId}")
+    @PutMapping("/master/users/{userId}")
     public ResponseEntity<UserUpdateResponseDto> updateUser(@PathVariable("userId") Long userId,
                                                             @RequestHeader(value = "X-User-Id") String userIdHeader,
                                                             @Valid @RequestBody UserUpdateRequestDto requestDto
@@ -92,7 +92,7 @@ public class UserController {
     }
 
     // MASTER : 유저 권한 수정
-    @PutMapping("master/users/role/{userId}")
+    @PutMapping("/master/users/role/{userId}")
     public ResponseEntity<UserRoleUpdateResponseDto> roleUpdateUser(@PathVariable("userId") Long userId,
                                                                     @RequestHeader(value = "X-User-Id") String userIdHeader,
                                                                     @RequestBody UserRoleUpdateRequestDto requestDto

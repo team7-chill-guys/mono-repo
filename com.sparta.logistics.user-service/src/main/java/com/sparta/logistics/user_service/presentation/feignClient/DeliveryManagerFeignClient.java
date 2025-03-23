@@ -1,8 +1,12 @@
 package com.sparta.logistics.user_service.presentation.feignClient;
 
+import com.sparta.logistics.user_service.application.dto.request.DeliveryManagerUpdateRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "delivery-manager-service")
@@ -13,4 +17,9 @@ public interface DeliveryManagerFeignClient {
                                                @RequestParam("slackId") String slackId
     );
 
+
+    @PutMapping("/api/delivery-managers/{delivery_manager_id}")
+    void updateDeliveryManager(@PathVariable("delivery_manager_id") Long deliveryManagerId,
+                               @RequestBody DeliveryManagerUpdateRequestDto deliveryManagerUpdateRequestDto
+    );
 }

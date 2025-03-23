@@ -1,5 +1,6 @@
 package com.sparta.logistics.user_service.application.service;
 
+import com.sparta.logistics.user_service.application.dto.request.DeliveryManagerUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserPasswordUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserRoleUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
@@ -12,16 +13,12 @@ import com.sparta.logistics.user_service.domain.entity.User;
 import com.sparta.logistics.user_service.domain.entity.UserRole;
 import com.sparta.logistics.user_service.domain.repository.UserRepository;
 import com.sparta.logistics.user_service.presentation.feignClient.DeliveryManagerFeignClient;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.BadRequestException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -95,6 +92,14 @@ public class UserService {
         user.updateUser(requestDto);
         user.updateInfo(updaterId);
         userRepository.save(user);
+
+        // 배송 담당자 정보가 수정될 경우 해당 변경사항을 배송 담당자 테이블에도 반영되기 위해 배송 담당자 수정 기능 호출
+        if (user.getRole() == UserRole.ROLE_DELIVERY_MANAGER) {
+            DeliveryManagerUpdateRequestDto deliveryManagerUpdateRequestDto = DeliveryManagerUpdateRequestDto.builder()
+                .slackId(user.getSlackId())
+                .build();
+            deliveryManagerFeignClient.updateDeliveryManager(user.getId(), deliveryManagerUpdateRequestDto);
+        }
 
         return UserUpdateResponseDto.builder()
             .userId(user.getId())
