@@ -15,6 +15,7 @@ import com.sparta.logistics.slack_service.repository.SlackRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Service
@@ -54,6 +55,7 @@ public class SlackService {
                 .id(UUID.randomUUID())
                 .slackId(deliveryResponseDto.getSlackId())
                 .text(slackText)
+                .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
 
         slackRepository.save(slack);
