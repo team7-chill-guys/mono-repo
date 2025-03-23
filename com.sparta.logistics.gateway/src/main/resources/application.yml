@@ -135,20 +135,6 @@ eureka:
     service-url:
       defaultZone: http://${EUREKA_URL}/eureka/
 
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.security: DEBUG
-    com.sparta.logistics.gateway: DEBUG
-management:
-  endpoints:
-    web:
-      exposure:
-        include: gateway, routes, health, info
-  endpoint:
-    gateway:
-      enabled: true
-
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
