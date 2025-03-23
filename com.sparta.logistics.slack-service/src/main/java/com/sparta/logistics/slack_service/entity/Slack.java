@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
