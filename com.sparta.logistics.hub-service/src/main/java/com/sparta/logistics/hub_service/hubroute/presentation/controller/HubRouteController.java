@@ -46,8 +46,14 @@ public class HubRouteController {
   public ResponseEntity<ResponseDto<HubRouteCreateResponseDto>> createHubRoute(
       @RequestBody HubRouteCreateRequestDto requestDto,
       @RequestHeader(value = "X-User-Id") String userIdHeader) {
-    HubRouteCreateResponseDto responseDto = kakaoMapApiService.autoCreateHubRoute(requestDto,
+    HubRouteCreateResponseDto responseDto = kakaoMapApiService.createHubRoute(requestDto,
         userIdHeader);
+
+    return ResponseEntity.ok(ResponseDto.success(responseDto));
+  }
+  @PostMapping("/auto")
+  public ResponseEntity<ResponseDto<List<HubRouteCreateResponseDto>>> autoCreateHubRoute(@RequestHeader(value = "X-User-Id") String userIdHeader){
+    List<HubRouteCreateResponseDto> responseDto = kakaoMapApiService.autoCreateHubRoute(userIdHeader);
 
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
