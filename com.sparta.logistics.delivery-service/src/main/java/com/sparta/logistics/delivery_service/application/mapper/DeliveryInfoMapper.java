@@ -1,6 +1,6 @@
 package com.sparta.logistics.delivery_service.application.mapper;
 
-import com.sparta.logistics.delivery_service.application.dto.DeliveryInfoDto;
+import com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoDto;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 
 public class DeliveryInfoMapper {
