@@ -9,17 +9,20 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateRe
 import com.sparta.logistics.hub_service.hub.application.dto.response.UserRoleSearchResponseDto;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
-import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import com.sparta.logistics.hub_service.hub.infrastructure.Client.UserClient;
+import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +33,7 @@ public class HubServiceImpl implements HubService {
 
   private final HubRepository hubRepository;
   private final KakaoMapApiServiceImpl kakaoMapApiService;
-    private final UserClient userClient;
+  private final UserClient userClient;
 
   // 허브 생성
   @Transactional
@@ -50,8 +53,6 @@ public class HubServiceImpl implements HubService {
       log.info("ROLE_HUB_MANAGER 권한을 가진 유저가 없습니다.");
     }
     log.info("받아온 유저 정보 : " + userRoles);
-
-
 
 //    if (hubRepository.existsByUserId(requestDto.getUserId())) {
 //      throw new IllegalArgumentException("이미 다른 허브에 관리자로 지정되어 있습니다");
@@ -93,31 +94,41 @@ public class HubServiceImpl implements HubService {
 
   // 허브 전체 조회
   @Override
-  public List<HubListResponseDto> getHubList() {
+  public Page<HubListResponseDto> getHubList(Pageable pageable) {
     List<Hub> hubs = hubRepository.findAll();
-    return hubs.stream()
+    List<HubListResponseDto> dtoList = hubs.stream()
         .map(HubListResponseDto::toResponse)
         .collect(Collectors.toList());
+    return paginateList(dtoList, pageable);
   }
 
   // 허브 검색 서비스
   @Override
-  public List<HubListResponseDto> getSearchHubs(String hubName, String address, UUID hubId) {
-    List<Hub> hubs = new ArrayList<>();
-
+  public Page<HubListResponseDto> getSearchHubs(String hubName, String address, UUID hubId,
+      Pageable pageable) {
     if (hubId != null) {
-      Optional<Hub> result = hubRepository.findById(hubId);
-      if (result.isPresent()) {
-        Hub hub = result.get();
-        hubs.add(hub);
-      }
+      List<Hub> hubs = new ArrayList<>();
+      hubRepository.findById(hubId).ifPresent(hubs::add);
+      List<HubListResponseDto> dtoList = hubs.stream()
+          .map(HubListResponseDto::toResponse)
+          .collect(Collectors.toList());
+
+      return paginateList(dtoList, pageable);
     } else {
-      hubs = hubRepository.findByHubNameContainingOrAddressContaining(hubName, address);
+      Page<Hub> hubPage = hubRepository.findByHubNameContainingOrAddressContaining(hubName, address,
+          pageable);
+      return hubPage.map(HubListResponseDto::toResponse);
     }
-    return hubs.stream()
-        .map(HubListResponseDto::toResponse)
-        .collect(Collectors.toList());
+
   }
+
+  private <T> Page<T> paginateList(List<T> list, Pageable pageable) {
+    int start = (int) pageable.getOffset();
+    int end = Math.min(start + pageable.getPageSize(), list.size());
+    List<T> subList = start > list.size() ? Collections.emptyList() : list.subList(start, end);
+    return new PageImpl<>(subList, pageable, list.size());
+  }
+
 
   // 허브 수정
   @Override
@@ -156,7 +167,7 @@ public class HubServiceImpl implements HubService {
     return new HubUpdateResponseDto(updateHub);
   }
 
-  public void deleteHub(Long userId, UUID hubId,String userIdHeader) {
+  public void deleteHub(Long userId, UUID hubId, String userIdHeader) {
 
     Hub hub = hubRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));

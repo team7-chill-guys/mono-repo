@@ -9,10 +9,11 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.HubListResp
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
 import com.sparta.logistics.hub_service.hub.application.service.HubService;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,12 +46,6 @@ public class HubController {
   }
 
   // 허브 단일 조회
-//  @GetMapping("/{hubId}")
-//  public ResponseEntity<ResponseDto<HubDetailResponseDto>> getHubDetail(@PathVariable UUID hubId) {
-//    HubDetailResponseDto responseDto = hubService.getHubDetail(hubId);
-//    return ResponseEntity.ok(ResponseDto.success(responseDto));
-//
-//  }
   @GetMapping("/{hubId}")
   public ResponseEntity<HubDetailResponseDto> getHubDetail(@PathVariable UUID hubId) {
     HubDetailResponseDto responseDto = hubService.getHubDetail(hubId);
@@ -59,20 +54,22 @@ public class HubController {
 
   // 허브 조회 및 검색
   @GetMapping
-  public ResponseEntity<ResponseDto<List<HubListResponseDto>>> getHubList(
+  public ResponseEntity<ResponseDto<Page<HubListResponseDto>>> getHubList(
       @RequestParam(required = false) String hubName,
       @RequestParam(required = false) String address,
-      @RequestParam(required = false) UUID hubId) {
+      @RequestParam(required = false) UUID hubId,
+      Pageable pageable) {
 
-    List<HubListResponseDto> responseDto = hubService.getHubList();
-    List<HubListResponseDto> searchResponseDto = hubService.getSearchHubs(hubName, address, hubId);
+    Page<HubListResponseDto> result;
 
     if (hubName == null && address == null && hubId == null) {
-      return ResponseEntity.ok(ResponseDto.success(responseDto));
+      result = hubService.getHubList(pageable);
     } else {
-      return ResponseEntity.ok(ResponseDto.success(searchResponseDto));
+      result = hubService.getSearchHubs(hubName, address, hubId, pageable);
     }
+    return ResponseEntity.ok(ResponseDto.success(result));
   }
+
 
   // 허브 수정
   @PutMapping("/{hubId}")
