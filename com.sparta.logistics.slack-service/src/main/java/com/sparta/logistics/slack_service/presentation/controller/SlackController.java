@@ -2,9 +2,7 @@ package com.sparta.logistics.slack_service.presentation.controller;
 
 import com.sparta.logistics.slack_service.application.dto.request.SlackMessageSendRequestDto;
 import com.sparta.logistics.slack_service.application.dto.response.SlackMessageSendResponseDto;
-import com.sparta.logistics.slack_service.application.dto.response.SlackMessageSaveResponseDto;
 import com.sparta.logistics.slack_service.application.service.SlackService;
-import com.sparta.logistics.slack_service.infrastructure.dto.DeliveryResponseDto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

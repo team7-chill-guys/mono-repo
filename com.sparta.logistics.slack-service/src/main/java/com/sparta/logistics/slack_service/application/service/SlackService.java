@@ -10,7 +10,6 @@ import com.sparta.logistics.slack_service.infrastructure.client.AiClient;
 import com.sparta.logistics.slack_service.infrastructure.client.HubClient;
 import com.sparta.logistics.slack_service.infrastructure.client.SlackClient;
 import com.sparta.logistics.slack_service.infrastructure.dto.DeliveryInfoDto;
-import com.sparta.logistics.slack_service.infrastructure.dto.DeliveryResponseDto;
 import com.sparta.logistics.slack_service.infrastructure.dto.HubResponseDto;
 import com.sparta.logistics.slack_service.repository.SlackRepository;
 import org.springframework.beans.factory.annotation.Value;
