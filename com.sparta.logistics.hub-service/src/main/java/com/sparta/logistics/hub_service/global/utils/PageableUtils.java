@@ -28,7 +28,10 @@ public class PageableUtils {
   }
 
   private static boolean isValidPageSize(int pageSize) {
-    return pageSize == 10 || pageSize == 30 || pageSize == 50;
+    if (!(pageSize == 10 || pageSize == 30 || pageSize == 50)) {
+      throw new CustomException(CommonExceptionCode.INVALID_PAGE_SIZE);
+    }
+    return true;
   }
 
 }
