@@ -81,6 +81,9 @@ public class HubServiceImpl implements HubService {
 
 // TODO: 허브 생성 시, 모든 가능한 이동 경로를 자동으로 생성 (반복문을 사용하여 허브들 간의 가능한 모든 경로 조합을 계산하여 생성)
 // kakaoMapApiService.autoCreateHubRoute();
+    log.info("헬로우?");
+    kakaoMapApiService.autoCreateHubRoute(userIdHeader);
+    log.info("헬로우!");
 
     return new HubCreateResponseDto(hub);
   }
