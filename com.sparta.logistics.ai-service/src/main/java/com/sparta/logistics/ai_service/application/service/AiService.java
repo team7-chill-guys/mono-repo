@@ -15,7 +15,7 @@ public class AiService {
         this.geminiClient = geminiClient;
     }
 
-    @Value("${GOOGLE_AI_API_KEY}")
+    @Value("${gemini.api.key}")
     private String GEMINI_API_KEY;
 
     public String getCompletionText(String inputForAI) {
