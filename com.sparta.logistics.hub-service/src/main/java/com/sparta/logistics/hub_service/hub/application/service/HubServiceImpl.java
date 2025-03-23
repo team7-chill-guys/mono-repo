@@ -1,5 +1,6 @@
 package com.sparta.logistics.hub_service.hub.application.service;
 
+import com.sparta.logistics.hub_service.global.utils.PaginationUtils;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubCreateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.request.HubUpdateRequestDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
@@ -13,7 +14,6 @@ import com.sparta.logistics.hub_service.hub.infrastructure.Client.UserClient;
 import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,7 +98,7 @@ public class HubServiceImpl implements HubService {
     List<HubListResponseDto> dtoList = hubs.stream()
         .map(HubListResponseDto::toResponse)
         .collect(Collectors.toList());
-    return paginateList(dtoList, pageable);
+    return PaginationUtils.paginateList(dtoList, pageable);
   }
 
   // 허브 검색 서비스
@@ -113,20 +112,14 @@ public class HubServiceImpl implements HubService {
           .map(HubListResponseDto::toResponse)
           .collect(Collectors.toList());
 
-      return paginateList(dtoList, pageable);
+      return PaginationUtils.paginateList(dtoList, pageable);
+
     } else {
       Page<Hub> hubPage = hubRepository.findByHubNameContainingOrAddressContaining(hubName, address,
           pageable);
       return hubPage.map(HubListResponseDto::toResponse);
     }
 
-  }
-
-  private <T> Page<T> paginateList(List<T> list, Pageable pageable) {
-    int start = (int) pageable.getOffset();
-    int end = Math.min(start + pageable.getPageSize(), list.size());
-    List<T> subList = start > list.size() ? Collections.emptyList() : list.subList(start, end);
-    return new PageImpl<>(subList, pageable, list.size());
   }
 
 
