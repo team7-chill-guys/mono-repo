@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.sparta.logistics.product_service.presentation.controller;
 
 import com.sparta.logistics.product_service.application.dto.request.ProductCreateRequestDto;
@@ -54,6 +49,11 @@ public class ProductController {
     @GetMapping({"/{productId}"})
     public ProductGetResponseDto getProduct(@PathVariable("productId") UUID productId) {
         return this.productService.getProduct(productId);
+    }
+
+    @GetMapping
+    public Page<ProductSearchResponseDto> getAllProducts(@RequestParam(required = false,defaultValue = "1") int page, @RequestParam(required = false,defaultValue = "10") int size, @RequestParam(required = false,defaultValue = "createdAt") String sortBy, @RequestParam(required = false,defaultValue = "asc") String order) {
+        return this.productService.getAllProducts(page - 1, size, sortBy, order);
     }
 
     @DeleteMapping({"/{productId}"})

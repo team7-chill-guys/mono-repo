@@ -91,6 +91,40 @@ public class ProductService {
         return ProductGetResponseDto.builder().id(product.getId()).companyId(product.getCompanyId()).hubId(product.getHubId()).name(product.getName()).stock(product.getStock()).createdAt(product.getCreatedAt()).createdBy(product.getCreatedBy()).updatedAt(product.getUpdatedAt()).updatedBy(product.getUpdatedBy()).build();
     }
 
+    public Page<ProductSearchResponseDto> getAllProducts(int page, int size, String sortBy, String order) {
+        if (size != 10 && size != 30 && size != 50) {
+            size = 10;
+        }
+
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.fromString(order), sortBy));
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Product> productList = this.productRepository.findAll(pageable);
+        List<Product> products = productList.getContent();
+
+        List<ProductGetResponseDto> productDtos = products.stream()
+                .map(product -> ProductGetResponseDto.builder()
+                        .id(product.getId())
+                        .companyId(product.getCompanyId())
+                        .hubId(product.getHubId())
+                        .name(product.getName())
+                        .stock(product.getStock())
+                        .createdAt(product.getCreatedAt())
+                        .createdBy(product.getCreatedBy())
+                        .updatedAt(product.getUpdatedAt())
+                        .updatedBy(product.getUpdatedBy())
+                        .build())
+                .collect(Collectors.toList());
+
+        ProductSearchResponseDto productSearchResponseDto = ProductSearchResponseDto.builder()
+                .products(productDtos)
+                .page(productList.getNumber())
+                .size(productList.getSize())
+                .build();
+
+        return new PageImpl<>(List.of(productSearchResponseDto), pageable, productList.getTotalElements());
+    }
+
     public ResponseEntity<Void> deleteProduct(UUID productId) {
         Product product = (Product)this.productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다: " + String.valueOf(productId)));
         product.setDeletedAt(new Timestamp(System.currentTimeMillis()));
