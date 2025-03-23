@@ -2,8 +2,9 @@ package com.sparta.logistics.user_service.domain.repository;
 
 import com.sparta.logistics.user_service.domain.entity.User;
 import com.sparta.logistics.user_service.domain.entity.UserRole;
-import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserRepository {
 
@@ -13,5 +14,5 @@ public interface UserRepository {
 
     Optional<User> findByUsername(String username);
 
-    List<User> findByRole(UserRole roleEnum);
+    Page<User> findByRole(UserRole roleEnum, Pageable pageable);
 }

@@ -15,10 +15,10 @@ import com.sparta.logistics.user_service.domain.repository.UserRepository;
 import com.sparta.logistics.user_service.presentation.feignClient.DeliveryManagerFeignClient;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -144,7 +144,7 @@ public class UserService {
     }
 
     // 권한 기반 유저 조회
-    public List<UserRoleSearchResponseDto> roleSearchUser(String userRole) {
+    public Page<UserRoleSearchResponseDto> roleSearchUser(String userRole, Pageable pageable) {
         UserRole roleEnum;
         try {
             roleEnum = UserRole.valueOf(userRole);
@@ -152,16 +152,14 @@ public class UserService {
             throw new IllegalArgumentException("해당하는 권한이 없습니다. : " + userRole);
         }
 
-        List<User> userList = userRepository.findByRole(roleEnum);
+        Page<User> userPage = userRepository.findByRole(roleEnum, pageable);
 
-        return userList.stream()
-            .map(user -> UserRoleSearchResponseDto.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .slackId(user.getSlackId())
-                .role(user.getRole().toString())
-                .build()
-            )
-            .collect(Collectors.toList());
+        return userPage.map(user -> UserRoleSearchResponseDto.builder()
+            .userId(user.getId())
+            .username(user.getUsername())
+            .slackId(user.getSlackId())
+            .role(user.getRole().toString())
+            .build()
+        );
     }
 }

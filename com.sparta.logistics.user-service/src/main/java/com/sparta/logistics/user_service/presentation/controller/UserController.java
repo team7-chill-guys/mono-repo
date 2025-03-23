@@ -10,9 +10,14 @@ import com.sparta.logistics.user_service.application.dto.response.UserSearchResp
 import com.sparta.logistics.user_service.application.dto.response.UserUpdateResponseDto;
 import com.sparta.logistics.user_service.application.service.UserService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,9 +70,38 @@ public class UserController {
 
     // 유저 권한 기반 조회.
     @GetMapping("/users/role")
-    public ResponseEntity<List<UserRoleSearchResponseDto>> roleSearchUser(@RequestParam(required = true) String userRole
+    public ResponseEntity<Page<UserRoleSearchResponseDto>> roleSearchUser(@RequestParam(required = true) String userRole,
+                                                                          @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+                                                                          @RequestParam(required = false, defaultValue = "DESC") String direction,
+                                                                          @PageableDefault(
+                                                                              page = 0,
+                                                                              size = 10) Pageable pageable
     ) {
-        List<UserRoleSearchResponseDto> responseDtoList = userService.roleSearchUser(userRole);
+
+        // 페이지 사이즈가 10, 30, 50이 아닐 경우 디폴트 값인 10으로 설정
+        int pageSize = pageable.getPageSize();
+        if (pageSize != 10 && pageSize != 30 && pageSize != 50) {
+            pageSize = 10;
+        }
+
+        // 정렬 기준에 updatedAt이 들어온다면 updatedAt을 기준으로 정렬, 그렇지 않은 모든 요청은 createdAt 으로 정렬
+        String finalSortBy = "updatedAt".equalsIgnoreCase(sortBy)
+            ? "updatedAt"
+            : "createdAt";
+
+        // 내림차순, 오름차순 정렬시 ASC 가 들어온다면 오름차순으로 정렬, 그렇지 않다면 DESC 로 내림차순으로 정렬
+        Sort.Direction finalDirection = "ASC".equalsIgnoreCase(direction)
+            ? Direction.ASC
+            : Direction.DESC;
+
+        // 위에서 조건별로 설정한 데이터를 담은 Pageable 구현체를 생성하여 서비스에 전달
+        Pageable adjustPageable = PageRequest.of(
+            pageable.getPageNumber(),
+            pageSize,
+            Sort.by(finalDirection, finalSortBy)
+        );
+
+        Page<UserRoleSearchResponseDto> responseDtoList = userService.roleSearchUser(userRole, adjustPageable);
         return ResponseEntity.ok(responseDtoList);
     }
 
@@ -80,7 +114,6 @@ public class UserController {
         return ResponseEntity.ok("비밀번호가 변경되었습니다.");
     }
 
-    // TODO : api-gateway 에서 admin 경로 라우팅 설정 필요. 예상 경로 /api/master/users/{userId} or /master/api/users/{userId}
     // MASTER : 유저 프로필 수정
     @PutMapping("/master/users/{userId}")
     public ResponseEntity<UserUpdateResponseDto> updateUser(@PathVariable("userId") Long userId,
