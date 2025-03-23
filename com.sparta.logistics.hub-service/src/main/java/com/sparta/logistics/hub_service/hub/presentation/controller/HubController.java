@@ -56,22 +56,6 @@ public class HubController {
   }
 
   // 허브 조회 및 검색
-//  @GetMapping
-//  public ResponseEntity<ResponseDto<Page<HubListResponseDto>>> getHubList(
-//      @RequestParam(required = false) String hubName,
-//      @RequestParam(required = false) String address,
-//      @RequestParam(required = false) UUID hubId,
-//      Pageable pageable) {
-//
-//    Page<HubListResponseDto> result;
-//
-//    if (hubName == null && address == null && hubId == null) {
-//      result = hubService.getHubList(pageable);
-//    } else {
-//      result = hubService.getSearchHubs(hubName, address, hubId, pageable);
-//    }
-//    return ResponseEntity.ok(ResponseDto.success(result));
-//  }
   @GetMapping
   public ResponseEntity<ResponseDto<Page<HubListResponseDto>>> getHubList(
       @RequestParam(required = false) String hubName,
