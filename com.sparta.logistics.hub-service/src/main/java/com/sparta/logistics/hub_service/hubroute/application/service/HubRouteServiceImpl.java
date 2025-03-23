@@ -83,6 +83,7 @@ public class HubRouteServiceImpl implements HubRouteService {
   }
 
   @Override
+  @Transactional
   public void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader) {
 
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
@@ -94,4 +95,20 @@ public class HubRouteServiceImpl implements HubRouteService {
     hubRoute.setDeletedAt(LocalDateTime.now());
     hubRouteRepository.save(hubRoute);
   }
+
+  @Transactional
+  public void autoDeleteHubRoute(Long userId, UUID hubId, String userIdHeader) {
+    Long currentId = Long.valueOf(userIdHeader);
+
+    List<HubRoute> relatedRoutes = hubRouteRepository
+        .findAllByStartHubIdOrEndHubId(hubId, hubId);
+
+    for (HubRoute route : relatedRoutes) {
+      route.setDeletedBy(currentId);
+      route.setDeletedAt(LocalDateTime.now());
+    }
+
+    hubRouteRepository.saveAll(relatedRoutes);
+  }
+
 }

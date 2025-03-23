@@ -11,6 +11,7 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.UserRoleSea
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
 import com.sparta.logistics.hub_service.hub.infrastructure.Client.UserClient;
+import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteServiceImpl;
 import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class HubServiceImpl implements HubService {
   private final HubRepository hubRepository;
   private final KakaoMapApiServiceImpl kakaoMapApiService;
   private final UserClient userClient;
+  private final HubRouteServiceImpl hubRouteService;
 
   // 허브 생성
   @Transactional
@@ -161,7 +163,11 @@ public class HubServiceImpl implements HubService {
     return new HubUpdateResponseDto(updateHub);
   }
 
+  @Override
+  @Transactional
   public void deleteHub(Long userId, UUID hubId, String userIdHeader) {
+
+    hubRouteService.deleteHubRoute(userId, hubId, userIdHeader);
 
     Hub hub = hubRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
@@ -170,5 +176,6 @@ public class HubServiceImpl implements HubService {
     hub.setDeletedBy(currentId);
     hub.setDeletedAt(LocalDateTime.now());
     hubRepository.save(hub);
+
   }
 }

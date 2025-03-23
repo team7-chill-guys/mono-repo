@@ -16,4 +16,7 @@ public interface HubRouteRepository extends JpaRepository<HubRoute, UUID> {
   List<HubRoute> findByStartHubIdAndEndHubId(UUID startHubId, UUID endHubId);
 
   boolean existsByStartHubIdAndEndHubId(UUID startHubId, UUID endHubId);
+
+  List<HubRoute> findAllByStartHubIdOrEndHubId(UUID startHubId, UUID endHubId);
+
 }
