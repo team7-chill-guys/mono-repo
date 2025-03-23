@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j(topic = "JwtUil")
 public class JwtUtil {
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer ";
     private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @Value("${jwt.secret.key}")
@@ -56,14 +54,12 @@ public class JwtUtil {
     }
 
     // refresh 토큰 생성
-    public String createRefreshToken(Long userId, String username, String role) {
+    public String createRefreshToken(Long userId) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + jwtRefreshExpTime);
 
         return Jwts.builder()
             .setSubject(String.valueOf(userId))
-            .claim("username", username)
-            .claim("role", role)
             .setIssuedAt(now)
             .setExpiration(expirationDate)
             .signWith(key, signatureAlgorithm)
@@ -77,36 +73,10 @@ public class JwtUtil {
     }
 
     // 토큰 만료시간 계산
-    public long getMilliSecond(String token) {
+    public Long getMilliSecond(String token) {
         Date exp = getExpiration(token);
         long now = System.currentTimeMillis();
         return exp.getTime() - now;
-    }
-
-    // 헤더에서 추출한 토큰의 Bearer 접두사 제거
-    public String removeBearer(String bearerToken) {
-        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(BEARER_PREFIX.length());
-        }
-        log.error("bearer 접두사를 찾을 수 없거나 토큰이 존재하지 않음. 받은 토큰 : " + bearerToken);
-        return null;
-    }
-
-    // 토큰 유효성 검사
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature");
-        } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token");
-        } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token");
-        } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty");
-        }
-        return false;
     }
 
     // 토큰에서 user 데이터 가져오기
@@ -118,6 +88,5 @@ public class JwtUtil {
             .parseClaimsJws(token)
             .getBody();
     }
-
 
 }

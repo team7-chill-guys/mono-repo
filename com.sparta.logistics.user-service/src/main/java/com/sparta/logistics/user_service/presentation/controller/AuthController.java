@@ -3,9 +3,15 @@ package com.sparta.logistics.user_service.presentation.controller;
 import com.sparta.logistics.user_service.application.dto.request.AuthLoginRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.AuthSignupRequestDto;
 import com.sparta.logistics.user_service.application.dto.response.AuthSignupResponseDto;
+import com.sparta.logistics.user_service.application.dto.response.AuthTokenRefreshResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.AuthTokenResponseDto;
 import com.sparta.logistics.user_service.application.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.Mapping;
@@ -24,7 +30,7 @@ public class AuthController {
 
     // 회원가입
     @PostMapping("/auth/signup")
-    public ResponseEntity<AuthSignupResponseDto> createUser(@RequestBody AuthSignupRequestDto requestDto,
+    public ResponseEntity<AuthSignupResponseDto> createUser(@Valid @RequestBody AuthSignupRequestDto requestDto,
                                                             @RequestHeader(value = "X-User-Id", required = false) String userIdHeader
     ) {
         AuthSignupResponseDto responseDto = authService.createUser(requestDto, userIdHeader);
@@ -33,19 +39,49 @@ public class AuthController {
 
     // 로그인
     @PostMapping("/auth/login")
-    public ResponseEntity<AuthTokenResponseDto> loginUser(@RequestBody AuthLoginRequestDto requestDto
+    public ResponseEntity<AuthTokenResponseDto> loginUser(@RequestBody AuthLoginRequestDto requestDto,
+                                                          HttpServletResponse servletResponse
     ) {
         AuthTokenResponseDto responseDto = authService.loginUser(requestDto);
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", responseDto.getRefreshToken())
+            .httpOnly(true)
+            .secure(true)
+            .maxAge(Duration.ofDays(1))
+            .path("/")
+            .build();
+        servletResponse.addHeader("Set-Cookie", refreshTokenCookie.toString());
+
         return ResponseEntity.ok(responseDto);
     }
 
     // 로그아웃
     @PostMapping("/auth/logout")
-    public ResponseEntity<String> logoutUser(@RequestHeader(value = "X-Access-Token") String accessTokenHeader,
-                                             @RequestHeader(value = "X-Refresh-Token") String refreshTokenHeader
-    ) {
-        authService.logoutUser(accessTokenHeader, refreshTokenHeader);
+    public ResponseEntity<String> logoutUser(@RequestHeader(value = "X-User-Id") String userIdHeader,
+                                             @RequestHeader(value = "X-ACCESS-TOKEN") String accessToken,
+                                             @RequestHeader(value = "X-REFRESH-TOKEN") String refreshToken
+        ) {
+        authService.logoutUser(accessToken, refreshToken, userIdHeader);
         return ResponseEntity.ok("로그아웃이 완료되었습니다.");
+    }
+
+    // Token 재발급
+    @PostMapping("/auth/refresh")
+    public ResponseEntity<AuthTokenRefreshResponseDto> tokenRefresh(@RequestHeader(value = "X-User-Id") String userIdHeader,
+                                                                    @RequestHeader(value = "X-REFRESH-TOKEN") String oldRefreshToken,
+                                                                    HttpServletResponse servletResponse
+        ) {
+        AuthTokenRefreshResponseDto responseDto = authService.tokenRefresh(oldRefreshToken, userIdHeader);
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", responseDto.getNewRefreshToken())
+            .httpOnly(true)
+            .secure(true)
+            .maxAge(Duration.ofDays(1))
+            .path("/")
+            .build();
+        servletResponse.addHeader("Set-Cookie", refreshTokenCookie.toString());
+
+        return ResponseEntity.ok(responseDto);
     }
 
 }
