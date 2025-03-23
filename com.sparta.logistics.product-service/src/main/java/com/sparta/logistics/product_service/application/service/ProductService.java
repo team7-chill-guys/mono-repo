@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.sparta.logistics.product_service.application.service;
 
 import com.sparta.logistics.product_service.application.dto.request.ProductCreateRequestDto;
@@ -40,7 +35,9 @@ public class ProductService {
         this.hubClient = hubClient;
     }
 
-    public ProductCreateResponseDto createProduct(ProductCreateRequestDto requestProductCreateDto) {
+    public ProductCreateResponseDto createProduct(ProductCreateRequestDto requestProductCreateDto, String userIdHeader) {
+        Long userId = Long.parseLong(userIdHeader);
+
         UUID findCompanyId = requestProductCreateDto.getCompanyId();
         UUID findHubId = requestProductCreateDto.getHubId();
         CompanyDetailResponseDto companyResponse = this.companyClient.getCompany(findCompanyId);
@@ -51,14 +48,38 @@ public class ProductService {
             if (hubResponse == null) {
                 throw new IllegalArgumentException("허브를 찾을 수 없습니다: " + String.valueOf(findHubId));
             } else {
-                Product product = Product.builder().companyId(companyResponse.getId()).hubId(hubResponse.getId()).name(requestProductCreateDto.getName()).stock(requestProductCreateDto.getStock()).build();
+
+                Product product = Product.builder()
+                        .companyId(companyResponse.getId())
+                        .hubId(hubResponse.getId())
+                        .name(requestProductCreateDto.getName())
+                        .stock(requestProductCreateDto.getStock())
+                        .createdBy(userId)
+                        .updatedBy(userId)
+                        .createdAt(new Timestamp(System.currentTimeMillis()))
+                        .updatedAt(new Timestamp(System.currentTimeMillis()))
+                        .build();
+
                 Product savedProduct = (Product)this.productRepository.save(product);
-                return ProductCreateResponseDto.builder().id(savedProduct.getId()).companyId(savedProduct.getCompanyId()).hubId(savedProduct.getHubId()).name(savedProduct.getName()).stock(savedProduct.getStock()).createdAt(savedProduct.getCreatedAt()).createdBy(savedProduct.getCreatedBy()).updatedAt(savedProduct.getUpdatedAt()).updatedBy(savedProduct.getUpdatedBy()).build();
+
+                return ProductCreateResponseDto.builder()
+                        .id(savedProduct.getId())
+                        .companyId(savedProduct.getCompanyId())
+                        .hubId(savedProduct.getHubId())
+                        .name(savedProduct.getName())
+                        .stock(savedProduct.getStock())
+                        .createdAt(savedProduct.getCreatedAt())
+                        .createdBy(savedProduct.getCreatedBy())
+                        .updatedAt(savedProduct.getUpdatedAt())
+                        .updatedBy(savedProduct.getUpdatedBy())
+                        .build();
             }
         }
     }
 
-    public ProductUpdateResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestProductUpdateDto) {
+    public ProductUpdateResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestProductUpdateDto, String userIdHeader) {
+        Long userId = Long.parseLong(userIdHeader);
+
         Product product = (Product)this.productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다: " + String.valueOf(productId)));
         if (requestProductUpdateDto.getName() != null) {
             product.setName(requestProductUpdateDto.getName());
@@ -67,6 +88,9 @@ public class ProductService {
         if (requestProductUpdateDto.getStock() != null) {
             product.setStock(requestProductUpdateDto.getStock());
         }
+
+        product.setUpdatedBy(userId);
+        product.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         Product updatedProduct = (Product)this.productRepository.save(product);
         return ProductUpdateResponseDto.builder().id(updatedProduct.getId()).companyId(updatedProduct.getCompanyId()).hubId(updatedProduct.getHubId()).name(updatedProduct.getName()).stock(updatedProduct.getStock()).updatedAt(updatedProduct.getUpdatedAt()).updatedBy(updatedProduct.getUpdatedBy()).build();
@@ -125,8 +149,11 @@ public class ProductService {
         return new PageImpl<>(List.of(productSearchResponseDto), pageable, productList.getTotalElements());
     }
 
-    public ResponseEntity<Void> deleteProduct(UUID productId) {
+    public ResponseEntity<Void> deleteProduct(UUID productId, String userIdHeader) {
+        Long userId = Long.parseLong(userIdHeader);
+
         Product product = (Product)this.productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다: " + String.valueOf(productId)));
+        product.setDeletedBy(userId);
         product.setDeletedAt(new Timestamp(System.currentTimeMillis()));
         this.productRepository.save(product);
         return ResponseEntity.ok().build();
