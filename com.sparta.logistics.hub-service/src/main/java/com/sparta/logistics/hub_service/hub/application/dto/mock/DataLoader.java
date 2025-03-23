@@ -24,7 +24,7 @@ public class DataLoader implements CommandLineRunner {
   public void run(String... args) {
     String count = entityManager.createNativeQuery("select count(*) from p_hub").getSingleResult()
         .toString();
-    if (!Objects.equals(count, "17")) {
+    if (Objects.isNull(count)) {
 
       entityManager.createNativeQuery("TRUNCATE TABLE p_hub RESTART IDENTITY CASCADE")
           .executeUpdate();
