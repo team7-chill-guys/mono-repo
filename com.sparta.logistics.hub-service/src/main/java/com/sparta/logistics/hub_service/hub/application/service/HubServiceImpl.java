@@ -95,7 +95,7 @@ public class HubServiceImpl implements HubService {
   // 허브 전체 조회
   @Override
   public Page<HubListResponseDto> getHubList(Pageable pageable) {
-    List<Hub> hubs = hubRepository.findAll();
+    Page<Hub> hubs = hubRepository.findAll(pageable);
     List<HubListResponseDto> dtoList = hubs.stream()
         .map(HubListResponseDto::toResponse)
         .collect(Collectors.toList());
