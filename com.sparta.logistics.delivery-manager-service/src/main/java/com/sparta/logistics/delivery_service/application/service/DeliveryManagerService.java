@@ -92,4 +92,11 @@ public class DeliveryManagerService {
         deliveryManager.setHubAndType(hubId, type);
 
     }
+
+    @Transactional
+    public void updateSlackId(Long id, String slackId) {
+        DeliveryManager deliveryManager = deliveryManagerRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
+        deliveryManager.updateSlackId(slackId);
+    }
 }
