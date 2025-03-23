@@ -96,10 +96,7 @@ public class UserService {
 
         // 배송 담당자 정보가 수정될 경우 해당 변경사항을 배송 담당자 테이블에도 반영되기 위해 배송 담당자 수정 기능 호출
         if (user.getRole() == UserRole.ROLE_DELIVERY_MANAGER) {
-            DeliveryManagerUpdateRequestDto deliveryManagerUpdateRequestDto = DeliveryManagerUpdateRequestDto.builder()
-                .slackId(user.getSlackId())
-                .build();
-            deliveryManagerFeignClient.updateDeliveryManager(user.getId(), deliveryManagerUpdateRequestDto);
+            deliveryManagerFeignClient.updateDeliveryManager(user.getId(), user.getSlackId());
         }
 
         return UserUpdateResponseDto.builder()
