@@ -17,4 +17,5 @@ public class DeliveryInfoDto {
     Long deliveryManagerId;
     UUID orderId;
     String slackId;
+    String address;
 }

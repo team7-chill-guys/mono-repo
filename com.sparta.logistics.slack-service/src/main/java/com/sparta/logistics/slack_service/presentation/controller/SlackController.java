@@ -20,10 +20,10 @@ public class SlackController {
         this.slackService = slackService;
     }
 
-    @PostMapping("/save")
-    public SlackMessageSaveResponseDto saveMessage(@RequestBody DeliveryResponseDto deliveryResponseDto) {
-        return slackService.saveSlackMessage(deliveryResponseDto);
-    }
+//    @PostMapping("/save")
+//    public SlackMessageSaveResponseDto saveMessage(@RequestBody DeliveryResponseDto deliveryResponseDto) {
+//        return slackService.saveSlackMessage(deliveryResponseDto);
+//    }
 
     @PostMapping("/send")
     public SlackMessageSendResponseDto sendMessage(@RequestBody SlackMessageSendRequestDto slackMessageSendRequestDto) {
