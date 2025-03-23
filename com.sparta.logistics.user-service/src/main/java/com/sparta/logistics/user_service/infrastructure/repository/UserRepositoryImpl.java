@@ -36,4 +36,9 @@ public class UserRepositoryImpl implements UserRepository {
         return userJpaRepository.findByRole(roleEnum, pageable);
     }
 
+    @Override
+    public Page<User> findByAll(Pageable pageable) {
+        return userJpaRepository.findAll(pageable);
+    }
+
 }

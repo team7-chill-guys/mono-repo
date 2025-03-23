@@ -15,4 +15,6 @@ public interface UserRepository {
     Optional<User> findByUsername(String username);
 
     Page<User> findByRole(UserRole roleEnum, Pageable pageable);
+
+    Page<User> findByAll(Pageable pageable);
 }

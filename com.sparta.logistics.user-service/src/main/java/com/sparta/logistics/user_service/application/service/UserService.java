@@ -6,6 +6,7 @@ import com.sparta.logistics.user_service.application.dto.request.UserRoleUpdateR
 import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.response.UserRoleSearchResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserRoleUpdateResponseDto;
+import com.sparta.logistics.user_service.application.dto.response.UserSearchAllResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchMeResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserUpdateResponseDto;
@@ -155,6 +156,19 @@ public class UserService {
         Page<User> userPage = userRepository.findByRole(roleEnum, pageable);
 
         return userPage.map(user -> UserRoleSearchResponseDto.builder()
+            .userId(user.getId())
+            .username(user.getUsername())
+            .slackId(user.getSlackId())
+            .role(user.getRole().toString())
+            .build()
+        );
+    }
+
+    // 모든 유저 조회
+    public Page<UserSearchAllResponseDto> searchAllUser(Pageable pageable) {
+        Page<User> allUserPage = userRepository.findByAll(pageable);
+
+        return allUserPage.map(user -> UserSearchAllResponseDto.builder()
             .userId(user.getId())
             .username(user.getUsername())
             .slackId(user.getSlackId())
