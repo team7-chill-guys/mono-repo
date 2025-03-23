@@ -160,14 +160,21 @@ public class HubServiceImpl implements HubService {
     return new HubUpdateResponseDto(updateHub);
   }
 
-  public void deleteHub(Long userId, UUID hubId, String userIdHeader) {
+
+  @Override
+  @Transactional
+  public void deleteHub(Long userId, UUID hubId,String userIdHeader) {
+
 
     Hub hub = hubRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
 
     Long currentId = Long.valueOf(userIdHeader);
-    hub.setDeletedBy(currentId);
-    hub.setDeletedAt(LocalDateTime.now());
-    hubRepository.save(hub);
+
+    if (hub.isDeleted()) {
+      throw new IllegalStateException("이미 삭제된 허브입니다.");
+    }
+
+    hub.softDelete(currentId);
   }
 }
