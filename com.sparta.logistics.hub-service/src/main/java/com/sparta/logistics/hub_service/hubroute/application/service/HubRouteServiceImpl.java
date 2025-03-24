@@ -87,7 +87,7 @@ public class HubRouteServiceImpl implements HubRouteService {
   public void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader) {
 
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
-        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로 정보가 없습니다."));
 
     Long currentId = Long.valueOf(userIdHeader);
 
@@ -97,7 +97,7 @@ public class HubRouteServiceImpl implements HubRouteService {
   }
 
   @Transactional
-  public void autoDeleteHubRoute(Long userId, UUID hubId, String userIdHeader) {
+  public void autoDeleteHubRoute(UUID hubId, String userIdHeader) {
     Long currentId = Long.valueOf(userIdHeader);
 
     List<HubRoute> relatedRoutes = hubRouteRepository

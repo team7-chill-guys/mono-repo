@@ -167,7 +167,7 @@ public class HubServiceImpl implements HubService {
   @Transactional
   public void deleteHub(Long userId, UUID hubId, String userIdHeader) {
 
-    hubRouteService.deleteHubRoute(userId, hubId, userIdHeader);
+    hubRouteService.autoDeleteHubRoute(hubId, userIdHeader);
 
     Hub hub = hubRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
