@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "ai-service")
 public interface AiClient {
-    @PostMapping("/ai/generate")
+    @PostMapping("/api/ai/generate")
     String generateCompletion(@RequestBody String inputForAI);
 }
