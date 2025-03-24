@@ -1,4 +1,16 @@
-FROM openjdk:17.0.1-jdk-slim
-VOLUME /tmp
-COPY ./build/libs/ai-service-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+FROM openjdk:17-jdk-slim AS build
+WORKDIR /app
+
+COPY gradlew .
+COPY gradle/ gradle/
+RUN chmod +x gradlew
+COPY . .
+
+RUN ./gradlew clean build -x test --no-daemon
+
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+
+COPY --from=build /app/build/libs/ai-service-0.0.1-SNAPSHOT.jar ai-service.jar
+
+ENTRYPOINT ["java", "-jar", "ai-service.jar"]
