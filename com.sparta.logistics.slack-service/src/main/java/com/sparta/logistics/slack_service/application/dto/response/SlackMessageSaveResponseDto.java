@@ -10,6 +10,7 @@ import java.util.UUID;
 public class SlackMessageSaveResponseDto {
     private UUID id;
     private String text;
+    private String slackId;
     private Timestamp createdAt;
     private Long createdBy;
 }
