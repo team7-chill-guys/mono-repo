@@ -42,15 +42,16 @@ public class HubServiceImpl implements HubService {
   @Override
   public HubCreateResponseDto createHub(HubCreateRequestDto requestDto, String userIdHeader) {
 
-    List<UserRoleSearchResponseDto> userRoles = userClient.roleSearchUser("ROLE_HUB_MANAGER");
+    Page<UserRoleSearchResponseDto> userRoles = userClient.roleSearchUser("ROLE_HUB_MANAGER",
+        Pageable.ofSize(50));
 
-    if (userRoles == null || userRoles.isEmpty()) {
+    if (userRoles.isEmpty()) {
       throw new IllegalStateException("허브 매니저 권한을 가진 사용자가 없습니다.");
     }
 
     List<UserRoleSearchResponseDto> availableManagers = userRoles.stream()
         .filter(user -> !hubRepository.existsByUserId(user.getUserId()))
-        .collect(Collectors.toList());
+        .toList();
 
     if (availableManagers.isEmpty()) {
       throw new IllegalStateException("모든 허브 매니저 유저가 이미 허브에 관리자로 지정되어 있습니다.");

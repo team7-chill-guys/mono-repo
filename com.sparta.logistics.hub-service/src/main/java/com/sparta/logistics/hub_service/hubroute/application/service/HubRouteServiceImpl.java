@@ -18,6 +18,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,7 @@ public class HubRouteServiceImpl implements HubRouteService {
   private final HubRouteRepository hubRouteRepository;
   private final HubRepository hubRepository;
   private final KakaoClient kakaoClient;
+  private final CacheManager cacheManager;
 
   // 허브 루트 단일 조회
   @Override
@@ -74,10 +77,25 @@ public class HubRouteServiceImpl implements HubRouteService {
   // 허브 루트 수정
   @Override
   @Transactional
-  public HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto,
+  public HubRouteUpdateResponseDto updateHubRoute(UUID hubRoutesId, HubRouteUpdateRequestDto requestDto,
       String userIdHeader) {
-    HubRoute hubRoute = hubRouteRepository.findById(hubId)
+    HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로가 없습니다."));
+
+    UUID startHubId = hubRoute.getStartHubId();
+    UUID endHubId = hubRoute.getEndHubId();
+
+    log.info("허브 루트 수정 : {} , {}", startHubId, endHubId);
+
+    String forwardKey = startHubId + "-" + endHubId;
+    String reverseKey = endHubId + "-" + startHubId;
+
+    Cache cache = cacheManager.getCache("hubRoutes");
+    if (cache != null) {
+      cache.evict(forwardKey);
+      cache.evict(reverseKey);
+      log.info("수정 캐시 삭제 완료 - hubRoutes::{} & hubRoutes::{}", forwardKey, reverseKey);
+    }
 
     Long currentId = Long.valueOf(userIdHeader);
 
@@ -89,12 +107,26 @@ public class HubRouteServiceImpl implements HubRouteService {
     return new HubRouteUpdateResponseDto(updateHubRoute);
   }
 
+  // 허브 수정시 허브루트 수정
   public void updateRoutesForHub(Hub updateHub) {
     List<Hub> allOtherHubs = hubRepository.findAllExcept(updateHub.getId());
 
     log.info("업데이트된 허브 : {}", updateHub);
 
     for (Hub otherHub : allOtherHubs) {
+
+      String forwardKey = updateHub.getId() + "-" + otherHub.getId();
+      String reverseKey = otherHub.getId() + "-" + updateHub.getId();
+
+      Cache cache = cacheManager.getCache("hubRoutes");
+
+      if (cache != null) {
+        cache.evict(forwardKey);
+        cache.evict(reverseKey);
+        log.info("허브수정시 캐시 삭제 완료 - hubRoutes::{} & hubRoutes::{}", forwardKey, reverseKey);
+      }
+
+
       updateRouteBetween(updateHub, otherHub);
       log.info("정 방향 : {} 에서 {} 로 이동 경로", updateHub, otherHub);
 
@@ -134,12 +166,28 @@ public class HubRouteServiceImpl implements HubRouteService {
   }
 
 
+  // 허브 루트 삭제
   @Override
   @Transactional
   public void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader) {
 
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로 정보가 없습니다."));
+
+    UUID startHubId = hubRoute.getStartHubId();
+    UUID endHubId = hubRoute.getEndHubId();
+
+    log.info("허브 루트 삭제 : {} , {}", startHubId, endHubId);
+
+    String forwardKey = startHubId + "-" + endHubId;
+    String reverseKey = endHubId + "-" + startHubId;
+
+    Cache cache = cacheManager.getCache("hubRoutes");
+    if (cache != null) {
+      cache.evict(forwardKey);
+      cache.evict(reverseKey);
+      log.info("삭제 캐시 삭제 완료 - hubRoutes::{} & hubRoutes::{}", forwardKey, reverseKey);
+    }
 
     Long currentId = Long.valueOf(userIdHeader);
 
@@ -153,6 +201,7 @@ public class HubRouteServiceImpl implements HubRouteService {
     hubRoute.softDelete(currentId);
   }
 
+  // 허브 삭제시 허브 루트 삭제
   @Transactional
   public void autoDeleteHubRoute(UUID hubId, String userIdHeader) {
     Long currentId = Long.valueOf(userIdHeader);
@@ -161,6 +210,19 @@ public class HubRouteServiceImpl implements HubRouteService {
         .findAllByStartHubIdOrEndHubId(hubId, hubId);
 
     for (HubRoute route : relatedRoutes) {
+
+      String forwardKey = route.getStartHubId() + "-" + route.getEndHubId();
+      String reverseKey = route.getEndHubId() + "-" + route.getStartHubId();
+
+      Cache cache = cacheManager.getCache("hubRoutes");
+
+      if (cache != null) {
+        cache.evict(forwardKey);
+        cache.evict(reverseKey);
+        log.info("허브 삭제 캐시 삭제 완료 - hubRoutes::{} & hubRoutes::{}", forwardKey, reverseKey);
+      }
+
+
       route.setDeletedBy(currentId);
       route.setDeletedAt(LocalDateTime.now());
     }

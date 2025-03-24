@@ -21,6 +21,8 @@ spring:
     redis:
       host: localhost
       port: ${REDIS_PORT}
+  cache:
+    type: redis
 
 server:
   port: 19092
@@ -41,3 +43,7 @@ kakao:
 logging:
   level:
     org.springframework.cache: DEBUG
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}

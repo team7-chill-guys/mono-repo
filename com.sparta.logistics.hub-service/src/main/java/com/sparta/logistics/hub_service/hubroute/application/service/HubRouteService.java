@@ -20,7 +20,7 @@ public interface HubRouteService {
 
   Page<HubRouteListResponseDto> getHubRouteList(UUID startHubId, UUID endHubId, Pageable pageable);
 
-  HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto,
+  HubRouteUpdateResponseDto updateHubRoute(UUID hubRoutesId, HubRouteUpdateRequestDto requestDto,
       String userIdHeader);
 
   void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader);
