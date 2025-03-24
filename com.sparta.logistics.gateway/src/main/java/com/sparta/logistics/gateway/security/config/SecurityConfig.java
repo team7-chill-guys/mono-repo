@@ -60,84 +60,84 @@ public class SecurityConfig {
                 .pathMatchers(HttpMethod.GET,
                     "/api/delivery-managers/{deliveryManagerId}"
                     )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "MANAGER")
 
                 .pathMatchers(HttpMethod.PUT,
                     "/api/delivery-managers/{deliveryManagerId}"
                     )
-                .hasAnyRole("ROEL_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "MANAGER")
 
                 .pathMatchers(HttpMethod.DELETE,
                     "/api/delivery-managers/{deliveryManagerId}"
                 )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER")
 
                 // 업체
                 .pathMatchers(HttpMethod.POST,
                     "/api/companies"
                     )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER")
 
                 .pathMatchers(HttpMethod.DELETE,
                     "/api/companies/{companyId}"
                 )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER")
 
                 .pathMatchers(HttpMethod.PUT,
                     "/api/companies/{companyId}"
                 )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER", "ROLE_COMPANY_MANAGER")
+                .hasAnyRole("MASTER", "MANAGER", "COMPANY_MANAGER")
 
                 .pathMatchers(HttpMethod.GET,
                     "/api/companies/{companyId}",
                     "/api/companies?keyword="
                 )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER", "ROLE_COMPANY_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER", "COMPANY_MANAGER")
 
                 // 상품
                 .pathMatchers(HttpMethod.POST,
                     "/api/products"
                     )
-                .hasAnyRole("ROLE_MASTER", "ROLE_COMPANY_MANAGER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "COMPANY_MANAGER", "HUB_MANAGER")
 
                 .pathMatchers(HttpMethod.PUT,
                     "/api/products"
                     )
-                .hasAnyRole("ROLE_MASTER", "ROLE_COMPANY_MANAGER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "COMPANY_MANAGER", "HUB_MANAGER")
 
                 .pathMatchers(HttpMethod.DELETE,
                     "/api/products/{productId}"
                 )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER")
 
                 // 주문
                 .pathMatchers(HttpMethod.GET,
                     "/api/orders/{orderId}"
                     )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER")
 
                 .pathMatchers(HttpMethod.PUT,
                     "/api/orders/{orderId}"
                 )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER")
 
                 .pathMatchers(HttpMethod.DELETE,
                     "/api/orders/{orderId}"
                 )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER")
 
                 // 배송 & 배송 경로
                 .pathMatchers(HttpMethod.PUT,
                     "/api/delivery/{delivery_id}",
                     "/api/delivery/{delivery_id}/routes/{routes_id}"
                 )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER", "ROLE_DELIVERY_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER", "DELIVERY_MANAGER")
 
                 .pathMatchers(HttpMethod.DELETE,
                     "/api/delivery/{delivery_id}",
                     "/api/delivery/{delivery_id}/routes/{routes_id}"
                     )
-                .hasAnyRole("ROLE_MASTER", "ROLE_HUB_MANAGER")
+                .hasAnyRole("MASTER", "HUB_MANAGER")
 
                 // 허브 & 허브 경로
 
