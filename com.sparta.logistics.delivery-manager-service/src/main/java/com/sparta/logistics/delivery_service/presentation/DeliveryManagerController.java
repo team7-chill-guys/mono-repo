@@ -86,4 +86,14 @@ public class DeliveryManagerController {
                                                                         @RequestParam DeliveryManagerType type) {
         return ResponseEntity.ok().body(deliveryManagerService.assignDeliveryManager(startHubId, endHubId, type));
     }
+
+    /**
+     * 슬랙 아이디 수정
+     */
+    @PutMapping("/update-slack-id/{delivery_manager_id}")
+    public ResponseEntity<Void> updateSlackId(@PathVariable("delivery_manager_id") Long id,
+                                              @RequestParam String slackId) {
+        deliveryManagerService.updateSlackId(id, slackId);
+        return ResponseEntity.ok().build();
+    }
 }
