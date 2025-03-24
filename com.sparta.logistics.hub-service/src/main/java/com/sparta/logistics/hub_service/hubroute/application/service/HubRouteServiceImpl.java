@@ -2,12 +2,16 @@ package com.sparta.logistics.hub_service.hubroute.application.service;
 
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.global.utils.PaginationUtils;
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
+import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteUpdateResponseDto;
+import com.sparta.logistics.hub_service.hubroute.application.dto.response.KakaoResponseDto;
 import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
 import com.sparta.logistics.hub_service.hubroute.domain.repository.HubRouteRepository;
+import com.sparta.logistics.hub_service.hubroute.infrastructure.client.KakaoClient;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class HubRouteServiceImpl implements HubRouteService {
 
   private final HubRouteRepository hubRouteRepository;
+  private final HubRepository hubRepository;
+  private final KakaoClient kakaoClient;
 
   // 허브 루트 단일 조회
   @Override
@@ -83,6 +89,51 @@ public class HubRouteServiceImpl implements HubRouteService {
     return new HubRouteUpdateResponseDto(updateHubRoute);
   }
 
+  public void updateRoutesForHub(Hub updateHub) {
+    List<Hub> allOtherHubs = hubRepository.findAllExcept(updateHub.getId());
+
+    log.info("업데이트된 허브 : {}", updateHub);
+
+    for (Hub otherHub : allOtherHubs) {
+      updateRouteBetween(updateHub, otherHub);
+      log.info("정 방향 : {} 에서 {} 로 이동 경로", updateHub, otherHub);
+
+      updateRouteBetween(otherHub, updateHub);
+      log.info("반대 방향 : {} 에서 {} 로 이동 경로", otherHub, updateHub);
+    }
+  }
+
+  private void updateRouteBetween(Hub from, Hub to) {
+    KakaoClient.RouteInfo routeInfo = kakaoClient.getRouteInfo(
+        from.getLongitude(), from.getLatitude(),
+        to.getLongitude(), to.getLatitude()
+    );
+
+    log.info("허브 간 거리 갱신 - From: {}, To: {}, Distance: {}m, Duration: {}min",
+        from.getHubName(), to.getHubName(),
+        routeInfo.getDistance(), routeInfo.getTime());
+
+    HubRoute route = hubRouteRepository.findOptionalByStartHubIdAndEndHubId(from.getId(),
+            to.getId())
+        .orElse(HubRoute.builder()
+            .startHubId(from.getId())
+            .endHubId(to.getId())
+            .startHubName(from.getHubName())
+            .endHubName(to.getHubName())
+            .deliveryDistance(routeInfo.getDistance())
+            .deliveryTime(routeInfo.getTime())
+            .build()
+        );
+
+    route.updateStartHubName(from.getHubName());
+    route.updateEndHubName(to.getHubName());
+    route.updateDeliveryDistance(routeInfo.getDistance());
+    route.updateDeliveryTime(routeInfo.getTime());
+
+    hubRouteRepository.save(route);
+  }
+
+
   @Override
   @Transactional
   public void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader) {
@@ -101,4 +152,20 @@ public class HubRouteServiceImpl implements HubRouteService {
 
     hubRoute.softDelete(currentId);
   }
+
+  @Transactional
+  public void autoDeleteHubRoute(UUID hubId, String userIdHeader) {
+    Long currentId = Long.valueOf(userIdHeader);
+
+    List<HubRoute> relatedRoutes = hubRouteRepository
+        .findAllByStartHubIdOrEndHubId(hubId, hubId);
+
+    for (HubRoute route : relatedRoutes) {
+      route.setDeletedBy(currentId);
+      route.setDeletedAt(LocalDateTime.now());
+    }
+
+    hubRouteRepository.saveAll(relatedRoutes);
+  }
+
 }
