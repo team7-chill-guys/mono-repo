@@ -29,7 +29,7 @@ public class ConsumerApplicationKafkaConfig {
         configProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
 
         configProps.put(JsonDeserializer.TYPE_MAPPINGS,
-                "com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoDto:com.example.slack_service.infrastructure.dto.DeliveryInfoDto");
+                "com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoDto:com.sparta.logistics.slack_service.infrastructure.dto.DeliveryInfoDto");
 
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
