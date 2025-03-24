@@ -6,6 +6,7 @@ import java.util.List;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class GeminiRequestDto {
 
     private List<Content> contents;
