@@ -21,6 +21,8 @@ spring:
     redis:
       host: localhost
       port: ${REDIS_PORT}
+  cache:
+    type: redis
 
 server:
   port: 19092
