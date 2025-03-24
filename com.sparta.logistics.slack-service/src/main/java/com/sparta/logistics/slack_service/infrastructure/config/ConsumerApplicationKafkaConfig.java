@@ -26,14 +26,14 @@ public class ConsumerApplicationKafkaConfig {
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 
         configProps.put(JsonDeserializer.TYPE_MAPPINGS,
-                "com.sparta.logistics.delivery_service.application.dto.DeliveryInfoDto:com.sparta.logistics.slack_service.infrastructure.dto.DeliveryInfoDto");
+                "com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoDto:com.sparta.logistics.slack_service.infrastructure.dto.DeliveryInfoDto");
 
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES,
-                "com.sparta.logistics.delivery_service.application.dto,com.sparta.logistics.slack_service.infrastructure.dto");
+                "com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoDto,com.sparta.logistics.slack_service.infrastructure.dto");
 
         JsonDeserializer<DeliveryInfoDto> valueDeserializer = new JsonDeserializer<>(DeliveryInfoDto.class, false);
         valueDeserializer.addTrustedPackages(
-                "com.sparta.logistics.delivery_service.application.dto",
+                "com.sparta.logistics.delivery_service.infrastructure.messaging.dto",
                 "com.sparta.logistics.slack_service.infrastructure.dto"
         );
         valueDeserializer.setUseTypeMapperForKey(false);
