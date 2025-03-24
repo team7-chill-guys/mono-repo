@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.sparta.logistics.product_service.domain.entity;
 
 import jakarta.persistence.Entity;

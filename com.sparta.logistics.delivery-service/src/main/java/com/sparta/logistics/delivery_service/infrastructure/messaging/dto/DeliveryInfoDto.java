@@ -1,4 +1,4 @@
-package com.sparta.logistics.delivery_service.application.dto;
+package com.sparta.logistics.delivery_service.infrastructure.messaging.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +17,5 @@ public class DeliveryInfoDto {
     Long deliveryManagerId;
     UUID orderId;
     String slackId;
+    String address;
 }

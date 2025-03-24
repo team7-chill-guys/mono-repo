@@ -9,12 +9,13 @@ import com.sparta.logistics.slack_service.entity.Slack;
 import com.sparta.logistics.slack_service.infrastructure.client.AiClient;
 import com.sparta.logistics.slack_service.infrastructure.client.HubClient;
 import com.sparta.logistics.slack_service.infrastructure.client.SlackClient;
-import com.sparta.logistics.slack_service.infrastructure.dto.DeliveryResponseDto;
+import com.sparta.logistics.slack_service.infrastructure.dto.DeliveryInfoDto;
 import com.sparta.logistics.slack_service.infrastructure.dto.HubResponseDto;
 import com.sparta.logistics.slack_service.repository.SlackRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Service
@@ -35,10 +36,10 @@ public class SlackService {
         this.hubClient = hubClient;
     }
 
-    public SlackMessageSaveResponseDto saveSlackMessage(DeliveryResponseDto deliveryResponseDto) {
+    public SlackMessageSaveResponseDto saveSlackMessage(DeliveryInfoDto deliveryResponseDto) {
         // 1. hubId로 hub 주소 찾기
-        HubResponseDto hubStartResponseDto = hubClient.getAddressByHubId(deliveryResponseDto.getStartHubId());
-        HubResponseDto hubEndResponseDto = hubClient.getAddressByHubId(deliveryResponseDto.getEndHubId());
+        HubResponseDto hubStartResponseDto = hubClient.getAddressByHubId(deliveryResponseDto.getDepartureHubId());
+        HubResponseDto hubEndResponseDto = hubClient.getAddressByHubId(deliveryResponseDto.getDestinationHubId());
 
         // 2. delivery 정보 + hub 주소를 AI 요청용 string으로 변환
         String inputForAI = convertDeliveryInfoToString(deliveryResponseDto, hubStartResponseDto, hubEndResponseDto);
@@ -52,7 +53,9 @@ public class SlackService {
         // 5. Slack entity 저장
         Slack slack = Slack.builder()
                 .id(UUID.randomUUID())
+                .slackId(deliveryResponseDto.getSlackId())
                 .text(slackText)
+                .createdAt(new Timestamp(System.currentTimeMillis()))
                 .build();
 
         slackRepository.save(slack);
@@ -60,15 +63,15 @@ public class SlackService {
         // 6. 저장된 메시지 DTO로 반환
         return SlackMessageSaveResponseDto.builder()
                 .id(slack.getId())
+                .slackId(slack.getSlackId())
                 .text(slack.getText())
                 .build();
     }
 
-    private String convertDeliveryInfoToString(DeliveryResponseDto deliveryDto, HubResponseDto hubStartResponseDto, HubResponseDto hubEndResponseDto) {
+    private String convertDeliveryInfoToString(DeliveryInfoDto deliveryDto, HubResponseDto hubStartResponseDto, HubResponseDto hubEndResponseDto) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("배송 요청 정보:\n");
-        sb.append("수령인: ").append(deliveryDto.getRecipientName()).append("\n");
         sb.append("배송지: ").append(deliveryDto.getAddress()).append("\n");
 
         sb.append("출발 허브 정보:\n");
@@ -82,7 +85,7 @@ public class SlackService {
         return sb.toString();
     }
 
-    private String buildSlackText(DeliveryResponseDto deliveryResponseDto, HubResponseDto hubStartDto, HubResponseDto hubEndDto, String output) {
+    private String buildSlackText(DeliveryInfoDto deliveryResponseDto, HubResponseDto hubStartDto, HubResponseDto hubEndDto, String output) {
         return convertDeliveryInfoToString(deliveryResponseDto, hubStartDto, hubEndDto) + "\nFinal Delivery Time: " + output;
     }
 
@@ -107,7 +110,7 @@ public class SlackService {
 
         return SlackMessageSendResponseDto.builder()
                 .id(requestDto.getId())
-                .channel(requestDto.getChannel())
+                .slackId(requestDto.getSlackId())
                 .result(responseText)
                 .build();
     }

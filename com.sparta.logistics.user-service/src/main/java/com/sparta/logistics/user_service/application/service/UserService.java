@@ -1,10 +1,12 @@
 package com.sparta.logistics.user_service.application.service;
 
+import com.sparta.logistics.user_service.application.dto.request.DeliveryManagerUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserPasswordUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserRoleUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.request.UserUpdateRequestDto;
 import com.sparta.logistics.user_service.application.dto.response.UserRoleSearchResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserRoleUpdateResponseDto;
+import com.sparta.logistics.user_service.application.dto.response.UserSearchAllResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchMeResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserSearchResponseDto;
 import com.sparta.logistics.user_service.application.dto.response.UserUpdateResponseDto;
@@ -12,16 +14,12 @@ import com.sparta.logistics.user_service.domain.entity.User;
 import com.sparta.logistics.user_service.domain.entity.UserRole;
 import com.sparta.logistics.user_service.domain.repository.UserRepository;
 import com.sparta.logistics.user_service.presentation.feignClient.DeliveryManagerFeignClient;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.BadRequestException;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -96,6 +94,11 @@ public class UserService {
         user.updateInfo(updaterId);
         userRepository.save(user);
 
+        // 배송 담당자 정보가 수정될 경우 해당 변경사항을 배송 담당자 테이블에도 반영되기 위해 배송 담당자 수정 기능 호출
+        if (user.getRole() == UserRole.ROLE_DELIVERY_MANAGER) {
+            deliveryManagerFeignClient.updateDeliveryManager(user.getId(), user.getSlackId());
+        }
+
         return UserUpdateResponseDto.builder()
             .userId(user.getId())
             .username(user.getUsername())
@@ -139,7 +142,7 @@ public class UserService {
     }
 
     // 권한 기반 유저 조회
-    public List<UserRoleSearchResponseDto> roleSearchUser(String userRole) {
+    public Page<UserRoleSearchResponseDto> roleSearchUser(String userRole, Pageable pageable) {
         UserRole roleEnum;
         try {
             roleEnum = UserRole.valueOf(userRole);
@@ -147,16 +150,27 @@ public class UserService {
             throw new IllegalArgumentException("해당하는 권한이 없습니다. : " + userRole);
         }
 
-        List<User> userList = userRepository.findByRole(roleEnum);
+        Page<User> userPage = userRepository.findByRole(roleEnum, pageable);
 
-        return userList.stream()
-            .map(user -> UserRoleSearchResponseDto.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .slackId(user.getSlackId())
-                .role(user.getRole().toString())
-                .build()
-            )
-            .collect(Collectors.toList());
+        return userPage.map(user -> UserRoleSearchResponseDto.builder()
+            .userId(user.getId())
+            .username(user.getUsername())
+            .slackId(user.getSlackId())
+            .role(user.getRole().toString())
+            .build()
+        );
+    }
+
+    // 모든 유저 조회
+    public Page<UserSearchAllResponseDto> searchAllUser(Pageable pageable) {
+        Page<User> allUserPage = userRepository.findByAll(pageable);
+
+        return allUserPage.map(user -> UserSearchAllResponseDto.builder()
+            .userId(user.getId())
+            .username(user.getUsername())
+            .slackId(user.getSlackId())
+            .role(user.getRole().toString())
+            .build()
+        );
     }
 }

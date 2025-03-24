@@ -1,5 +1,6 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.global.utils.PaginationUtils;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
@@ -145,6 +146,11 @@ public class HubRouteServiceImpl implements HubRouteService {
     hubRoute.setDeletedBy(currentId);
     hubRoute.setDeletedAt(LocalDateTime.now());
     hubRouteRepository.save(hubRoute);
+    if (hubRoute.isDeleted()) {
+      throw new IllegalStateException("이미 삭제된 허브 이동 경로입니다.");
+    }
+
+    hubRoute.softDelete(currentId);
   }
 
   @Transactional

@@ -4,11 +4,8 @@ import lombok.*;
 
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
-@Setter
 @Builder
-@AllArgsConstructor
 public class GeminiRequestDto {
 
     private List<Content> contents;

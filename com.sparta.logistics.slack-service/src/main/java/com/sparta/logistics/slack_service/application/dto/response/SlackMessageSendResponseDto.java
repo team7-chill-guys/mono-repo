@@ -10,7 +10,7 @@ import java.util.UUID;
 @Builder
 public class SlackMessageSendResponseDto {
     private UUID id;
-    private String channel;
+    private String slackId;
     private String result;
     private Timestamp createdAt;
     private Long createdBy;

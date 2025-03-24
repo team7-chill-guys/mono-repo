@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UserUpdateRequestDto {
-    private String newUsername;
-    private String newSlackId;
+public class DeliveryManagerUpdateRequestDto {
+    private String slackId;
 }

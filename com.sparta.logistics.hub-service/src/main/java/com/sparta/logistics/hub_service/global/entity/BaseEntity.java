@@ -47,4 +47,13 @@ public abstract class BaseEntity {
   public void updateUpdateBy(long updatedBy) {
     this.updatedBy = updatedBy;
   }
+
+  public void softDelete(Long deletedBy) {
+    this.deletedAt = LocalDateTime.now();
+    this.deletedBy = deletedBy;
+  }
+
+  public boolean isDeleted() {
+    return deletedAt != null;
+  }
 }
