@@ -24,7 +24,7 @@ spring:
         - id: user-master-service
           uri: lb://user-service
           predicates:
-            - Path=/api/master/user/**
+            - Path=/api/master/users/**
 
         - id: user-service-auth
           uri: lb://user-service
@@ -44,7 +44,7 @@ spring:
         - id: hub-master-service
           uri: lb://hub-service
           predicates:
-            - Path=/api/master/hub/**
+            - Path=/api/master/hubs/**
 
         - id: hub-route-service
           uri: lb://hub-service
@@ -134,20 +134,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://${EUREKA_URL}/eureka/
-
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.security: DEBUG
-    com.sparta.logistics.gateway: DEBUG
-management:
-  endpoints:
-    web:
-      exposure:
-        include: gateway, routes, health, info
-  endpoint:
-    gateway:
-      enabled: true
 
 jwt:
   secret:

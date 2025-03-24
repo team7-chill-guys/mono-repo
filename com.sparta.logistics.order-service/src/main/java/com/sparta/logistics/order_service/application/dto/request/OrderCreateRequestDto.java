@@ -19,6 +19,6 @@ public class OrderCreateRequestDto {
     private String phone;
     private String address;
     private OrderStatus status;
-    private long quantity;
+    private Long quantity;
     private String request;
 }

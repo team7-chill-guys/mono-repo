@@ -11,11 +11,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.type.SqlTypes;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -25,6 +28,7 @@ import org.mindrot.jbcrypt.BCrypt;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "p_user")
+@SQLRestriction("deleted_at IS NULL")
 public class User extends BaseEntity {
 
     @Id
@@ -32,6 +36,11 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(name = "username", unique = true)
+    @Size(min = 4, max = 10, message = "new username 은 최소 4자 이상, 10자 이하여야 합니다.")
+    @Pattern(
+        regexp = "^[a-z0-9]+$",
+        message = "new username 은 알파벳 소문자와 숫자로만 구성되어야 합니다."
+    )
     private String username;
 
     @Column(name = "slack_id", unique = true)

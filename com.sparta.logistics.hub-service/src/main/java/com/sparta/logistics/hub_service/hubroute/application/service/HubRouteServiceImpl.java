@@ -1,5 +1,7 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
+import com.sparta.logistics.hub_service.global.utils.PaginationUtils;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
@@ -11,11 +13,16 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HubRouteServiceImpl implements HubRouteService {
 
   private final HubRouteRepository hubRouteRepository;
@@ -30,7 +37,15 @@ public class HubRouteServiceImpl implements HubRouteService {
 
   // 허브 루트 전체 조회(목록) 및 검색
   @Override
-  public List<HubRouteListResponseDto> getHubRouteList(UUID startHubId, UUID endHubId) {
+  @Cacheable(
+      value = "hubRoutes",
+      key = "((#startHubId != null ? #startHubId.toString() : '')) + '-' + ((#endHubId != null ? #endHubId.toString() : ''))"
+  )
+  public Page<HubRouteListResponseDto> getHubRouteList(UUID startHubId, UUID endHubId,
+      Pageable pageable) {
+
+    log.debug("DB 조회 시작: startHubId = {}, endHubId = {}", startHubId, endHubId);
+
     List<HubRoute> hubRoutes;
 
     if (startHubId != null && endHubId != null) {
@@ -42,15 +57,19 @@ public class HubRouteServiceImpl implements HubRouteService {
     } else {
       hubRoutes = hubRouteRepository.findAll();
     }
-    return hubRoutes.stream()
+    List<HubRouteListResponseDto> dtoList = hubRoutes.stream()
         .map(HubRouteListResponseDto::toResponse)
         .collect(Collectors.toList());
+
+    return PaginationUtils.paginateList(dtoList, pageable);
+
   }
 
   // 허브 루트 수정
   @Override
   @Transactional
-  public HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto, String userIdHeader) {
+  public HubRouteUpdateResponseDto updateHubRoute(UUID hubId, HubRouteUpdateRequestDto requestDto,
+      String userIdHeader) {
     HubRoute hubRoute = hubRouteRepository.findById(hubId)
         .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로가 없습니다."));
 
@@ -65,15 +84,21 @@ public class HubRouteServiceImpl implements HubRouteService {
   }
 
   @Override
+  @Transactional
   public void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader) {
 
     HubRoute hubRoute = hubRouteRepository.findById(hubRoutesId)
-        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 정보가 없습니다."));
+        .orElseThrow(() -> new IllegalArgumentException("해당하는 허브 이동 경로 정보가 없습니다."));
 
     Long currentId = Long.valueOf(userIdHeader);
 
     hubRoute.setDeletedBy(currentId);
     hubRoute.setDeletedAt(LocalDateTime.now());
     hubRouteRepository.save(hubRoute);
+    if (hubRoute.isDeleted()) {
+      throw new IllegalStateException("이미 삭제된 허브 이동 경로입니다.");
+    }
+
+    hubRoute.softDelete(currentId);
   }
 }

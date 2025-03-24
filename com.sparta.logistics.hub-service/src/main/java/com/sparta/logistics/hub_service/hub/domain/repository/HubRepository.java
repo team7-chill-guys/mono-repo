@@ -1,9 +1,9 @@
 package com.sparta.logistics.hub_service.hub.domain.repository;
 
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HubRepository extends JpaRepository<Hub, UUID> {
@@ -14,5 +14,5 @@ public interface HubRepository extends JpaRepository<Hub, UUID> {
 
   boolean existsByAddress(String address);
 
-  List<Hub> findByHubNameContainingOrAddressContaining(String hubName, String address);
+  Page<Hub> findByHubNameContainingOrAddressContaining(String hubName, String address, Pageable pageable);
 }

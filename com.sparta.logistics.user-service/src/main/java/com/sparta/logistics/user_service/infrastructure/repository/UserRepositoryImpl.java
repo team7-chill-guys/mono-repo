@@ -4,9 +4,10 @@ import com.sparta.logistics.user_service.domain.entity.User;
 import com.sparta.logistics.user_service.domain.entity.UserRole;
 import com.sparta.logistics.user_service.domain.repository.UserRepository;
 import com.sparta.logistics.user_service.infrastructure.jpa.UserJpaRepository;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -31,8 +32,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findByRole(UserRole roleEnum) {
-        return userJpaRepository.findByRole(roleEnum);
+    public Page<User> findByRole(UserRole roleEnum, Pageable pageable) {
+        return userJpaRepository.findByRole(roleEnum, pageable);
+    }
+
+    @Override
+    public Page<User> findByAll(Pageable pageable) {
+        return userJpaRepository.findAll(pageable);
     }
 
 }

@@ -1,13 +1,16 @@
 package com.sparta.logistics.hub_service.hubroute.application.dto.response;
 
 import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
+import java.io.Serializable;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class HubRouteListResponseDto {
+public class HubRouteListResponseDto implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private UUID startHubId;
   private UUID endHubId;

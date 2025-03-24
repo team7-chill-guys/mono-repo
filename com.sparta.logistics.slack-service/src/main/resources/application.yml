@@ -1,16 +1,18 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: slack-service
   datasource:
-    url: jdbc:postgresql://localhost:55432/team7
-    username: team7
-    password: 1234
+    url: jdbc:postgresql://${POSTGRES_HOST_SLACK}/team7
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     hikari:
       maximum-pool-size: 10
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${DDL_AUTO}
     show-sql: true
     properties:
       hibernate:
@@ -35,17 +37,25 @@ spring:
       db:
         enabled: true
 
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: my-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
 server:
   port: 19099
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:19090/eureka/
+      defaultZone: http://${EUREKA_URL}/eureka/
     register-with-eureka: true
     fetch-registry: true
 
 slack:
+  bot:
+    token: ${SLACK_BOT_TOKEN}
   api:
     url: ${SLACK_API_URL}
-    token: ${SLACK_BOT_TOKEN}
