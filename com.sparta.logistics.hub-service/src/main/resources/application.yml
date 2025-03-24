@@ -41,3 +41,7 @@ kakao:
 logging:
   level:
     org.springframework.cache: DEBUG
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
