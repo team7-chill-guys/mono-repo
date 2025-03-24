@@ -9,6 +9,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
@@ -31,18 +32,8 @@ public class ConsumerApplicationKafkaConfig {
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES,
                 "com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoDto,com.sparta.logistics.slack_service.infrastructure.dto");
 
-        JsonDeserializer<DeliveryInfoDto> valueDeserializer = new JsonDeserializer<>(DeliveryInfoDto.class, false);
-        valueDeserializer.addTrustedPackages(
-                "com.sparta.logistics.delivery_service.infrastructure.messaging.dto",
-                "com.sparta.logistics.slack_service.infrastructure.dto"
-        );
-        valueDeserializer.setUseTypeMapperForKey(false);
-
-        return new DefaultKafkaConsumerFactory<>(
-                configProps,
-                new StringDeserializer(),
-                valueDeserializer
-        );
+        return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+                new JsonDeserializer<>(DeliveryInfoDto.class));
     }
 
     @Bean
