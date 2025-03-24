@@ -8,6 +8,6 @@ import java.util.UUID;
 @Builder
 public class SlackMessageSendRequestDto {
     private UUID id;
-    private String slackId;
+    private String channel;
     private String text;
 }

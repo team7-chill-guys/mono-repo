@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.logistics.slack_service.application.dto.request.SlackMessageSendRequestDto;
 import com.sparta.logistics.slack_service.application.dto.response.SlackMessageSaveResponseDto;
-import com.sparta.logistics.slack_service.application.dto.response.SlackMessageSendResponseDto;
 import com.sparta.logistics.slack_service.entity.Slack;
 import com.sparta.logistics.slack_service.infrastructure.client.AiClient;
 import com.sparta.logistics.slack_service.infrastructure.client.HubClient;
@@ -12,12 +11,14 @@ import com.sparta.logistics.slack_service.infrastructure.client.SlackClient;
 import com.sparta.logistics.slack_service.infrastructure.dto.DeliveryInfoDto;
 import com.sparta.logistics.slack_service.infrastructure.dto.HubResponseDto;
 import com.sparta.logistics.slack_service.repository.SlackRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class SlackService {
 
@@ -37,6 +38,7 @@ public class SlackService {
     }
 
     public SlackMessageSaveResponseDto saveSlackMessage(DeliveryInfoDto deliveryResponseDto) {
+
         // 1. hubId로 hub 주소 찾기
         HubResponseDto hubStartResponseDto = hubClient.getAddressByHubId(deliveryResponseDto.getDepartureHubId());
         HubResponseDto hubEndResponseDto = hubClient.getAddressByHubId(deliveryResponseDto.getDestinationHubId());
@@ -59,6 +61,8 @@ public class SlackService {
                 .build();
 
         slackRepository.save(slack);
+
+        sendSlackMessage(slack.getId(), slack.getSlackId());
 
         // 6. 저장된 메시지 DTO로 반환
         return SlackMessageSaveResponseDto.builder()
@@ -89,29 +93,42 @@ public class SlackService {
         return convertDeliveryInfoToString(deliveryResponseDto, hubStartDto, hubEndDto) + "\nFinal Delivery Time: " + output;
     }
 
-    public SlackMessageSendResponseDto sendSlackMessage(SlackMessageSendRequestDto requestDto) {
+    public void sendSlackMessage(UUID id, String slackId) {
         String responseText = "";
 
+        Slack slack = slackRepository.findById(id).orElse(null);
+
+        if (slack == null) {
+            log.info("슬랙 데이터 없음");
+        }
+
+        String messageText = slack.getText();
+
+        SlackMessageSendRequestDto dto = SlackMessageSendRequestDto.builder()
+                .id(slack.getId())
+                .channel(slackId)
+                .text(messageText)
+                .build();
+
         try {
-            String response = slackClient.sendSlackMessage("Bearer " + SLACK_BOT_TOKEN, requestDto);
+            String slackMessage = slackClient.sendSlackMessage("Bearer " + SLACK_BOT_TOKEN, dto);
+
+            log.info("dto-channel: " + dto.getChannel());
+            log.info("dto-text: " + dto.getText());
+            log.info("slack에 dto 보냈음" + slackMessage);
 
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode responseJson = objectMapper.readTree(response);
+            JsonNode responseJson = objectMapper.readTree(slackMessage);
 
             if (responseJson.get("ok").asBoolean()) {
                 responseText = "Message sent successfully!";
             } else {
-                responseText = "Slack API 오류 발생: " + response;
+                responseText = "Slack API 오류 발생: " + slackMessage;
             }
         } catch (Exception e) {
             e.printStackTrace();
             responseText = "Slack API 호출 중 예외 발생";
         }
 
-        return SlackMessageSendResponseDto.builder()
-                .id(requestDto.getId())
-                .slackId(requestDto.getSlackId())
-                .result(responseText)
-                .build();
     }
 }
