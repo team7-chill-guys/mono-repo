@@ -7,11 +7,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DataLoader implements CommandLineRunner {
@@ -24,7 +26,8 @@ public class DataLoader implements CommandLineRunner {
   public void run(String... args) {
     String count = entityManager.createNativeQuery("select count(*) from p_hub").getSingleResult()
         .toString();
-    if (Objects.isNull(count)) {
+    log.info("DB 에 들은 데이터 갯수 : {}", count);
+    if ("0".equals(count)) {
 
       entityManager.createNativeQuery("TRUNCATE TABLE p_hub RESTART IDENTITY CASCADE")
           .executeUpdate();
