@@ -32,10 +32,10 @@ public class OrderService {
     @Transactional
     public OrderDetailResponseDto createOrder(OrderCreateRequestDto requestDto, String userIdHeader) {
 
-        Long userId = Long.parseLong(userIdHeader); //변환
-        UUID orderId = UUID.randomUUID(); // 주문 ID를 미리 생성
+        Long userId = Long.parseLong(userIdHeader);
+        UUID orderId = UUID.randomUUID();
 
-        // 상품 재고 확인 및 감소
+        // 1. 재고 감소 요청
         ProductStockRequestDto stockRequestDto = ProductStockRequestDto.builder()
                 .productId(requestDto.getProductId())
                 .quantity(requestDto.getQuantity())
@@ -44,17 +44,28 @@ public class OrderService {
         StockUpdateResponseDto response = productClient.decreaseStock(requestDto.getProductId(), stockRequestDto);
 
         if (!response.isSuccess()) {
-            throw new RuntimeException("Stock not available");
+            throw new RuntimeException("재고 부족");
         }
 
-        // 주문 ID 생성 및 배송 요청 DTO 변환
-        OrderDeliveryRequestDto deliveryRequest = OrderDeliveryRequestDto.fromOrderRequest(requestDto, orderId);
+        UUID deliveryId;
+        try {
+            // 2. 배송 요청
+            OrderDeliveryRequestDto deliveryRequest = OrderDeliveryRequestDto.fromOrderRequest(requestDto, orderId);
+            deliveryId = deliveryClient.createDelivery(deliveryRequest, userIdHeader);
+        } catch (Exception e) {
+            // 2-1. 배송 실패 시 재고 복구
+            try {
+                productClient.increaseStock(requestDto.getProductId(), requestDto.getQuantity());
+            } catch (Exception recoverEx) {
+                log.error("재고 복구 실패: {}", recoverEx.getMessage());
+            }
 
-        // 배송 ID 요청
-        UUID deliveryId = deliveryClient.createDelivery(deliveryRequest, userIdHeader);
+            // 2-2. 주문 롤백
+            throw new RuntimeException("배송 생성 실패로 주문을 완료할 수 없습니다.");
+        }
 
+        // 3. 주문 저장
         Order order = Order.toEntity(requestDto, deliveryId, userId);
-
         orderRepository.save(order);
 
         return OrderDetailResponseDto.fromEntity(order);
