@@ -154,12 +154,27 @@ public class HubServiceImpl implements HubService {
       }
       hub.updateAddress(requestDto.getAddress());
     }
+
+    boolean isLocationUpdated = false;
+    if (!Objects.equals(requestDto.getLatitude(), hub.getLatitude()) ||
+        !Objects.equals(requestDto.getLongitude(), hub.getLongitude())) {
+      hub.updateLatitude(requestDto.getLatitude());
+      hub.updateLongitude(requestDto.getLongitude());
+      isLocationUpdated = true;
+    }
+
+
     Long currentId = Long.valueOf(userIdHeader);
     hub.updateUpdateBy(currentId);
     hub.updateLatitude(requestDto.getLatitude());
     hub.updateLongitude(requestDto.getLongitude());
 
     Hub updateHub = hubRepository.save(hub);
+
+    if (isLocationUpdated) {
+      hubRouteService.updateRoutesForHub(updateHub);
+    }
+
     return new HubUpdateResponseDto(updateHub);
   }
 

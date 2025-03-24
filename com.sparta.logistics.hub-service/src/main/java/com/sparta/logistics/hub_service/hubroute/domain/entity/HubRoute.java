@@ -52,4 +52,10 @@ public class HubRoute extends BaseEntity {
   public void updateDeliveryDistance(Double deliveryDistance) {
     this.deliveryDistance = deliveryDistance;
   }
+  public void updateStartHubName(String startHubName) {
+    this.startHubName = startHubName;
+  }
+  public void updateEndHubName(String endHubName) {
+    this.endHubName = endHubName;
+  }
 }
