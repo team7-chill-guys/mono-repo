@@ -109,7 +109,7 @@ public class DeliveryService {
                 log.info("DeliveryManager Assigned");
 
                 // 배송정보를 kafka로 전송
-                producerService.sendInfo(type, DeliveryInfoMapper.toDto(delivery, dto.getSlackId()));
+                producerService.sendInfo(type, DeliveryInfoMapper.toDto(delivery, dto.getSlackId(), delivery.getRecipientCompany().getAddress()));
             }
         }
     }

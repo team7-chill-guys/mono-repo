@@ -55,4 +55,8 @@ public class DeliveryManager extends BaseTimeEntity{
         this.hubId = hubId;
         this.type = type;
     }
+
+    public void updateSlackId(String slackId) {
+        this.slackId = slackId;
+    }
 }

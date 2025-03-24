@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.sparta.logistics.product_service.presentation.controller;
 
 import com.sparta.logistics.product_service.application.dto.request.ProductCreateRequestDto;
@@ -17,15 +12,7 @@ import com.sparta.logistics.product_service.application.service.ProductService;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping({"/api/products"})
@@ -37,13 +24,13 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductCreateResponseDto createProduct(@RequestBody ProductCreateRequestDto requestProductCreateDto) {
-        return this.productService.createProduct(requestProductCreateDto);
+    public ProductCreateResponseDto createProduct(@RequestBody ProductCreateRequestDto requestProductCreateDto, @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        return this.productService.createProduct(requestProductCreateDto, userIdHeader);
     }
 
     @PutMapping({"/{productId}"})
-    public ProductUpdateResponseDto updateProduct(@PathVariable("productId") UUID productId, @RequestBody ProductUpdateRequestDto requestProductUpdateDto) {
-        return this.productService.updateProduct(productId, requestProductUpdateDto);
+    public ProductUpdateResponseDto updateProduct(@PathVariable("productId") UUID productId, @RequestBody ProductUpdateRequestDto requestProductUpdateDto, @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        return this.productService.updateProduct(productId, requestProductUpdateDto, userIdHeader);
     }
 
     @GetMapping({"/search"})
@@ -56,9 +43,14 @@ public class ProductController {
         return this.productService.getProduct(productId);
     }
 
+    @GetMapping
+    public Page<ProductSearchResponseDto> getAllProducts(@RequestParam(required = false,defaultValue = "1") int page, @RequestParam(required = false,defaultValue = "10") int size, @RequestParam(required = false,defaultValue = "createdAt") String sortBy, @RequestParam(required = false,defaultValue = "asc") String order) {
+        return this.productService.getAllProducts(page - 1, size, sortBy, order);
+    }
+
     @DeleteMapping({"/{productId}"})
-    public ResponseEntity<Void> deleteProduct(@PathVariable("productId") UUID productId) {
-        return this.productService.deleteProduct(productId);
+    public ResponseEntity<Void> deleteProduct(@PathVariable("productId") UUID productId, @RequestHeader(value = "X-User-Id") String userIdHeader) {
+        return this.productService.deleteProduct(productId, userIdHeader);
     }
 
     @PostMapping({"/{productId}/decrease-stock"})
