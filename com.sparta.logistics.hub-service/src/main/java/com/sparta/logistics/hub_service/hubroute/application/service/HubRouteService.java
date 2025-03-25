@@ -1,5 +1,6 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
+import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
@@ -19,4 +20,7 @@ public interface HubRouteService {
 
   void deleteHubRoute(Long userId, UUID hubRoutesId, String userIdHeader);
 
+  void updateRoutesForHub(Hub updateHub);
+
+  void autoDeleteHubRoute(UUID hubId, String userIdHeader);
 }

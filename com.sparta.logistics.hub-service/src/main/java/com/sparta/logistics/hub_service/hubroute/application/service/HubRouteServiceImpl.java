@@ -106,6 +106,8 @@ public class HubRouteServiceImpl implements HubRouteService {
   }
 
   // 허브 수정시 허브루트 수정
+  @Override
+  @Transactional
   public void updateRoutesForHub(Hub updateHub) {
     List<Hub> allOtherHubs = hubRepository.findAllExcept(updateHub.getId());
 
@@ -200,6 +202,7 @@ public class HubRouteServiceImpl implements HubRouteService {
   }
 
   // 허브 삭제시 허브 루트 삭제
+  @Override
   @Transactional
   public void autoDeleteHubRoute(UUID hubId, String userIdHeader) {
     Long currentId = Long.valueOf(userIdHeader);
