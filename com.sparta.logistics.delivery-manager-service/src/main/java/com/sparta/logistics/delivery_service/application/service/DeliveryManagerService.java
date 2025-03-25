@@ -59,11 +59,12 @@ public class DeliveryManagerService {
     }
 
     @Transactional
-    public void deleteDeliveryManager(Long deliveryManagerId) {
+    public void deleteDeliveryManager(Long deliveryManagerId, String userId) {
         DeliveryManager deliveryManager = deliveryManagerRepository.findByIdAndDeletedAtIsNull(deliveryManagerId)
                 .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
 
-        deliveryManager.deletedOf();
+        Long id = Long.parseLong(userId);
+        deliveryManager.deletedOf(id);
     }
 
     @Transactional
