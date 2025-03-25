@@ -9,7 +9,7 @@ import com.sparta.logistics.slack_service.infrastructure.client.*;
 import com.sparta.logistics.slack_service.infrastructure.dto.DeliveryInfoDto;
 import com.sparta.logistics.slack_service.infrastructure.dto.HubResponseDto;
 import com.sparta.logistics.slack_service.domain.repository.SlackRepository;
-import com.sparta.logistics.slack_service.infrastructure.dto.OrderDetailResponseDto;
+import com.sparta.logistics.slack_service.infrastructure.dto.OrderSlackDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -53,11 +53,12 @@ public class SlackService {
         String output = aiClient.generateCompletion(inputForAI);
 
         // 주문 상품 정보 추가
-        OrderDetailResponseDto orderDetailResponseDto = orderClient.getOrderById(deliveryResponseDto.getOrderId()).getBody();
+        OrderSlackDto orderSlackDto = orderClient.getOrderInfo(deliveryResponseDto.getOrderId());
 
         // 주문 정보(수량, 주문 번호)
         UUID orderId = deliveryResponseDto.getOrderId();
-        Long quantity = orderDetailResponseDto.getQuantity();
+        Long quantity = orderSlackDto.getQuantity();
+        String reqeust = orderSlackDto.getRequest();
 
         // 상품 정보(상품 아이디, 이름)
         UUID productId = deliveryResponseDto.getProductId();

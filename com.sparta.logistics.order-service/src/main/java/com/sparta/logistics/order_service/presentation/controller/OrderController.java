@@ -6,6 +6,7 @@ import com.sparta.logistics.order_service.application.dto.request.OrderUpdateReq
 import com.sparta.logistics.order_service.application.dto.response.OrderDetailResponseDto;
 import com.sparta.logistics.order_service.application.dto.response.PageResponseDto;
 import com.sparta.logistics.order_service.application.service.OrderService;
+import com.sparta.logistics.order_service.infrastructure.client.dto.response.OrderSlackDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -61,4 +62,11 @@ public class OrderController {
         orderService.updateOrderStatus(id, status, userIdHeader);
         return ResponseEntity.ok("Order status updated successfully");
     }
+
+    // [아이디로 수량/요청사항 조회]
+    @GetMapping("/{id}/info")
+    public ResponseEntity<OrderSlackDto> getOrderInfo(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderService.getOrderInfo(id));
+    }
+
 }

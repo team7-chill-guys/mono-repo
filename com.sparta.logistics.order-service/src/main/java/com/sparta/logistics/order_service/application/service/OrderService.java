@@ -10,6 +10,7 @@ import com.sparta.logistics.order_service.application.dto.request.OrderUpdateReq
 import com.sparta.logistics.order_service.infrastructure.client.dto.request.ProductStockRequestDto;
 import com.sparta.logistics.order_service.application.dto.response.OrderDetailResponseDto;
 import com.sparta.logistics.order_service.application.dto.response.PageResponseDto;
+import com.sparta.logistics.order_service.infrastructure.client.dto.response.OrderSlackDto;
 import com.sparta.logistics.order_service.infrastructure.client.dto.response.StockUpdateResponseDto;
 import com.sparta.logistics.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +66,7 @@ public class OrderService {
         }
 
         // 3. 주문 저장
-        Order order = Order.toEntity(requestDto, deliveryId, userId);
+        Order order = Order.toEntity(orderId, requestDto, deliveryId, userId);
         orderRepository.save(order);
 
         return OrderDetailResponseDto.fromEntity(order);
@@ -127,5 +128,19 @@ public class OrderService {
         Long userId = Long.parseLong(userIdHeader);
 
         order.updateStatus(newStatus, userId);
+    }
+
+
+    public OrderSlackDto getOrderInfo(UUID id) {
+        Order order  = orderRepository.findByOrderIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new RuntimeException("Order not found or already deleted"));
+
+        Long quantity = order.getQuantity();
+        String request = order.getRequest();
+
+        return OrderSlackDto.builder()
+                .quantity(quantity)
+                .request(request)
+                .build();
     }
 }
