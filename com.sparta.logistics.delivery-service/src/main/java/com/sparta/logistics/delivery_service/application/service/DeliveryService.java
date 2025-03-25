@@ -79,8 +79,6 @@ public class DeliveryService {
         if(delivery.isInfoChangeable()) {
             delivery.updateOf(deliveryUpdateRequestDto);
         } else throw new RuntimeException("배송중이라 변경 못함");
-
-        deliveryRepository.save(delivery);
     }
 
     @Transactional
@@ -104,8 +102,6 @@ public class DeliveryService {
                 DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(departureHubId, destinationHubId, type);
                 delivery.assignDeliveryManager(dto.getId());
 
-                deliveryRepository.save(delivery);
-
                 log.info("DeliveryManager Assigned");
 
                 // 배송정보를 kafka로 전송
@@ -120,6 +116,5 @@ public class DeliveryService {
                 .orElseThrow(() -> new RuntimeException("배송 찾을 수 없음"));
 
         delivery.changeDeliveryStatus(deliveryStatus);
-        deliveryRepository.save(delivery);
     }
 }

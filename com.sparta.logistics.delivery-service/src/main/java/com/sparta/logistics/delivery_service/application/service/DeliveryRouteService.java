@@ -92,8 +92,6 @@ public class DeliveryRouteService {
         if(deliveryRoute.isInfoChangeable()) {
             deliveryRoute.updateOf(deliveryRouteUpdateRequestDto);
         } else throw new RuntimeException("배송 중이라 변경 못함");
-
-        deliveryRouteRepository.save(deliveryRoute);
     }
 
 
@@ -118,7 +116,6 @@ public class DeliveryRouteService {
                 DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(startHubId, endHubId, "HUB");
                 deliveryRoute.assignHubDeliveryManager(dto.getId());
 
-                deliveryRouteRepository.save(deliveryRoute);
                 log.info("HubDeliveryManager Assigned");
             }
         }
@@ -129,6 +126,5 @@ public class DeliveryRouteService {
         DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
                 .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
         deliveryRoute.changeDeliveryStatus(status);
-        deliveryRouteRepository.save(deliveryRoute);
     }
 }

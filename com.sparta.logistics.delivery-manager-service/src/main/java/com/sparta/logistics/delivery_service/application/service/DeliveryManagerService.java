@@ -55,7 +55,6 @@ public class DeliveryManagerService {
                 .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
 
         deliveryManager.updateOf(deliveryManagerUpdateRequestDto);
-        deliveryManagerRepository.save(deliveryManager);
     }
 
     @Transactional
@@ -91,7 +90,6 @@ public class DeliveryManagerService {
                 .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
 
         deliveryManager.setHubAndType(hubId, type);
-
     }
 
     @Transactional
