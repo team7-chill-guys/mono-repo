@@ -71,9 +71,9 @@ public class Order {
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
-    public static Order toEntity(OrderCreateRequestDto dto, UUID deliveryId, Long userId) {
+    public static Order toEntity(UUID orderId, OrderCreateRequestDto dto, UUID deliveryId, Long userId) {
         return Order.builder()
-                .orderId(UUID.randomUUID())
+                .orderId(orderId)
                 .deliveryId(deliveryId)
                 .productId(dto.getProductId())
                 .requestCompanyId(dto.getRequestCompanyId())
