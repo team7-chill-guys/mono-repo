@@ -31,6 +31,9 @@ public class Delivery extends BaseTimeEntity{
     @Column(nullable = false)
     private UUID destinationHubId;
 
+    @Column(nullable = false)
+    private UUID productId;
+
     @Embedded
     private RecipientCompany recipientCompany;
 
@@ -42,11 +45,13 @@ public class Delivery extends BaseTimeEntity{
     private Delivery(UUID orderId,
                     UUID departureHubId,
                     UUID destinationHubId,
+                    UUID productId,
                     RecipientCompany recipientCompany,
                      Long deliveryManagerId) {
         this.orderId = orderId;
         this.departureHubId = departureHubId;
         this.destinationHubId = destinationHubId;
+        this.productId = productId;
         this.recipientCompany = recipientCompany;
         this.deliveryManagerId = deliveryManagerId;
     }
@@ -60,6 +65,7 @@ public class Delivery extends BaseTimeEntity{
                 .build();
         this.departureHubId = dto.getDepartureHubId();
         this.destinationHubId = dto.getDestinationHubId();
+        this.productId = dto.getProductId();
         this.recipientCompany = recipientCompany;
         this.deliveryManagerId = dto.getDeliveryManagerId();
     }

@@ -15,6 +15,7 @@ public class DeliveryResponseDto {
     private DeliveryStatus status;
     private UUID departureHubId;
     private UUID destinationHubId;
+    private UUID productId;
     private RecipientCompany recipientCompany;
     private LocalDateTime createdAt;
     private Long deliveryManagerId;
