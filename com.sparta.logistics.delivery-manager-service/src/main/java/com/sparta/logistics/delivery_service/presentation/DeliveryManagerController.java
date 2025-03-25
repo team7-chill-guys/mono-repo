@@ -71,8 +71,9 @@ public class DeliveryManagerController {
      * 배송 담당자 삭제
      */
     @DeleteMapping("/{delivery_manager_id}")
-    public ResponseEntity<Void> deleteDeliveryManager(@PathVariable("delivery_manager_id") Long deliveryManagerId) {
-        deliveryManagerService.deleteDeliveryManager(deliveryManagerId);
+    public ResponseEntity<Void> deleteDeliveryManager(@PathVariable("delivery_manager_id") Long deliveryManagerId,
+                                                      @RequestHeader("X-User-Id") String userId) {
+        deliveryManagerService.deleteDeliveryManager(deliveryManagerId, userId);
         return ResponseEntity.ok().build();
     }
 
