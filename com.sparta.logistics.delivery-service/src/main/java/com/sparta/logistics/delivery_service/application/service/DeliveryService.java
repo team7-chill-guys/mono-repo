@@ -4,7 +4,7 @@ import com.sparta.logistics.delivery_service.application.dto.request.OrderDelive
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
-import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
+import com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
