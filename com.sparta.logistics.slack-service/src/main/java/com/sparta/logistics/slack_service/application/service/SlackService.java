@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.logistics.slack_service.application.dto.request.SlackMessageSendRequestDto;
 import com.sparta.logistics.slack_service.application.dto.response.SlackMessageSaveResponseDto;
-import com.sparta.logistics.slack_service.entity.Slack;
-import com.sparta.logistics.slack_service.infrastructure.client.AiClient;
-import com.sparta.logistics.slack_service.infrastructure.client.HubClient;
-import com.sparta.logistics.slack_service.infrastructure.client.SlackClient;
+import com.sparta.logistics.slack_service.domain.entity.Slack;
+import com.sparta.logistics.slack_service.infrastructure.client.*;
 import com.sparta.logistics.slack_service.infrastructure.dto.DeliveryInfoDto;
 import com.sparta.logistics.slack_service.infrastructure.dto.HubResponseDto;
-import com.sparta.logistics.slack_service.repository.SlackRepository;
+import com.sparta.logistics.slack_service.domain.repository.SlackRepository;
+import com.sparta.logistics.slack_service.infrastructure.dto.OrderDetailResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,12 +28,16 @@ public class SlackService {
     private final AiClient aiClient;
     private final SlackClient slackClient;
     private final HubClient hubClient;
+    private final OrderClient orderClient;
+    private final ProductClient productClient;
 
-    public SlackService(SlackRepository slackRepository, AiClient aiClient, SlackClient slackClient, HubClient hubClient) {
+    public SlackService(SlackRepository slackRepository, AiClient aiClient, SlackClient slackClient, HubClient hubClient, OrderClient orderClient, ProductClient productClient) {
         this.slackRepository = slackRepository;
         this.aiClient = aiClient;
         this.slackClient = slackClient;
         this.hubClient = hubClient;
+        this.orderClient = orderClient;
+        this.productClient = productClient;
     }
 
     public SlackMessageSaveResponseDto saveSlackMessage(DeliveryInfoDto deliveryResponseDto) {
@@ -49,8 +52,19 @@ public class SlackService {
         // 3. string 으로 AI api에 전달하여 최종 발송 시한 응답값 받기
         String output = aiClient.generateCompletion(inputForAI);
 
+        // 주문 상품 정보 추가
+        OrderDetailResponseDto orderDetailResponseDto = orderClient.getOrderById(deliveryResponseDto.getOrderId()).getBody();
+
+        // 주문 정보(수량, 주문 번호)
+        UUID orderId = deliveryResponseDto.getOrderId();
+        Long quantity = orderDetailResponseDto.getQuantity();
+
+        // 상품 정보(상품 아이디, 이름)
+        UUID productId = deliveryResponseDto.getProductId();
+        String productName = productClient.getProductName(productId);
+
         // 4. Slack message string 생성 (AI 응답 포함해서)
-        String slackText = buildSlackText(deliveryResponseDto, hubStartResponseDto, hubEndResponseDto, output);
+        String slackText = buildSlackText(deliveryResponseDto, hubStartResponseDto, hubEndResponseDto, output, orderId, quantity, productId, productName);
 
         // 5. Slack entity 저장
         Slack slack = Slack.builder()
@@ -75,22 +89,30 @@ public class SlackService {
     private String convertDeliveryInfoToString(DeliveryInfoDto deliveryDto, HubResponseDto hubStartResponseDto, HubResponseDto hubEndResponseDto) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("배송 요청 정보:\n");
         sb.append("배송지: ").append(deliveryDto.getAddress()).append("\n");
-
-        sb.append("출발 허브 정보:\n");
         sb.append("출발 허브 이름: ").append(hubStartResponseDto.getHubName()).append("\n");
         sb.append("출발 허브 주소: ").append(hubStartResponseDto.getAddress()).append("\n");
-
-        sb.append("도착 허브 정보:\n");
         sb.append("도착 허브 이름: ").append(hubEndResponseDto.getHubName()).append("\n");
         sb.append("도착 허브 주소: ").append(hubEndResponseDto.getAddress()).append("\n");
 
         return sb.toString();
     }
 
-    private String buildSlackText(DeliveryInfoDto deliveryResponseDto, HubResponseDto hubStartDto, HubResponseDto hubEndDto, String output) {
-        return convertDeliveryInfoToString(deliveryResponseDto, hubStartDto, hubEndDto) + "\nFinal Delivery Time: " + output;
+    private String buildSlackText(DeliveryInfoDto deliveryResponseDto, HubResponseDto hubStartDto, HubResponseDto hubEndDto, String output, UUID orderId, Long quantity, UUID productId, String productName) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("배송지: ").append(deliveryResponseDto.getAddress()).append("\n");
+        sb.append("출발 허브 이름: ").append(hubStartDto.getHubName()).append("\n");
+        sb.append("출발 허브 주소: ").append(hubStartDto.getAddress()).append("\n");
+        sb.append("도착 허브 이름: ").append(hubEndDto.getHubName()).append("\n");
+        sb.append("도착 허브 주소: ").append(hubEndDto.getAddress()).append("\n");
+        sb.append("주문 ID: ").append(orderId).append("\n");
+        sb.append("상품 ID: ").append(productId).append("\n");
+        sb.append("상품명: ").append(productName).append("\n");
+        sb.append("수량: ").append(quantity).append("\n");
+        sb.append("AI 예상 배송 날짜: ").append(output).append("\n");
+
+        return sb.toString();
     }
 
     public void sendSlackMessage(UUID id, String slackId) {

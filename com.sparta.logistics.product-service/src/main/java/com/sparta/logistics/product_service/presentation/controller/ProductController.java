@@ -70,4 +70,9 @@ public class ProductController {
         UUID hubId = this.productService.getHubIdByProductId(productId);
         return ResponseEntity.ok(hubId);
     }
+
+    @GetMapping("/{productId}/name")
+    public String getProductName(@RequestBody UUID productId) {
+        return productService.getProductName(productId);
+    }
 }
