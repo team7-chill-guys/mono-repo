@@ -100,7 +100,7 @@ public class DeliveryService {
             for(Delivery delivery : pendingDeliveryies) {
                 UUID departureHubId = delivery.getDepartureHubId();
                 UUID destinationHubId = delivery.getDestinationHubId();
-                String type = "COMPANY";
+                String type = "HUB";
                 DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(departureHubId, destinationHubId, type);
                 delivery.assignDeliveryManager(dto.getId());
 
