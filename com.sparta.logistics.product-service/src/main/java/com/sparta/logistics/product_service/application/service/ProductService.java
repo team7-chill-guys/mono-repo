@@ -187,7 +187,7 @@ public class ProductService {
     }
 
     public String getProductName(UUID productId) {
-        Product product = (Product)this.productRepository.findById(productId).orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+        Product product = productRepository.findByIdAndDeletedAtIsNull(productId);
         return product.getName();
     }
 }

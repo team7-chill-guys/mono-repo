@@ -23,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                                  Pageable pageable);
 
     Optional<Product> findByName(String name);
+
+    Product findByIdAndDeletedAtIsNull(UUID productId);
 }
