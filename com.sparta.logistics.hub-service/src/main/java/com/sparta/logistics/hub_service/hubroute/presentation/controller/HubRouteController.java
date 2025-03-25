@@ -37,7 +37,6 @@ public class HubRouteController {
   }
 
   // 허브 루트 조회 및 검색
-  // URL: /api/hub-routes
   @GetMapping
   public ResponseEntity<List<HubRouteListResponseDto>> getHubRouteList(
       @RequestParam(required = false) UUID startHubId,
@@ -50,7 +49,6 @@ public class HubRouteController {
       ) Pageable pageable) {
 
     Pageable validatedPageable = PageableUtils.validatePageable(pageable);
-
 
     Page<HubRouteListResponseDto> responseDto = hubRouteService.getHubRouteList(startHubId,
         endHubId, validatedPageable);

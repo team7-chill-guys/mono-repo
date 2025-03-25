@@ -7,7 +7,6 @@ import com.sparta.logistics.hub_service.hub.application.dto.request.HubUpdateReq
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubCreateResponseDto;
 import com.sparta.logistics.hub_service.hub.application.dto.response.HubUpdateResponseDto;
 import com.sparta.logistics.hub_service.hub.application.service.HubService;
-import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

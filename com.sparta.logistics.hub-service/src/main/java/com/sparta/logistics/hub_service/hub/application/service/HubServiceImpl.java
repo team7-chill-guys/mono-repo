@@ -164,7 +164,6 @@ public class HubServiceImpl implements HubService {
       isLocationUpdated = true;
     }
 
-
     Long currentId = Long.valueOf(userIdHeader);
     hub.updateUpdateBy(currentId);
     hub.updateLatitude(requestDto.getLatitude());

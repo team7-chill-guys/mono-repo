@@ -1,6 +1,5 @@
 package com.sparta.logistics.hub_service.hubroute.application.service;
 
-import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.global.utils.PaginationUtils;
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
@@ -8,7 +7,6 @@ import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRout
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteDetailResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteListResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteUpdateResponseDto;
-import com.sparta.logistics.hub_service.hubroute.application.dto.response.KakaoResponseDto;
 import com.sparta.logistics.hub_service.hubroute.domain.entity.HubRoute;
 import com.sparta.logistics.hub_service.hubroute.domain.repository.HubRouteRepository;
 import com.sparta.logistics.hub_service.hubroute.infrastructure.client.KakaoClient;

@@ -8,7 +8,6 @@ import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRou
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteUpdateResponseDto;
 import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteService;
 import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
-import io.jsonwebtoken.Claims;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
