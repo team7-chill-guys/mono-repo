@@ -1,7 +1,6 @@
 package com.sparta.logistics.hub_service.hubroute.presentation.controller;
 
 import com.sparta.logistics.hub_service.global.dto.ResponseDto;
-import com.sparta.logistics.hub_service.global.utils.JwtUtil;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteCreateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.request.HubRouteUpdateRequestDto;
 import com.sparta.logistics.hub_service.hubroute.application.dto.response.HubRouteCreateResponseDto;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class MasterHubRouteController {
 
-  private final JwtUtil jwtUtil;
   private final KakaoMapApiServiceImpl kakaoMapApiService;
   private final HubRouteService hubRouteService;
 
@@ -36,8 +34,7 @@ public class MasterHubRouteController {
   @PostMapping
   public ResponseEntity<ResponseDto<HubRouteCreateResponseDto>> createHubRoute(
       @RequestBody HubRouteCreateRequestDto requestDto,
-      @RequestHeader("Authorization") String authHeader) {
-    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
     HubRouteCreateResponseDto responseDto = kakaoMapApiService.createHubRoute(requestDto,
         userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
@@ -46,8 +43,7 @@ public class MasterHubRouteController {
   // 허브 루트 자동 생성
   @PostMapping("/auto")
   public ResponseEntity<ResponseDto<List<HubRouteCreateResponseDto>>> autoCreateHubRoute(
-      @RequestHeader("Authorization") String authHeader) {
-    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
     List<HubRouteCreateResponseDto> responseDto = kakaoMapApiService.autoCreateHubRoute(
         userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
@@ -58,8 +54,7 @@ public class MasterHubRouteController {
   public ResponseEntity<ResponseDto<HubRouteUpdateResponseDto>> updateHubRoute(
       @PathVariable UUID hubRoutesId,
       @RequestBody HubRouteUpdateRequestDto requestDto,
-      @RequestHeader("Authorization") String authHeader) {
-    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
     HubRouteUpdateResponseDto responseDto = hubRouteService.updateHubRoute(hubRoutesId, requestDto,
         userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
@@ -68,8 +63,7 @@ public class MasterHubRouteController {
   // 허브 루트 삭제
   @DeleteMapping("/{hubRoutesId}")
   public ResponseEntity<?> deleteHubRoute(Long userId, @PathVariable UUID hubRoutesId,
-      @RequestHeader("Authorization") String authHeader) {
-    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
+      @RequestHeader(value = "X-User-Id") String userIdHeader) {
     hubRouteService.deleteHubRoute(userId, hubRoutesId, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success("delete success"));
   }
