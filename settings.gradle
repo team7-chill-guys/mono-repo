@@ -1,7 +1,6 @@
 rootProject.name = "chill-guys"
 
 include 'com.sparta.logistics.ai-service'
-include 'com.sparta.logistics.auth-service'
 include 'com.sparta.logistics.company-service'
 include 'com.sparta.logistics.delivery-service'
 include 'com.sparta.logistics.delivery-manager-service'
@@ -12,4 +11,3 @@ include 'com.sparta.logistics.slack-service'
 include 'com.sparta.logistics.user-service'
 include 'com.sparta.logistics.gateway'
 include 'com.sparta.logistics.eureka-server'
-include 'com.sparta.logistics.config-server'
