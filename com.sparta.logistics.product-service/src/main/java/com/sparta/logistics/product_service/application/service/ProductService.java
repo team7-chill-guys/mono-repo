@@ -179,4 +179,9 @@ public class ProductService {
         Product product = (Product)this.productRepository.findById(productId).orElseThrow(() -> new RuntimeException("해당 상품 없음"));
         return product.getHubId();
     }
+
+    public String getProductName(UUID productId) {
+        Product product = (Product)this.productRepository.findById(productId).orElseThrow(() -> new RuntimeException("해당 상품 없음"));
+        return product.getName();
+    }
 }
