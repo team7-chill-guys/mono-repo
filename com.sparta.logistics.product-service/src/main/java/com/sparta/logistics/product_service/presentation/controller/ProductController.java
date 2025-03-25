@@ -72,7 +72,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/name")
-    public String getProductName(@RequestBody UUID productId) {
+    public String getProductName(@PathVariable("productId") UUID productId) {
         return productService.getProductName(productId);
     }
 }
