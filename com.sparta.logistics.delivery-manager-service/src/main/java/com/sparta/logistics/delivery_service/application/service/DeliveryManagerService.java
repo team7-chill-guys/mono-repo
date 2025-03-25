@@ -56,7 +56,6 @@ public class DeliveryManagerService {
         DeliveryManager deliveryManager = findDeliveryManagerById(deliveryManagerId);
 
         deliveryManager.updateOf(deliveryManagerUpdateRequestDto);
-        deliveryManagerRepository.save(deliveryManager);
     }
 
     @Transactional
@@ -90,7 +89,6 @@ public class DeliveryManagerService {
         DeliveryManager deliveryManager = findDeliveryManagerById(deliveryManagerId);
 
         deliveryManager.setHubAndType(hubId, type);
-
     }
 
     @Transactional

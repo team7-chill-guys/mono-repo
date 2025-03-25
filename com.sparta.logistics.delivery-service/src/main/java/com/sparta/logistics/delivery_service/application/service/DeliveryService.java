@@ -103,8 +103,6 @@ public class DeliveryService {
                 DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(departureHubId, destinationHubId, type);
                 delivery.assignDeliveryManager(dto.getId());
 
-                deliveryRepository.save(delivery);
-
                 log.info("DeliveryManager Assigned");
 
                 // 배송정보를 kafka로 전송
@@ -118,7 +116,6 @@ public class DeliveryService {
         Delivery delivery = findDeliveryById(deliveryId);
 
         delivery.changeDeliveryStatus(deliveryStatus);
-        deliveryRepository.save(delivery);
     }
 
 

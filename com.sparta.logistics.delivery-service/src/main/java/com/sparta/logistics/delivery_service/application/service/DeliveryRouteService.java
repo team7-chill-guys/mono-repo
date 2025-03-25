@@ -91,6 +91,7 @@ public class DeliveryRouteService {
 
         if(deliveryRoute.isInfoChangeable()) {
             deliveryRoute.updateOf(deliveryRouteUpdateRequestDto);
+
         } else throw new CustomException(DeliveryErrorCode.DELIVERY_IN_START);
 
         deliveryRouteRepository.save(deliveryRoute);
@@ -116,7 +117,6 @@ public class DeliveryRouteService {
                 DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(startHubId, endHubId, "HUB");
                 deliveryRoute.assignHubDeliveryManager(dto.getId());
 
-                deliveryRouteRepository.save(deliveryRoute);
                 log.info("HubDeliveryManager Assigned");
             }
         }
@@ -126,7 +126,6 @@ public class DeliveryRouteService {
     public void changeDeliveryStatus(UUID deliveryId, UUID routesId, DeliveryRouteStatus status) {
         DeliveryRoute deliveryRoute = findDeliveryRouteById(routesId, deliveryId);
         deliveryRoute.changeDeliveryStatus(status);
-        deliveryRouteRepository.save(deliveryRoute);
     }
 
 
