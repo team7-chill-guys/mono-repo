@@ -1,6 +1,5 @@
-package com.sparta.logistics.delivery_service.application.mapper;
+package com.sparta.logistics.delivery_service.infrastructure.messaging.dto;
 
-import com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoDto;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 
 public class DeliveryInfoMapper {
@@ -10,8 +9,9 @@ public class DeliveryInfoMapper {
                 .departureHubId(delivery.getDepartureHubId())
                 .destinationHubId(delivery.getDestinationHubId())
                 .deliveryManagerId(delivery.getDeliveryManagerId())
-                .orderId(delivery.getOrderId())
+                .productId(delivery.getProductId())
                 .slackId(slackId)
+                .orderId(delivery.getOrderId())
                 .address(address)
                 .build();
     }

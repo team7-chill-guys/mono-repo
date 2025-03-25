@@ -18,4 +18,5 @@ public class DeliveryInfoDto {
     UUID orderId;
     String slackId;
     String address;
+    UUID productId;
 }

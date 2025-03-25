@@ -15,6 +15,7 @@ public class DeliveryInfoDto {
     UUID departureHubId;
     UUID destinationHubId;
     Long deliveryManagerId;
+    UUID productId;
     UUID orderId;
     String slackId;
     String address;

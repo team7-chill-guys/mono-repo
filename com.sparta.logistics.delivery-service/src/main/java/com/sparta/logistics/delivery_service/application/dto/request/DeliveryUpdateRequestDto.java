@@ -9,6 +9,7 @@ import java.util.UUID;
 public class DeliveryUpdateRequestDto {
     private UUID departureHubId;
     private UUID destinationHubId;
+    private UUID productId;
     private UUID companyId;
     private String address;
     private String slackId;

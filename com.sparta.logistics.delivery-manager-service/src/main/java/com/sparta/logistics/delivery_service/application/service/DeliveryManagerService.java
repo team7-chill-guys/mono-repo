@@ -8,6 +8,8 @@ import com.sparta.logistics.delivery_service.application.mapper.DeliveryManagerM
 import com.sparta.logistics.delivery_service.domain.model.DeliveryManager;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryManagerType;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryManagerRepository;
+import com.sparta.logistics.delivery_service.exception.CustomException;
+import com.sparta.logistics.delivery_service.exception.DeliveryManagerErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,23 +46,21 @@ public class DeliveryManagerService {
 
     @Transactional(readOnly = true)
     public DeliveryManagerResponseDto getDeliveryManager(Long deliveryManagerId) {
-        DeliveryManager deliveryManager = deliveryManagerRepository.findByIdAndDeletedAtIsNull(deliveryManagerId)
-                .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
+        DeliveryManager deliveryManager = findDeliveryManagerById(deliveryManagerId);
+
         return DeliveryManagerMapper.toDto(deliveryManager);
     }
 
     @Transactional
     public void updateDeliveryManager(Long deliveryManagerId, DeliveryManagerUpdateRequestDto deliveryManagerUpdateRequestDto) {
-        DeliveryManager deliveryManager = deliveryManagerRepository.findByIdAndDeletedAtIsNull(deliveryManagerId)
-                .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
+        DeliveryManager deliveryManager = findDeliveryManagerById(deliveryManagerId);
 
         deliveryManager.updateOf(deliveryManagerUpdateRequestDto);
     }
 
     @Transactional
     public void deleteDeliveryManager(Long deliveryManagerId, String userId) {
-        DeliveryManager deliveryManager = deliveryManagerRepository.findByIdAndDeletedAtIsNull(deliveryManagerId)
-                .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
+        DeliveryManager deliveryManager = findDeliveryManagerById(deliveryManagerId);
 
         Long id = Long.parseLong(userId);
         deliveryManager.deletedOf(id);
@@ -73,7 +73,7 @@ public class DeliveryManagerService {
 
         //순번이 가장 먼저인 배송 담당자 배정
         if(deliveryManagerList.isEmpty()) {
-            throw new RuntimeException("적합한 배송 담당자 없음");
+            throw new CustomException(DeliveryManagerErrorCode.DELIVERY_MANAGER_NOT_AVAILABLE);
         }
 
         DeliveryManager deliveryManager = deliveryManagerList.get(0);
@@ -85,17 +85,21 @@ public class DeliveryManagerService {
     }
 
     @Transactional
-    public void assignHubAndType(Long id, UUID hubId, DeliveryManagerType type) {
-        DeliveryManager deliveryManager = deliveryManagerRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
+    public void assignHubAndType(Long deliveryManagerId, UUID hubId, DeliveryManagerType type) {
+        DeliveryManager deliveryManager = findDeliveryManagerById(deliveryManagerId);
 
         deliveryManager.setHubAndType(hubId, type);
     }
 
     @Transactional
-    public void updateSlackId(Long id, String slackId) {
-        DeliveryManager deliveryManager = deliveryManagerRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new RuntimeException("배송담당자 없음"));
+    public void updateSlackId(Long deliveryManagerId, String slackId) {
+        DeliveryManager deliveryManager = findDeliveryManagerById(deliveryManagerId);
         deliveryManager.updateSlackId(slackId);
+    }
+
+
+    private DeliveryManager findDeliveryManagerById(Long id) {
+        return deliveryManagerRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new CustomException(DeliveryManagerErrorCode.DELIVERY_MANAGER_NOT_FOUND));
     }
 }

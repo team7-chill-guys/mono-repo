@@ -23,6 +23,7 @@ public class DeliveryMapper {
                 .orderId(dto.getOrderId())
                 .departureHubId(departureHubId)
                 .destinationHubId(destinationHubId)
+                .productId(dto.getProductId())
                 .recipientCompany(recipientCompany)
                 .build();
     }
@@ -33,6 +34,7 @@ public class DeliveryMapper {
                 .status(delivery.getDeliveryStatus())
                 .departureHubId(delivery.getDepartureHubId())
                 .destinationHubId(delivery.getDestinationHubId())
+                .productId(delivery.getProductId())
                 .recipientCompany(delivery.getRecipientCompany())
                 .createdAt(delivery.getCreatedAt())
                 .deliveryManagerId(delivery.getDeliveryManagerId())

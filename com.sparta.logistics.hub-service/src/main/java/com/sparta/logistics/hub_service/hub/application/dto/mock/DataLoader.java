@@ -5,7 +5,6 @@ import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

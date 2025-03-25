@@ -11,7 +11,7 @@ import com.sparta.logistics.hub_service.hub.application.dto.response.UserRoleSea
 import com.sparta.logistics.hub_service.hub.domain.entity.Hub;
 import com.sparta.logistics.hub_service.hub.domain.repository.HubRepository;
 import com.sparta.logistics.hub_service.hub.infrastructure.Client.UserClient;
-import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteServiceImpl;
+import com.sparta.logistics.hub_service.hubroute.application.service.HubRouteService;
 import com.sparta.logistics.hub_service.hubroute.application.service.KakaoMapApiServiceImpl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class HubServiceImpl implements HubService {
   private final HubRepository hubRepository;
   private final KakaoMapApiServiceImpl kakaoMapApiService;
   private final UserClient userClient;
-  private final HubRouteServiceImpl hubRouteService;
+  private final HubRouteService hubRouteService;
 
   // 허브 생성
   @Transactional
@@ -163,7 +163,6 @@ public class HubServiceImpl implements HubService {
       hub.updateLongitude(requestDto.getLongitude());
       isLocationUpdated = true;
     }
-
 
     Long currentId = Long.valueOf(userIdHeader);
     hub.updateUpdateBy(currentId);

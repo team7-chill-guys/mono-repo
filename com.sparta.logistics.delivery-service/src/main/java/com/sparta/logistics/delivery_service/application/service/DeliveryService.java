@@ -4,11 +4,13 @@ import com.sparta.logistics.delivery_service.application.dto.request.OrderDelive
 import com.sparta.logistics.delivery_service.application.dto.request.DeliveryUpdateRequestDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryManagerInfoDto;
 import com.sparta.logistics.delivery_service.application.dto.response.DeliveryResponseDto;
-import com.sparta.logistics.delivery_service.application.mapper.DeliveryInfoMapper;
+import com.sparta.logistics.delivery_service.infrastructure.messaging.dto.DeliveryInfoMapper;
 import com.sparta.logistics.delivery_service.application.mapper.DeliveryMapper;
 import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRepository;
+import com.sparta.logistics.delivery_service.exception.CustomException;
+import com.sparta.logistics.delivery_service.exception.DeliveryErrorCode;
 import com.sparta.logistics.delivery_service.infrastructure.client.CompanyClient;
 import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
 import com.sparta.logistics.delivery_service.infrastructure.client.ProductClient;
@@ -66,25 +68,24 @@ public class DeliveryService {
 
     @Transactional(readOnly = true)
     public DeliveryResponseDto getDelivery(UUID deliveryId) {
-        Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
-                .orElseThrow(() -> new RuntimeException());
+        Delivery delivery = findDeliveryById(deliveryId);
         return DeliveryMapper.toDto(delivery);
     }
 
     @Transactional
     public void updateDelivery(UUID deliveryId, DeliveryUpdateRequestDto deliveryUpdateRequestDto) {
-        Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 찾을 수 없음"));
+        Delivery delivery = findDeliveryById(deliveryId);
 
         if(delivery.isInfoChangeable()) {
             delivery.updateOf(deliveryUpdateRequestDto);
-        } else throw new RuntimeException("배송중이라 변경 못함");
+        } else throw new CustomException(DeliveryErrorCode.DELIVERY_IN_START);
+
+        deliveryRepository.save(delivery);
     }
 
     @Transactional
     public void deleteDelivery(UUID deliveryId, String userId) {
-        Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 찾을 수 없음"));
+        Delivery delivery = findDeliveryById(deliveryId);
         Long id = Long.parseLong(userId);
         delivery.deletedOf(id);
     }
@@ -112,9 +113,14 @@ public class DeliveryService {
 
     @Transactional
     public void changeDeliveryStatus(UUID deliveryId, DeliveryStatus deliveryStatus) {
-        Delivery delivery = deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 찾을 수 없음"));
+        Delivery delivery = findDeliveryById(deliveryId);
 
         delivery.changeDeliveryStatus(deliveryStatus);
+    }
+
+
+    private Delivery findDeliveryById(UUID deliveryId) {
+        return deliveryRepository.findByIdAndDeletedAtIsNull(deliveryId)
+                .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
     }
 }
