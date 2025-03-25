@@ -114,7 +114,7 @@ public class DeliveryRouteService {
             for(DeliveryRoute deliveryRoute : pendingDeliveryies) {
                 UUID startHubId = deliveryRoute.getStartHudId();
                 UUID endHubId = deliveryRoute.getEndHudId();
-                DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(startHubId, endHubId, "HUB");
+                DeliveryManagerInfoDto dto = deliveryManagerClient.assignDeliveryManager(startHubId, endHubId, "COMPANY");
                 deliveryRoute.assignHubDeliveryManager(dto.getId());
 
                 log.info("HubDeliveryManager Assigned");
