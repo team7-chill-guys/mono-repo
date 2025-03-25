@@ -36,14 +36,7 @@ public class MasterHubController {
   public ResponseEntity<ResponseDto<HubCreateResponseDto>> createHub(
       @Valid @RequestBody HubCreateRequestDto requestDto,
       @RequestHeader("Authorization") String authHeader) {
-
-    String token = authHeader.replace("Bearer ", "");
-
-    Claims claims = jwtUtil.getUserInfoFromToken(token);
-    String userIdHeader = claims.get("sub", String.class);
-
-    log.info("JWT에서 추출한 userId: {}", userIdHeader);
-
+    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
     HubCreateResponseDto responseDto = hubService.createHub(requestDto, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
@@ -53,12 +46,7 @@ public class MasterHubController {
   public ResponseEntity<ResponseDto<HubUpdateResponseDto>> updateHub(@PathVariable UUID hubId,
       @Valid @RequestBody HubUpdateRequestDto requestDto,
       @RequestHeader("Authorization") String authHeader) {
-
-    String token = authHeader.replace("Bearer ", "");
-
-    Claims claims = jwtUtil.getUserInfoFromToken(token);
-    String userIdHeader = claims.get("sub", String.class);
-
+    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
     HubUpdateResponseDto responseDto = hubService.updateHub(hubId, requestDto, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
@@ -67,12 +55,7 @@ public class MasterHubController {
   @DeleteMapping("/{hubId}")
   public ResponseEntity<?> deleteHub(Long userId, @PathVariable UUID hubId,
       @RequestHeader("Authorization") String authHeader) {
-
-    String token = authHeader.replace("Bearer ", "");
-
-    Claims claims = jwtUtil.getUserInfoFromToken(token);
-    String userIdHeader = claims.get("sub", String.class);
-
+    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
     hubService.deleteHub(userId, hubId, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success("delete success"));
   }

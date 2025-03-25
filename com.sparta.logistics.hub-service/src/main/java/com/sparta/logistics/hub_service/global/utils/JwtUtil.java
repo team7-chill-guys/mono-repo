@@ -5,10 +5,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class JwtUtil {
 
   @Value("${jwt.secret.key}")
@@ -29,17 +31,12 @@ public class JwtUtil {
         .getBody();
   }
 
-  public String getUsername(String token) {
-    return getUserInfoFromToken(token).get("username", String.class);
+  public String extractUserIdFromAuthHeader(String authHeader) {
+    String token = authHeader.replace("Bearer ", "");
+    Claims claims = getUserInfoFromToken(token);
+    return claims.get("sub", String.class);
   }
 
-  public String getRole(String token) {
-    return getUserInfoFromToken(token).get("role", String.class);
-  }
-
-  public String getUserId(String token) {
-    return getUserInfoFromToken(token).getSubject(); // sub 값
-  }
 }
 
 

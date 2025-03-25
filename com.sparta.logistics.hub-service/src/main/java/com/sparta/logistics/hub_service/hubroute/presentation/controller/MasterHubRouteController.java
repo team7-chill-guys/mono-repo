@@ -38,15 +38,9 @@ public class MasterHubRouteController {
   public ResponseEntity<ResponseDto<HubRouteCreateResponseDto>> createHubRoute(
       @RequestBody HubRouteCreateRequestDto requestDto,
       @RequestHeader("Authorization") String authHeader) {
-
-    String token = authHeader.replace("Bearer ", "");
-
-    Claims claims = jwtUtil.getUserInfoFromToken(token);
-    String userIdHeader = claims.get("sub", String.class);
-
+    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
     HubRouteCreateResponseDto responseDto = kakaoMapApiService.createHubRoute(requestDto,
         userIdHeader);
-
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
@@ -54,14 +48,9 @@ public class MasterHubRouteController {
   @PostMapping("/auto")
   public ResponseEntity<ResponseDto<List<HubRouteCreateResponseDto>>> autoCreateHubRoute(
       @RequestHeader("Authorization") String authHeader) {
-    String token = authHeader.replace("Bearer ", "");
-
-    Claims claims = jwtUtil.getUserInfoFromToken(token);
-    String userIdHeader = claims.get("sub", String.class);
-
+    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
     List<HubRouteCreateResponseDto> responseDto = kakaoMapApiService.autoCreateHubRoute(
         userIdHeader);
-
     return ResponseEntity.ok(ResponseDto.success(responseDto));
   }
 
@@ -71,11 +60,7 @@ public class MasterHubRouteController {
       @PathVariable UUID hubRoutesId,
       @RequestBody HubRouteUpdateRequestDto requestDto,
       @RequestHeader("Authorization") String authHeader) {
-    String token = authHeader.replace("Bearer ", "");
-
-    Claims claims = jwtUtil.getUserInfoFromToken(token);
-    String userIdHeader = claims.get("sub", String.class);
-
+    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
     HubRouteUpdateResponseDto responseDto = hubRouteService.updateHubRoute(hubRoutesId, requestDto,
         userIdHeader);
     return ResponseEntity.ok(ResponseDto.success(responseDto));
@@ -85,10 +70,7 @@ public class MasterHubRouteController {
   @DeleteMapping("/{hubRoutesId}")
   public ResponseEntity<?> deleteHubRoute(Long userId, @PathVariable UUID hubRoutesId,
       @RequestHeader("Authorization") String authHeader) {
-    String token = authHeader.replace("Bearer ", "");
-
-    Claims claims = jwtUtil.getUserInfoFromToken(token);
-    String userIdHeader = claims.get("sub", String.class);
+    String userIdHeader = jwtUtil.extractUserIdFromAuthHeader(authHeader);
     hubRouteService.deleteHubRoute(userId, hubRoutesId, userIdHeader);
     return ResponseEntity.ok(ResponseDto.success("delete success"));
   }
