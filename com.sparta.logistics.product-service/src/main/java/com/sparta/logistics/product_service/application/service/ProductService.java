@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class ProductService {
         this.hubClient = hubClient;
     }
 
+    @Transactional
     public ProductCreateResponseDto createProduct(ProductCreateRequestDto requestProductCreateDto, String userIdHeader) {
         Long userId = Long.parseLong(userIdHeader);
 
@@ -77,6 +79,7 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public ProductUpdateResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestProductUpdateDto, String userIdHeader) {
         Long userId = Long.parseLong(userIdHeader);
 
@@ -149,6 +152,7 @@ public class ProductService {
         return new PageImpl<>(List.of(productSearchResponseDto), pageable, productList.getTotalElements());
     }
 
+    @Transactional
     public ResponseEntity<Void> deleteProduct(UUID productId, String userIdHeader) {
         Long userId = Long.parseLong(userIdHeader);
 
@@ -159,6 +163,7 @@ public class ProductService {
         return ResponseEntity.ok().build();
     }
 
+    @Transactional
     public StockUpdateResponseDto reduceStock(UUID productId, Long quantity) {
         Product product = (Product)this.productRepository.findById(productId).orElseThrow(() -> new RuntimeException("해당 상품 없음"));
         boolean success = product.decreaseStock(quantity);
@@ -167,6 +172,7 @@ public class ProductService {
         return new StockUpdateResponseDto(success);
     }
 
+    @Transactional
     public StockUpdateResponseDto addStock(UUID productId, Long quantity) {
         Product product = (Product)this.productRepository.findById(productId).orElseThrow(() -> new RuntimeException("해당 상품 없음"));
         boolean success = product.increaseStock(quantity);

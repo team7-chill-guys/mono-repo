@@ -1,9 +1,7 @@
 package com.sparta.logistics.product_service.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 import java.util.UUID;
 import lombok.Generated;
@@ -11,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Entity
+@Table(name = "p_product")
 public class Product {
     @Generated
     private static final Logger log = LoggerFactory.getLogger(Product.class);
