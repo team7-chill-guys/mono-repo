@@ -9,6 +9,8 @@ import com.sparta.logistics.delivery_service.domain.model.Delivery;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRoute;
 import com.sparta.logistics.delivery_service.domain.model.DeliveryRouteStatus;
 import com.sparta.logistics.delivery_service.domain.repository.DeliveryRouteRepository;
+import com.sparta.logistics.delivery_service.exception.CustomException;
+import com.sparta.logistics.delivery_service.exception.DeliveryErrorCode;
 import com.sparta.logistics.delivery_service.infrastructure.client.DeliveryManagerClient;
 import com.sparta.logistics.delivery_service.infrastructure.client.HubRouteClient;
 import lombok.RequiredArgsConstructor;
@@ -78,20 +80,18 @@ public class DeliveryRouteService {
 
     @Transactional(readOnly = true)
     public DeliveryRouteResponseDto getDeliveryRoute(UUID deliveryId, UUID routesId) {
-        DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
+        DeliveryRoute deliveryRoute = findDeliveryRouteById(routesId, deliveryId);
 
         return DeliveryRouteMapper.toDto(deliveryRoute);
     }
 
     @Transactional
     public void updateDeliveryRoute(UUID deliveryId, UUID routesId, DeliveryRouteUpdateRequestDto deliveryRouteUpdateRequestDto) {
-        DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
+        DeliveryRoute deliveryRoute = findDeliveryRouteById(routesId, deliveryId);
 
         if(deliveryRoute.isInfoChangeable()) {
             deliveryRoute.updateOf(deliveryRouteUpdateRequestDto);
-        } else throw new RuntimeException("배송 중이라 변경 못함");
+        } else throw new CustomException(DeliveryErrorCode.DELIVERY_IN_START);
 
         deliveryRouteRepository.save(deliveryRoute);
     }
@@ -99,10 +99,8 @@ public class DeliveryRouteService {
 
     @Transactional
     public void deleteDeliveryRoute(UUID deliveryId, UUID routesId, String userId) {
-        DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
+        DeliveryRoute deliveryRoute = findDeliveryRouteById(routesId, deliveryId);
         Long id = Long.parseLong(userId);
-
         deliveryRoute.deletedOf(id);
     }
 
@@ -126,9 +124,14 @@ public class DeliveryRouteService {
 
     @Transactional
     public void changeDeliveryStatus(UUID deliveryId, UUID routesId, DeliveryRouteStatus status) {
-        DeliveryRoute deliveryRoute = deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routesId, deliveryId)
-                .orElseThrow(() -> new RuntimeException("배송 기록 없음"));
+        DeliveryRoute deliveryRoute = findDeliveryRouteById(routesId, deliveryId);
         deliveryRoute.changeDeliveryStatus(status);
         deliveryRouteRepository.save(deliveryRoute);
+    }
+
+
+    private DeliveryRoute findDeliveryRouteById(UUID routeId, UUID deliveryId) {
+        return deliveryRouteRepository.findByIdAndDeliveryIdAndDeletedAtIsNull(routeId, deliveryId)
+                .orElseThrow(() -> new CustomException(DeliveryErrorCode.DELIVERY_ROUTE_NOT_FOUND));
     }
 }
