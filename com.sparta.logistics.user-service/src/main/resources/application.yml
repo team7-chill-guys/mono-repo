@@ -1,0 +1,41 @@
+server:
+  port: 19091
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: user-service
+  data:
+    redis:
+      host: ${REDIS_HOST_USER}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST_USER}/team7
+  jpa:
+    hibernate:
+      ddl-auto: ${DDL_AUTO}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_URL}/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+  access:
+    exp: ${JWT_ACCESS_EXP}
+  refresh:
+    exp: ${JWT_REFRESH_EXP}
