@@ -6,23 +6,23 @@ MSA 기반 물류 관리 시스템 "물류ON"
 <br/>
 <br/>
 
-# 0. Getting Started (서비스 구성 및 실행 방법)
-
-<br/>
-<br/>
-
 # 1. About Project
-- 프로젝트 목적: MSA 기반 물류 관리 시스템
-- 프로젝트 설명: 
+- 프로젝트명: MSA 기반 국내 물류 관리 및 배송 시스템 개발
+- 프로젝트 목표:
+    - 기존 모놀리식 시스템의 한계를 극복하기 위해 MSA 구조 도입, 각 도메인을 독립적으로 설계
+    - DDD 관점 적용하여 물류 시스템을 체계적으로 모델링 및 개발
+    - 실제 운영 환경에서도 활용 가능한 구조를 갖춘 시스템 구현
+- 진행 기간: 2025년 4월 11일 ~ 4월 25일 (총 15일간)
 
 <br/>
-
-<br/>
 <br/>
 
-# 2. Team14 Members (팀원 및 팀 소개)
+# 2. Team7 Chill Guys
 | 김소진 | 박소해 | 오혜민 | 조규성 | 주소연 |
 |:------:|:------:|:------:|:------:|:------:|
+| <img src="https://avatars.githubusercontent.com/sojinnuna" alt="김소진" width="150"> | <img src="https://avatars.githubusercontent.com/S2gamzaS2" alt="박소해" width="150"> | <img src="https://avatars.githubusercontent.com/u/170385509?v=4" alt="오혜민" width="150"> | <img src="https://avatars.githubusercontent.com/u/113866973?v=4" alt="조규성" width="150"> | <img src="https://avatars.githubusercontent.com/u/113866973?v=4" alt="주소연" width="150"> |
+| Lead | BE | BE | BE | BE |
+| [GitHub](https://github.com/sojinnuna) | [GitHub](https://github.com/S2gamzaS2) | [GitHub](https://github.com/sojinnuna) | [GitHub](https://github.com/kylim99) |
 
 <br/>
 <br/>
