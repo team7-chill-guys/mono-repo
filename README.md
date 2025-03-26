@@ -21,7 +21,7 @@ MSA 기반 물류 관리 시스템 "물류ON"
 | 김소진 | 박소해 | 오혜민 | 조규성 | 주소연 |
 |:------:|:------:|:------:|:------:|:------:|
 | <img src="https://avatars.githubusercontent.com/sojinnuna" alt="김소진" width="150"> | <img src="https://avatars.githubusercontent.com/S2gamzaS2" alt="박소해" width="150"> | <img src="https://avatars.githubusercontent.com/oh-min" alt="오혜민" width="150"> | <img src="https://avatars.githubusercontent.com/Imnotcoderdude" alt="조규성" width="150"> | <img src="https://avatars.githubusercontent.com/jcowwk" alt="주소연" width="150"> |
-| Lead | BE | BE | BE | BE |
+| Lead | BE | BE | Tech | BE |
 | [GitHub](https://github.com/sojinnuna) | [GitHub](https://github.com/S2gamzaS2) | [GitHub](https://github.com/oh-min) | [GitHub](https://github.com/Imnotcoderdude) | [GitHub](https://github.com/jcowwk) |
 
 <br/>
@@ -41,16 +41,20 @@ MSA 기반 물류 관리 시스템 "물류ON"
 # 4. ERD
 erdcloud : [https://www.erdcloud.com/d/sT8WDsAXXqfbB9Gay](https://www.erdcloud.com/d/JCRKQRxseMZY28368)
 <br/>
+
+<img src= https://github.com/user-attachments/assets/1427bac2-f2e2-4495-9910-e5e30c6e55a6>
+<br/>
 <br/>
 
+# 5. Infra
+<img src= https://github.com/user-attachments/assets/f12fa693-8ba7-4150-ba7b-2bb4eab1da0d>
 
 <br/>
 <br/>
 
+# 6. Technology Stack (기술 스택)
 
-# 5. Technology Stack (기술 스택)
-
-## 5.1 BackEnd
+## 6.1 BackEnd
 |  |  |  |
 |-----------------|-----------------|-----------------|
 | SpringBoot    |  <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white" alt="SpringBoot" width="200"> | 3.4.3    |
