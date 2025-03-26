@@ -20,9 +20,9 @@ MSA 기반 물류 관리 시스템 "물류ON"
 # 2. Team7 Chill Guys
 | 김소진 | 박소해 | 오혜민 | 조규성 | 주소연 |
 |:------:|:------:|:------:|:------:|:------:|
-| <img src="https://avatars.githubusercontent.com/sojinnuna" alt="김소진" width="150"> | <img src="https://avatars.githubusercontent.com/S2gamzaS2" alt="박소해" width="150"> | <img src="https://avatars.githubusercontent.com/u/170385509?v=4" alt="오혜민" width="150"> | <img src="https://avatars.githubusercontent.com/u/113866973?v=4" alt="조규성" width="150"> | <img src="https://avatars.githubusercontent.com/u/113866973?v=4" alt="주소연" width="150"> |
+| <img src="https://avatars.githubusercontent.com/sojinnuna" alt="김소진" width="150"> | <img src="https://avatars.githubusercontent.com/S2gamzaS2" alt="박소해" width="150"> | <img src="https://avatars.githubusercontent.com/oh-min" alt="오혜민" width="150"> | <img src="https://avatars.githubusercontent.com/Imnotcoderdude" alt="조규성" width="150"> | <img src="https://avatars.githubusercontent.com/jcowwk" alt="주소연" width="150"> |
 | Lead | BE | BE | BE | BE |
-| [GitHub](https://github.com/sojinnuna) | [GitHub](https://github.com/S2gamzaS2) | [GitHub](https://github.com/sojinnuna) | [GitHub](https://github.com/kylim99) |
+| [GitHub](https://github.com/sojinnuna) | [GitHub](https://github.com/S2gamzaS2) | [GitHub](https://github.com/oh-min) | [GitHub](https://github.com/Imnotcoderdude) | [GitHub](https://github.com/jcowwk) |
 
 <br/>
 <br/>
@@ -56,7 +56,6 @@ erdcloud : [https://www.erdcloud.com/d/sT8WDsAXXqfbB9Gay](https://www.erdcloud.c
 | SpringBoot    |  <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white" alt="SpringBoot" width="200"> | 3.4.3    |
 | Java    |  <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Java&logoColor=white" alt="Java" width="200" > | 17 |
 | Spring Data JPA    |  <img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=SpringDataJPA&logoColor=white" alt="JPA" width="200" >    | 5.0.0  |
-| QueryDSL    |  <img src="https://img.shields.io/badge/QueryDSL-0769AD?style=for-the-badge&logo=QueryDSL&logoColor=white" alt="QueryDSL" alt="QueryDSL" width="200" >    | 1.11.12    |
 | Spring Security |  <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white" alt="QueryDSL" alt="QueryDSL" width="200">    | 3.4.2    |
 
 <br/>
