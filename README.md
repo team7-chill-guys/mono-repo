@@ -27,7 +27,7 @@ MSA 기반 물류 관리 시스템 "물류ON"
 <br/>
 <br/>
 
-# 3. Key Features (주요 기능)
+# 3. Tasks & Responsibilities (작업 및 역할 분담)
 - **권한별 회원 관리**:
   - 권한별 회원가입을 진행합니다
   - 권한은 USER(고객), MASTER(관리자), OWNER(가게주인), MANAGER(가게매니저)로 분류되어 있습니다
@@ -48,15 +48,9 @@ erdcloud : [https://www.erdcloud.com/d/sT8WDsAXXqfbB9Gay](https://www.erdcloud.c
 <br/>
 
 
+# 5. Technology Stack (기술 스택)
 
-# 5. Tasks & Responsibilities (작업 및 역할 분담)
-
-<br/>
-<br/>
-
-# 6. Technology Stack (기술 스택)
-
-## 6.1 BackEnd
+## 5.1 BackEnd
 |  |  |  |
 |-----------------|-----------------|-----------------|
 | SpringBoot    |  <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white" alt="SpringBoot" width="200"> | 3.4.3    |
