@@ -60,7 +60,7 @@ erdcloud : [https://www.erdcloud.com/d/sT8WDsAXXqfbB9Gay](https://www.erdcloud.c
 <br/>
 
 # 5. Infra
-<img src= https://github.com/user-attachments/assets/f12fa693-8ba7-4150-ba7b-2bb4eab1da0d>
+<img src= https://github.com/user-attachments/assets/b274175e-5e61-461e-b4d9-6f2d1f69c674>
 
 <br/>
 <br/>
