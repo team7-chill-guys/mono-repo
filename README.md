@@ -61,6 +61,19 @@ MSA 기반 물류 관리 시스템 "물류ON"
     - 허브/루트 정보 변경 시, 관련 캐시 데이터 자동 삭제 처리
     - FeignClient를 이용한 외부 서비스 통신
 
+[주소연]
+- **Product Service**
+    - 상품 등록, 조회, 수정, 삭제, 검색 기능 구현
+    - FeignClient를 이용해 다양한 외부 서비스와의 통신 처리
+
+- **Slack Service**
+    - Slack API 연동
+    - FeignClient를 이용해 다양한 외부 서비스와의 통신 처리
+
+- **AI Service**
+    - Gemini API 연동
+    - FeignClient를 이용해 슬랙 서비스와의 통신 처리
+
 <br/>
 <br/>
 
