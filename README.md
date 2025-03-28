@@ -13,6 +13,9 @@ MSA 기반 물류 관리 시스템 "물류ON"
     - DDD 관점 적용하여 물류 시스템을 체계적으로 모델링 및 개발
     - 실제 운영 환경에서도 활용 가능한 구조를 갖춘 시스템 구현
 - 진행 기간: 2025년 4월 11일 ~ 4월 25일 (총 15일간)
+- 시연 스크립트: 
+
+<img src= "https://github.com/user-attachments/assets/a1b5d38f-4cd1-4e38-931b-8955289520cc">
 
 <br/>
 <br/>
@@ -73,6 +76,29 @@ MSA 기반 물류 관리 시스템 "물류ON"
 - **AI Service**
     - Gemini API 연동
     - FeignClient를 이용해 슬랙 서비스와의 통신 처리
+ 
+[김소진]    
+- **Company Service**
+    - 업체 등록, 조회, 수정, 삭제, 검색 기능 구현
+    - FeignClient를 활용한 외부 마이크로서비스 통신 구조 설계
+
+- **Order Service**
+    - 주문 등록, 조회, 수정, 삭제, 검색 기능 구현
+    - JWT 기반 사용자 인증 및 권한 검증 로직 구현으로 보안 강화
+    - FeignClient를 활용한 외부 마이크로서비스(배송, 상품 등) 연동 구조 설계
+    - 주문 상태에 따른 로직 분기 처리 및 주문 이력 관리 기능 구현
+
+[박소해]
+- **Delivery Service**
+    - 배송 등록, 조회, 수정, 삭제 기능 구현
+    - FeignClient를 활용한 외부 마이크로서비스 통신 구조 설계
+
+- **DeliveryManager Service**
+    - 배송 담당자 등록, 조회, 수정, 삭제 기능 구현
+    - 담당자 선정 시 관련 배송 정보 자동 연동 처리
+    - Kafka를 활용한 이벤트 기반 아키텍처 설계로 서비스 간 비동기 처리 구현
+    - Slack 연동을 통해 배송담당자 알림 자동화 처리
+
 
 <br/>
 <br/>
@@ -93,13 +119,14 @@ erdcloud : [https://www.erdcloud.com/d/sT8WDsAXXqfbB9Gay](https://www.erdcloud.c
 
 # 6. Technology Stack (기술 스택)
 
-## 6.1 BackEnd
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| SpringBoot    |  <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white" alt="SpringBoot" width="200"> | 3.4.3    |
+| Spring Boot    |  <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white" alt="SpringBoot" width="200"> | 3.4.3    |
 | Java    |  <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Java&logoColor=white" alt="Java" width="200" > | 17 |
 | Spring Data JPA    |  <img src="https://img.shields.io/badge/Spring Data JPA-6DB33F?style=for-the-badge&logo=SpringDataJPA&logoColor=white" alt="JPA" width="200" >    | 5.0.0  |
 | Spring Security |  <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white" alt="QueryDSL" alt="QueryDSL" width="200">    | 3.4.2    |
+| Kafka |  <img src="https://img.shields.io/badge/Apache Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white" alt="" alt="Kafka" width="200">    | 3.4.2    |
+| Redis |    | 7.0.3   |
 
 <br/>
 <br/>
