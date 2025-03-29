@@ -38,6 +38,8 @@ MSA 기반 물류 관리 시스템 "물류ON"
 - **API Gateway**:
     - Spring Cloud Gateway 기반 API 게이트웨이 구성
     - 경로 기반 라우팅 설정 및 인증 필터
+    - JWT 기반 토큰 검증
+    - Redis 토큰 블랙리스트 검증
     - Eureka 연동을 통한 라우팅 자동화 구현
       
 - **User Service**
@@ -47,9 +49,8 @@ MSA 기반 물류 관리 시스템 "물류ON"
 
 - **Auth Service**
     - 로그인 및 회원가입 기능 구현
-    - JWT 기반 인증 로직 구현 (토큰 발급 및 검증)
-    - Refresh Token 관리 및 재발급 로직 처리
-    - Gateway와 연동하여 인증 필터 통과 시 토큰 기반 유저 정보 추출 처리
+    - JWT 기반 토큰 발급, 재발급 기능
+    - Redis 화이트, 블랙리스트 토큰 설정
  
 [오혜민]
 - **Hub Service**
