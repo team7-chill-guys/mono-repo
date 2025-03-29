@@ -51,6 +51,11 @@ MSA 기반 물류 관리 시스템 "물류ON"
     - 로그인 및 회원가입 기능 구현
     - JWT 기반 토큰 발급, 재발급 기능
     - Redis 화이트, 블랙리스트 토큰 설정
+
+- **Docker 환경 구성**
+    - 각 서비스 Dockerfile 작성
+    - Docker Compose 3단계 설정. Dockerfile build, app, database
+    - 하드웨어 리소스가 부족한 인원을 위해 Docker Hub로 이미지 관리 병행
  
 [오혜민]
 - **Hub Service**
